@@ -51,7 +51,10 @@ const ChatHistoryList: React.FC<ChatHistoryListProps> = ({
               className={`group relative rounded-lg ${
                 isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white/50 hover:bg-white/70'
               } p-3 backdrop-blur-sm transition-all`}>
-              <button onClick={() => onSessionSelect(session.id)} className="w-full text-left" type="button">
+              <button
+                onClick={() => onSessionSelect(session.id)}
+                className="rgb-border w-full text-left rounded-lg p-2"
+                type="button">
                 <h3 className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
                   {session.title}
                 </h3>

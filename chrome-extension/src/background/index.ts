@@ -6,6 +6,7 @@ import {
   generalSettingsStore,
   llmProviderStore,
   analyticsSettingsStore,
+  type ProviderConfig,
 } from '@extension/storage';
 import { t } from '@extension/i18n';
 import BrowserContext from './browser/context';
@@ -14,6 +15,7 @@ import { createLogger } from './log';
 import { ExecutionState } from './agent/event/types';
 import { createChatModel } from './agent/helper';
 import type { BaseChatModel } from '@langchain/core/language_models/chat_models';
+import { HumanMessage } from '@langchain/core/messages';
 import { DEFAULT_AGENT_OPTIONS } from './agent/types';
 import { SpeechToTextService } from './services/speechToText';
 import { injectBuildDomTreeScripts } from './browser/dom/service';
@@ -67,10 +69,55 @@ analyticsSettingsStore.subscribe(() => {
 });
 
 // Listen for simple messages (e.g., from options page)
-chrome.runtime.onMessage.addListener(() => {
-  // Handle other message types if needed in the future
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  // Handle test connection requests from options page
+  if (message.type === 'test_llm_connection') {
+    (async () => {
+      try {
+        const { providerConfig, modelName, providerId } = message;
+
+        // Validate required fields
+        if (!providerConfig || !modelName) {
+          sendResponse({ success: false, error: 'Missing provider config or model name' });
+          return;
+        }
+
+        // Create a test model config
+        const testModelConfig = {
+          provider: providerId || providerConfig.type || 'custom_openai',
+          modelName: modelName,
+          parameters: {
+            temperature: 0.1,
+            topP: 0.1,
+          },
+        };
+
+        // Create the chat model
+        const chatModel = createChatModel(providerConfig as ProviderConfig, testModelConfig);
+
+        // Make a simple test call with a timeout
+        const testMessage = new HumanMessage('test');
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Connection test timed out after 10 seconds')), 10000),
+        );
+
+        const testCall = chatModel.invoke([testMessage]);
+        await Promise.race([testCall, timeoutPromise]);
+
+        sendResponse({ success: true, message: 'Connection test successful' });
+      } catch (error) {
+        logger.error('LLM connection test failed:', error);
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        sendResponse({ success: false, error: errorMessage });
+      }
+    })();
+
+    // Return true to indicate we will send a response asynchronously
+    return true;
+  }
+
   // Return false if response is not sent asynchronously
-  // return false;
+  return false;
 });
 
 // Setup connection listener for long-lived connections (e.g., side panel)

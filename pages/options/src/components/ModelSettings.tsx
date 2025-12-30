@@ -91,6 +91,11 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
 
   const [selectedSpeechToTextModel, setSelectedSpeechToTextModel] = useState<string>('');
 
+  // State for test connection
+  const [testConnectionStatus, setTestConnectionStatus] = useState<
+    Record<string, { loading: boolean; success: boolean; error: string | null }>
+  >({});
+
   useEffect(() => {
     const loadProviders = async () => {
       try {
@@ -1124,6 +1129,94 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
     }));
   };
 
+  const testConnection = async (providerId: string) => {
+    const providerConfig = providers[providerId];
+    if (!providerConfig) {
+      return;
+    }
+
+    // Set loading state
+    setTestConnectionStatus(prev => ({
+      ...prev,
+      [providerId]: { loading: true, success: false, error: null },
+    }));
+
+    try {
+      // Determine which model to use for testing
+      let testModelName: string;
+
+      if (providerConfig.type === ProviderTypeEnum.AzureOpenAI) {
+        // For Azure, use the first deployment name
+        if (!providerConfig.azureDeploymentNames || providerConfig.azureDeploymentNames.length === 0) {
+          throw new Error('No deployment names configured. Please add at least one deployment name.');
+        }
+        testModelName = providerConfig.azureDeploymentNames[0];
+      } else {
+        // For other providers, use the first model name
+        const modelNames =
+          providerConfig.modelNames || llmProviderModelNames[providerId as keyof typeof llmProviderModelNames] || [];
+        if (modelNames.length === 0) {
+          throw new Error('No models configured. Please add at least one model.');
+        }
+        testModelName = modelNames[0];
+      }
+
+      // Validate required fields based on provider type
+      if (providerConfig.type === ProviderTypeEnum.AzureOpenAI) {
+        if (!providerConfig.baseUrl?.trim()) {
+          throw new Error('Azure Endpoint is required');
+        }
+        if (!providerConfig.azureApiVersion?.trim()) {
+          throw new Error('Azure API Version is required');
+        }
+        if (!providerConfig.apiKey?.trim()) {
+          throw new Error('API Key is required');
+        }
+      } else if (
+        providerConfig.type !== ProviderTypeEnum.CustomOpenAI &&
+        providerConfig.type !== ProviderTypeEnum.Ollama
+      ) {
+        if (!providerConfig.apiKey?.trim()) {
+          throw new Error('API Key is required');
+        }
+      }
+
+      // Send test connection message to background script
+      const response = await chrome.runtime.sendMessage({
+        type: 'test_llm_connection',
+        providerConfig: providerConfig,
+        modelName: testModelName,
+        providerId: providerId,
+      });
+
+      if (response.success) {
+        setTestConnectionStatus(prev => ({
+          ...prev,
+          [providerId]: { loading: false, success: true, error: null },
+        }));
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setTestConnectionStatus(prev => {
+            const newStatus = { ...prev };
+            delete newStatus[providerId];
+            return newStatus;
+          });
+        }, 3000);
+      } else {
+        setTestConnectionStatus(prev => ({
+          ...prev,
+          [providerId]: { loading: false, success: false, error: response.error || 'Connection test failed' },
+        }));
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      setTestConnectionStatus(prev => ({
+        ...prev,
+        [providerId]: { loading: false, success: false, error: errorMessage },
+      }));
+    }
+  };
+
   return (
     <section className="space-y-6">
       {/* LLM Providers Section */}
@@ -1155,6 +1248,37 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                       {providerConfig.name || providerId}
                     </h3>
                     <div className="flex space-x-2">
+                      {/* Test Connection button */}
+                      <Button
+                        variant="secondary"
+                        disabled={testConnectionStatus[providerId]?.loading}
+                        onClick={() => testConnection(providerId)}
+                        className={isDarkMode ? 'border-gray-600' : 'border-gray-300'}>
+                        {testConnectionStatus[providerId]?.loading ? (
+                          <span className="flex items-center">
+                            <svg
+                              className="mr-2 size-4 animate-spin"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24">
+                              <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"></circle>
+                              <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Testing...
+                          </span>
+                        ) : (
+                          'Test Connection'
+                        )}
+                      </Button>
                       {/* Show Cancel button for newly added providers */}
                       {modifiedProviders.has(providerId) && !providersFromStorage.has(providerId) && (
                         <Button variant="secondary" onClick={() => handleCancelProvider(providerId)}>
@@ -1178,6 +1302,56 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                   {modifiedProviders.has(providerId) && !providersFromStorage.has(providerId) && (
                     <div className={`mb-2 text-sm ${isDarkMode ? 'text-teal-300' : 'text-teal-700'}`}>
                       <p>{t('options_models_providers_setupInstructions')}</p>
+                    </div>
+                  )}
+
+                  {/* Test Connection feedback messages */}
+                  {testConnectionStatus[providerId] && (
+                    <div className="mb-2">
+                      {testConnectionStatus[providerId].success && (
+                        <div
+                          className={`flex items-center rounded-md border p-2 text-sm ${
+                            isDarkMode
+                              ? 'border-green-700 bg-green-900/20 text-green-300'
+                              : 'border-green-300 bg-green-50 text-green-700'
+                          }`}>
+                          <svg
+                            className="mr-2 size-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round">
+                            <path d="M20 6L9 17l-5-5" />
+                          </svg>
+                          Connection test successful!
+                        </div>
+                      )}
+                      {testConnectionStatus[providerId].error && (
+                        <div
+                          className={`flex items-center rounded-md border p-2 text-sm ${
+                            isDarkMode
+                              ? 'border-red-700 bg-red-900/20 text-red-300'
+                              : 'border-red-300 bg-red-50 text-red-700'
+                          }`}>
+                          <svg
+                            className="mr-2 size-4"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" y1="8" x2="12" y2="12" />
+                            <line x1="12" y1="16" x2="12.01" y2="16" />
+                          </svg>
+                          {testConnectionStatus[providerId].error}
+                        </div>
+                      )}
                     </div>
                   )}
 
@@ -1467,12 +1641,33 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                 <input
                                   id={`${providerId}-models-input`}
                                   type="text"
-                                  placeholder=""
+                                  placeholder="Enter model name..."
                                   value={newModelInputs[providerId] || ''}
                                   onChange={e => handleModelsChange(providerId, e.target.value)}
                                   onKeyDown={e => handleKeyDown(e, providerId)}
-                                  className={`min-w-[150px] flex-1 border-none text-sm ${isDarkMode ? 'bg-transparent text-gray-200' : 'bg-transparent text-gray-700'} p-1 outline-none`}
+                                  className={`min-w-[150px] flex-1 border-none text-sm ${isDarkMode ? 'bg-transparent text-gray-200 placeholder:text-gray-500' : 'bg-transparent text-gray-700 placeholder:text-gray-400'} p-1 outline-none`}
                                 />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const value = newModelInputs[providerId] || '';
+                                    if (value.trim()) {
+                                      addModel(providerId, value.trim());
+                                    }
+                                  }}
+                                  disabled={!newModelInputs[providerId]?.trim()}
+                                  className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                                    newModelInputs[providerId]?.trim()
+                                      ? isDarkMode
+                                        ? 'bg-blue-600 text-white hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-400'
+                                        : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
+                                      : isDarkMode
+                                        ? 'bg-slate-600 text-gray-400 cursor-not-allowed'
+                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                  }`}
+                                  aria-label="Add model">
+                                  Add
+                                </button>
                               </div>
                               <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                 {t('options_models_providers_models_instructions')}
@@ -1506,12 +1701,33 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                 <input
                                   id={`${providerId}-models-input`}
                                   type="text"
-                                  placeholder=""
+                                  placeholder="Enter model name..."
                                   value={newModelInputs[providerId] || ''}
                                   onChange={e => handleModelsChange(providerId, e.target.value)}
                                   onKeyDown={e => handleKeyDown(e, providerId)}
-                                  className={`min-w-[150px] flex-1 border-none text-sm ${isDarkMode ? 'bg-transparent text-gray-200' : 'bg-transparent text-gray-700'} p-1 outline-none`}
+                                  className={`min-w-[150px] flex-1 border-none text-sm ${isDarkMode ? 'bg-transparent text-gray-200 placeholder:text-gray-500' : 'bg-transparent text-gray-700 placeholder:text-gray-400'} p-1 outline-none`}
                                 />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const value = newModelInputs[providerId] || '';
+                                    if (value.trim()) {
+                                      addModel(providerId, value.trim());
+                                    }
+                                  }}
+                                  disabled={!newModelInputs[providerId]?.trim()}
+                                  className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
+                                    newModelInputs[providerId]?.trim()
+                                      ? isDarkMode
+                                        ? 'bg-blue-600 text-white hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-400'
+                                        : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
+                                      : isDarkMode
+                                        ? 'bg-slate-600 text-gray-400 cursor-not-allowed'
+                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                  }`}
+                                  aria-label="Add model">
+                                  Add
+                                </button>
                               </div>
                               <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                                 {t('options_models_providers_models_instructions')}

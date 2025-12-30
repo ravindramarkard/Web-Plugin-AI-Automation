@@ -16,7 +16,7 @@ const defaultFavoritePrompts = [
   {
     title: '🌟 Star us on GitHub!',
     content:
-      "Open the Nanobrowser repository at https://github.com/nanobrowser/nanobrowser and check if you've already starred it. If not, please support us by giving us a star!",
+      "Open the AITestGen repository at https://github.com/nanobrowser/nanobrowser and check if you've already starred it. If not, please support us by giving us a star!",
   },
 ];
 
