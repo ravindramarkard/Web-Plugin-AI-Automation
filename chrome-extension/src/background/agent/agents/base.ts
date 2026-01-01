@@ -220,7 +220,7 @@ export abstract class BaseAgent<T extends z.ZodType, M = unknown> {
       const extractedJson = extractJsonFromModelOutput(cleanedContent);
       return this.validateModelOutput(extractedJson);
     } catch (error) {
-      logger.warning('manuallyParseResponse failed', error);
+      logger.info('manuallyParseResponse failed', error);
       return undefined;
     }
   }

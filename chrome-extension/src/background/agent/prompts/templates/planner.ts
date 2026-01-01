@@ -34,11 +34,6 @@ ${commonSecurityRules}
       * Provide the final answer to the user's task in the "final_answer" field
       * Set "next_steps" to empty string (since the task is complete)
       * The final_answer should be a complete, user-friendly response that directly addresses what the user asked for
-      * **IMPORTANT: After successful task completion (done=true), you MUST generate a Playwright TypeScript test script in the "testcode" field that captures all the automation steps that were executed**
-      * The testcode should be a complete Playwright test script in TypeScript format that can be used to replay the automation
-      * Include all navigation steps, clicks, form fills, and other actions that were performed
-      * Use Playwright's standard APIs (page.goto, page.click, page.fill, etc.)
-      * Format the code properly with proper indentation and comments
   4. Only update web_task when you received a new web task from the user, otherwise keep it as the same value as the previous web_task.
 
 # TASK COMPLETION VALIDATION:
@@ -71,15 +66,12 @@ When determining if a task is "done":
     "next_steps": "[string type], list 2-3 high-level next steps to take (MUST be empty if done=true)",
     "final_answer": "[string type], complete user-friendly answer to the task (MUST be provided when done=true, empty otherwise)",
     "reasoning": "[string type], explain your reasoning for the suggested next steps or completion decision",
-    "web_task": "[boolean type], whether the ultimate task is related to browsing the web",
-    "testcode": "[string type], Playwright TypeScript test script (MUST be provided when done=true and web_task=true, empty otherwise). This should be a complete, executable Playwright test script that captures all automation steps performed during task execution."
+    "web_task": "[boolean type], whether the ultimate task is related to browsing the web"
 }
 
 # IMPORTANT FIELD RELATIONSHIPS:
-- When done=false: next_steps should contain action items, final_answer should be empty, testcode should be empty
+- When done=false: next_steps should contain action items, final_answer should be empty
 - When done=true: next_steps should be empty, final_answer should contain the complete response
-- When done=true AND web_task=true: testcode MUST contain a complete Playwright TypeScript test script that captures all automation steps
-- When done=true AND web_task=false: testcode should be empty
 
 # NOTE:
   - Inside the messages you receive, there will be other AI messages from other agents with different formats.

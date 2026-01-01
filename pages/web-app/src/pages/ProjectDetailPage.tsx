@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   FiMessageSquare,
@@ -22,18 +22,26 @@ import {
   FiFolder,
   FiChevronLeft,
   FiChevronRight,
+  FiChevronDown,
+  FiChevronUp,
   FiFile,
+  FiDownload,
+  FiSave,
+  FiX,
+  FiBarChart2,
+  FiGlobe,
 } from 'react-icons/fi';
 import { projectStorage, type Project } from '../lib/projectStorage';
-import { testSuiteStorage, type TestSuite, type TestCase } from '../lib/testSuiteStorage';
+import { testSuiteStorage, type TestSuite, type TestCase, type TestSuiteSchedule } from '../lib/testSuiteStorage';
 import SettingsPage from './SettingsPage';
+import EnvironmentSettings from '../components/EnvironmentSettings';
 import PromptsTab from '../components/PromptsTab';
 import ChatView from '../components/ChatView';
 import GeneratingNotification from '../components/GeneratingNotification';
 import { webService } from '../lib/webService';
 import { ExecutionState } from '../types/event';
 
-type TabType = 'prompt' | 'test-suite' | 'report' | 'settings';
+type TabType = 'prompt' | 'test-suite' | 'report' | 'settings' | 'environments';
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -45,6 +53,8 @@ export default function ProjectDetailPage() {
   const [testCases, setTestCases] = useState<TestCase[]>([]);
   const [showCreateSuiteModal, setShowCreateSuiteModal] = useState(false);
   const [showCreateCaseModal, setShowCreateCaseModal] = useState(false);
+  const [showSchedulerModal, setShowSchedulerModal] = useState(false);
+  const [schedulingSuite, setSchedulingSuite] = useState<TestSuite | null>(null);
   const [editingSuite, setEditingSuite] = useState<TestSuite | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -54,7 +64,9 @@ export default function ProjectDetailPage() {
   const [selectedTestCasesForSuite, setSelectedTestCasesForSuite] = useState<Set<string>>(new Set());
   const [availableTestCases, setAvailableTestCases] = useState<TestCase[]>([]);
   const [testsInSuite, setTestsInSuite] = useState<TestCase[]>([]);
-  const [caseFormData, setCaseFormData] = useState({ name: '', description: '', prompt: '' });
+  const [caseFormData, setCaseFormData] = useState({ name: '', description: '', prompt: '', playwrightCode: '' });
+  const [editingTestCase, setEditingTestCase] = useState<TestCase | null>(null);
+  const [viewingPrompt, setViewingPrompt] = useState<{ testCase: TestCase } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingMessage, setGeneratingMessage] = useState('AI Generating script for you');
 
@@ -327,9 +339,41 @@ export default function ProjectDetailPage() {
       });
       await loadTestCases(selectedTestSuite);
       setShowCreateCaseModal(false);
-      setCaseFormData({ name: '', description: '', prompt: '' });
+      setCaseFormData({ name: '', description: '', prompt: '', playwrightCode: '' });
+      setEditingTestCase(null);
     } catch (error) {
       console.error('Failed to create test case:', error);
+    }
+  };
+
+  const handleEditCase = (testCase: TestCase) => {
+    setEditingTestCase(testCase);
+    setCaseFormData({
+      name: testCase.name,
+      description: testCase.description,
+      prompt: testCase.plannerDescription || testCase.prompt,
+      playwrightCode: testCase.playwrightCode || '',
+    });
+    setShowCreateCaseModal(true);
+  };
+
+  const handleUpdateCase = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingTestCase || !caseFormData.name.trim() || !caseFormData.prompt.trim()) return;
+
+    try {
+      await testSuiteStorage.updateTestCase(editingTestCase.id, {
+        name: caseFormData.name,
+        description: caseFormData.description,
+        prompt: caseFormData.prompt,
+        playwrightCode: caseFormData.playwrightCode,
+      });
+      await loadTestCases(selectedTestSuite!);
+      setShowCreateCaseModal(false);
+      setEditingTestCase(null);
+      setCaseFormData({ name: '', description: '', prompt: '', playwrightCode: '' });
+    } catch (error) {
+      console.error('Failed to update test case:', error);
     }
   };
 
@@ -449,6 +493,13 @@ export default function ProjectDetailPage() {
             onClick={() => setActiveTab('settings')}
             isDarkMode={isDarkMode}
           />
+          <TabButton
+            icon={FiGlobe}
+            label="Environment Settings"
+            isActive={activeTab === 'environments'}
+            onClick={() => setActiveTab('environments')}
+            isDarkMode={isDarkMode}
+          />
         </div>
       </div>
 
@@ -493,8 +544,23 @@ export default function ProjectDetailPage() {
             }}
             onEditSuite={handleEditSuite}
             onDeleteSuite={handleDeleteSuite}
-            onCreateCase={() => setShowCreateCaseModal(true)}
+            onSchedulerSuite={suite => {
+              setSchedulingSuite(suite);
+              setShowSchedulerModal(true);
+            }}
+            onRunSuite={suite => {
+              // TODO: Implement run suite functionality
+              console.log('Run test suite:', suite);
+              alert(`Running test suite "${suite.name}" - Coming soon!`);
+            }}
+            onCreateCase={() => {
+              setEditingTestCase(null);
+              setCaseFormData({ name: '', description: '', prompt: '', playwrightCode: '' });
+              setShowCreateCaseModal(true);
+            }}
+            onEditCase={handleEditCase}
             onViewPlaywrightCode={testCase => setViewingPlaywrightCode({ testCase })}
+            onViewPrompt={testCase => setViewingPrompt({ testCase })}
             isDarkMode={isDarkMode}
           />
         )}
@@ -504,6 +570,12 @@ export default function ProjectDetailPage() {
         {activeTab === 'settings' && (
           <div className="h-full overflow-y-auto">
             <SettingsPage projectId={projectId} />
+          </div>
+        )}
+
+        {activeTab === 'environments' && (
+          <div className="h-full overflow-y-auto">
+            <EnvironmentSettings projectId={projectId} isDarkMode={isDarkMode} />
           </div>
         )}
       </div>
@@ -538,14 +610,485 @@ export default function ProjectDetailPage() {
         <CreateCaseModal
           formData={caseFormData}
           setFormData={setCaseFormData}
-          onSubmit={handleCreateCase}
+          onSubmit={editingTestCase ? handleUpdateCase : handleCreateCase}
           onClose={() => {
             setShowCreateCaseModal(false);
-            setCaseFormData({ name: '', description: '', prompt: '' });
+            setCaseFormData({ name: '', description: '', prompt: '', playwrightCode: '' });
+            setEditingTestCase(null);
+          }}
+          editingTestCase={editingTestCase}
+          isDarkMode={isDarkMode}
+        />
+      )}
+
+      {/* Scheduler Modal */}
+      {showSchedulerModal && schedulingSuite && (
+        <SchedulerModal
+          suite={schedulingSuite}
+          onClose={() => {
+            setShowSchedulerModal(false);
+            setSchedulingSuite(null);
+          }}
+          onSave={async scheduleData => {
+            await testSuiteStorage.updateTestSuite(schedulingSuite.id, { schedule: scheduleData });
+            await loadTestSuites();
+            setShowSchedulerModal(false);
+            setSchedulingSuite(null);
+          }}
+          onDelete={async () => {
+            await testSuiteStorage.updateTestSuite(schedulingSuite.id, { schedule: undefined });
+            await loadTestSuites();
+            setShowSchedulerModal(false);
+            setSchedulingSuite(null);
           }}
           isDarkMode={isDarkMode}
         />
       )}
+
+      {/* View Playwright Code Modal */}
+      {viewingPlaywrightCode && (
+        <ViewCodeModal
+          testCase={viewingPlaywrightCode.testCase}
+          onClose={() => setViewingPlaywrightCode(null)}
+          isDarkMode={isDarkMode}
+        />
+      )}
+
+      {/* View Prompt Modal */}
+      {viewingPrompt && (
+        <ViewPromptModal
+          testCase={viewingPrompt.testCase}
+          onClose={() => setViewingPrompt(null)}
+          isDarkMode={isDarkMode}
+        />
+      )}
+    </div>
+  );
+}
+
+interface ViewCodeModalProps {
+  testCase: TestCase;
+  onClose: () => void;
+  isDarkMode: boolean;
+}
+
+function ViewCodeModal({ testCase, onClose, isDarkMode }: ViewCodeModalProps) {
+  const [codeLineNumbers, setCodeLineNumbers] = useState<string[]>([]);
+  const codeTextareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const lineNumbersRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (testCase.playwrightCode) {
+      const lines = testCase.playwrightCode.split('\n');
+      setCodeLineNumbers(lines.map((_, i) => String(i + 1)));
+    } else {
+      setCodeLineNumbers([]);
+    }
+  }, [testCase.playwrightCode]);
+
+  const handleCodeScroll = () => {
+    if (codeTextareaRef.current && lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = codeTextareaRef.current.scrollTop;
+    }
+  };
+
+  const handleCopyCode = () => {
+    if (testCase.playwrightCode) {
+      navigator.clipboard.writeText(testCase.playwrightCode);
+      alert('Playwright code copied to clipboard!');
+    }
+  };
+
+  const handleDownloadCode = () => {
+    if (testCase.playwrightCode) {
+      const blob = new Blob([testCase.playwrightCode], { type: 'text/typescript' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${testCase.name}.spec.ts`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div
+        className={`w-full max-w-4xl rounded-lg border p-6 shadow-xl ${
+          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
+        }`}>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Playwright Code</h2>
+            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testCase.name}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleCopyCode}
+              className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                isDarkMode
+                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}>
+              <FiCopy size={14} />
+              Copy
+            </button>
+            <button
+              type="button"
+              onClick={handleDownloadCode}
+              className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                isDarkMode
+                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}>
+              <FiDownload size={14} />
+              Download
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className={`rounded p-1.5 transition-colors ${
+                isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
+              }`}>
+              <FiX size={20} />
+            </button>
+          </div>
+        </div>
+
+        <div className="relative">
+          {/* Line Numbers */}
+          {testCase.playwrightCode && (
+            <div
+              ref={lineNumbersRef}
+              className={`absolute left-0 top-0 h-full overflow-hidden border-r pr-2 text-right font-mono text-xs ${
+                isDarkMode ? 'border-slate-600 text-gray-500' : 'border-gray-300 text-gray-400'
+              }`}
+              style={{ width: '40px', paddingTop: '12px', paddingBottom: '12px' }}>
+              {codeLineNumbers.map((line, idx) => (
+                <div key={idx} className="leading-6">
+                  {line}
+                </div>
+              ))}
+            </div>
+          )}
+          {/* Code Display */}
+          <textarea
+            ref={codeTextareaRef}
+            readOnly
+            value={testCase.playwrightCode || 'No Playwright code available'}
+            onScroll={handleCodeScroll}
+            rows={20}
+            className={`w-full rounded-lg border px-3 py-2 font-mono text-sm ${
+              isDarkMode ? 'border-slate-600 bg-slate-900 text-white' : 'border-gray-300 bg-gray-50 text-gray-900'
+            } ${testCase.playwrightCode ? 'pl-12' : ''} focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            style={{ resize: 'vertical' }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface ViewPromptModalProps {
+  testCase: TestCase;
+  onClose: () => void;
+  isDarkMode: boolean;
+}
+
+function ViewPromptModal({ testCase, onClose, isDarkMode }: ViewPromptModalProps) {
+  const promptText = testCase.plannerDescription || testCase.prompt || 'No automation prompt available';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div
+        className={`w-full max-w-3xl rounded-lg border p-6 shadow-xl ${
+          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
+        }`}>
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Automation Prompt
+            </h2>
+            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testCase.name}</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`rounded p-1.5 transition-colors ${
+              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
+            }`}>
+            <FiX size={20} />
+          </button>
+        </div>
+
+        <div className="mb-4">
+          <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            Prompt Details
+          </label>
+          <textarea
+            readOnly
+            value={promptText}
+            rows={12}
+            className={`w-full rounded-lg border px-3 py-2 text-sm ${
+              isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-gray-50 text-gray-900'
+            } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          />
+        </div>
+
+        {testCase.description && (
+          <div className="mb-4">
+            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Description
+            </label>
+            <p
+              className={`rounded-lg border px-3 py-2 text-sm ${
+                isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-300' : 'border-gray-300 bg-gray-50 text-gray-700'
+              }`}>
+              {testCase.description}
+            </p>
+          </div>
+        )}
+
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={onClose}
+            className={`rounded-lg px-4 py-2 font-medium transition-colors ${
+              isDarkMode
+                ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}>
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+interface SchedulerModalProps {
+  suite: TestSuite;
+  onClose: () => void;
+  onSave: (schedule: TestSuiteSchedule) => Promise<void>;
+  onDelete: () => Promise<void>;
+  isDarkMode: boolean;
+}
+
+function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: SchedulerModalProps) {
+  const [cronExpression, setCronExpression] = useState(suite.schedule?.cronExpression || '0 9 * * 1-5');
+  const [environment, setEnvironment] = useState(suite.schedule?.environment || '');
+  const [enabled, setEnabled] = useState(suite.schedule?.enabled ?? true);
+  const [headless, setHeadless] = useState(suite.schedule?.headless ?? true);
+  const [workers, setWorkers] = useState(suite.schedule?.workers || 1);
+  const [environments] = useState<string[]>([
+    'Bank App Testing -Dev ()',
+    'Bank App Testing -Staging ()',
+    'Bank App Testing -Prod ()',
+  ]);
+
+  const cronExamples = [
+    { expression: '0 9 * * 1-5', description: 'Every weekday at 9:00 AM' },
+    { expression: '0 */2 * * *', description: 'Every 2 hours' },
+    { expression: '0 0 * * 0', description: 'Every Sunday at midnight' },
+    { expression: '30 14 * * *', description: 'Every day at 2:30 PM' },
+  ];
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!cronExpression.trim() || !environment.trim()) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    const schedule: TestSuiteSchedule = {
+      cronExpression: cronExpression.trim(),
+      environment,
+      enabled,
+      headless,
+      workers: Math.max(1, Math.min(10, workers)),
+      createdAt: suite.schedule?.createdAt || Date.now(),
+      updatedAt: Date.now(),
+    };
+
+    await onSave(schedule);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+      <div
+        className={`w-full max-w-2xl rounded-lg border p-6 shadow-xl ${
+          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
+        }`}>
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FiClock size={20} className={isDarkMode ? 'text-gray-300' : 'text-gray-700'} />
+            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Edit Schedule</h2>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`rounded p-1.5 transition-colors ${
+              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
+            }`}>
+            <FiX size={20} />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit}>
+          {/* Cron Expression */}
+          <div className="mb-4">
+            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Cron Expression *
+            </label>
+            <input
+              type="text"
+              required
+              value={cronExpression}
+              onChange={e => setCronExpression(e.target.value)}
+              className={`w-full rounded-lg border px-3 py-2 ${
+                isDarkMode
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              placeholder="0 9 * * 1-5"
+            />
+            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              Schedule when to run the test suite (minute hour day month weekday)
+            </p>
+            <div className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              {cronExamples.map((example, idx) => (
+                <div key={idx} className="text-xs">
+                  <code className={`rounded px-1 py-0.5 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-100'}`}>
+                    {example.expression}
+                  </code>{' '}
+                  - {example.description}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Environment */}
+          <div className="mb-4">
+            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Environment *
+            </label>
+            <select
+              required
+              value={environment}
+              onChange={e => setEnvironment(e.target.value)}
+              className={`w-full rounded-lg border px-3 py-2 ${
+                isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-white text-gray-900'
+              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
+              <option value="">Select environment</option>
+              {environments.map(env => (
+                <option key={env} value={env}>
+                  {env}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Enable Schedule */}
+          <div className="mb-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={enabled}
+                onChange={e => setEnabled(e.target.checked)}
+                className="rounded border-gray-300"
+              />
+              <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Enable Schedule
+              </span>
+            </label>
+            <p className={`ml-6 mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              Uncheck to disable the schedule without deleting it
+            </p>
+          </div>
+
+          {/* Headless Mode */}
+          <div className="mb-4">
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={headless}
+                onChange={e => setHeadless(e.target.checked)}
+                className="rounded border-gray-300"
+              />
+              <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Run in Headless Mode
+              </span>
+            </label>
+            <p className={`ml-6 mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              Run tests without opening browser windows
+            </p>
+          </div>
+
+          {/* Number of Workers */}
+          <div className="mb-6">
+            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              Number of Workers
+            </label>
+            <input
+              type="number"
+              min="1"
+              max="10"
+              value={workers}
+              onChange={e => setWorkers(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
+              className={`w-full rounded-lg border px-3 py-2 ${
+                isDarkMode
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            />
+            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              Number of parallel test workers (1-10)
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex items-center justify-between">
+            <div>
+              {suite.schedule && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (confirm('Are you sure you want to delete this schedule?')) {
+                      await onDelete();
+                    }
+                  }}
+                  className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                    isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-600 text-white hover:bg-red-700'
+                  }`}>
+                  <FiX size={16} />
+                  Delete Schedule
+                </button>
+              )}
+            </div>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className={`rounded-lg px-4 py-2 font-medium transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}>
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
+                <FiCheckCircle size={16} />
+                Update Schedule
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
@@ -583,8 +1126,14 @@ interface TestSuiteTabProps {
   onCreateSuite: () => void;
   onEditSuite: (suite: TestSuite) => void;
   onDeleteSuite: (suiteId: string) => void;
-  onCreateCase: () => void;
+  onSchedulerSuite?: (suite: TestSuite) => void;
+  onRunSuite?: (suite: TestSuite) => void;
   onViewPlaywrightCode?: (testCase: TestCase) => void;
+  onViewPrompt?: (testCase: TestCase) => void;
+  onCreateCase: () => void;
+  onEditCase?: (testCase: TestCase) => void;
+  onViewPlaywrightCode?: (testCase: TestCase) => void;
+  onViewPrompt?: (testCase: TestCase) => void;
   isDarkMode: boolean;
 }
 
@@ -597,8 +1146,12 @@ function TestSuiteTab({
   onCreateSuite,
   onEditSuite,
   onDeleteSuite,
+  onSchedulerSuite,
+  onRunSuite,
   onCreateCase,
+  onEditCase,
   onViewPlaywrightCode,
+  onViewPrompt,
   isDarkMode,
 }: TestSuiteTabProps) {
   const [view, setView] = useState<'overview' | 'test-suites' | 'collections' | 'all-tests' | 'tags'>('all-tests');
@@ -727,9 +1280,21 @@ function TestSuiteTab({
             className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
             <div className="flex items-center justify-between mb-4">
               <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                All Generated Tests
+                Test Cases{' '}
+                {testCases.length > 0 && (
+                  <span className="text-base font-normal text-gray-500">({testCases.length})</span>
+                )}
               </h2>
               <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={onCreateCase}
+                  className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
+                    isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
+                  }`}>
+                  <FiPlus size={18} />
+                  Add Test Case
+                </button>
                 <button
                   type="button"
                   onClick={handleRefresh}
@@ -812,23 +1377,23 @@ function TestSuiteTab({
                   </th>
                   <th
                     className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    TEST NAME
+                    NAME
                   </th>
                   <th
                     className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    PROJECT MODEL
+                    DESCRIPTION
                   </th>
                   <th
                     className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    TYPE
+                    CODE
                   </th>
                   <th
                     className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    TAGS
+                    ENVIRONMENT
                   </th>
                   <th
                     className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    CREATED TIMESTAMP
+                    TAG
                   </th>
                   <th
                     className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -865,37 +1430,60 @@ function TestSuiteTab({
                           />
                         </td>
                         <td className="px-4 py-3">
-                          <div>
-                            <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                              {testCase.name}
-                            </div>
-                            <div className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                              {testCase.id}
-                            </div>
+                          <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                            {testCase.name}
                           </div>
                         </td>
-                        <td className={`px-4 py-3 ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>Default Model</td>
+                        <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          {testCase.description || '-'}
+                        </td>
+                        <td className="px-4 py-3">
+                          {testCase.playwrightCode ? (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                isDarkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700'
+                              }`}>
+                              Available
+                            </span>
+                          ) : (
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                isDarkMode ? 'bg-gray-900/50 text-gray-400' : 'bg-gray-100 text-gray-700'
+                              }`}>
+                              -
+                            </span>
+                          )}
+                        </td>
+                        <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          {testCase.baseUrl || '-'}
+                        </td>
                         <td className="px-4 py-3">
                           <span
                             className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                              testType === 'ui' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+                              testType === 'ui'
+                                ? isDarkMode
+                                  ? 'bg-red-900/50 text-red-400'
+                                  : 'bg-red-100 text-red-800'
+                                : isDarkMode
+                                  ? 'bg-blue-900/50 text-blue-400'
+                                  : 'bg-blue-100 text-blue-800'
                             }`}>
                             {testType.toUpperCase()}
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span
-                            className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                              isDarkMode ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-800'
-                            }`}>
-                            {testType}
-                          </span>
-                        </td>
-                        <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {new Date(testCase.createdAt).toLocaleString()}
-                        </td>
-                        <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
+                            {onEditCase && (
+                              <button
+                                type="button"
+                                onClick={() => onEditCase(testCase)}
+                                className={`rounded p-1.5 transition-colors ${
+                                  isDarkMode ? 'text-blue-400 hover:bg-slate-700' : 'text-blue-600 hover:bg-gray-100'
+                                }`}
+                                title="Edit test case">
+                                <FiEdit2 size={16} />
+                              </button>
+                            )}
                             <button
                               type="button"
                               onClick={() => onRunCase(testCase)}
@@ -905,26 +1493,12 @@ function TestSuiteTab({
                               title="Run test">
                               <FiPlay size={16} />
                             </button>
-                            <button
-                              type="button"
-                              onClick={() => {
-                                // View test details - you can implement a modal here
-                                console.log('View test:', testCase);
-                              }}
-                              className={`rounded p-1.5 transition-colors ${
-                                isDarkMode ? 'text-blue-400 hover:bg-slate-700' : 'text-blue-600 hover:bg-gray-100'
-                              }`}
-                              title="View test">
-                              <FiEye size={16} />
-                            </button>
                             {testCase.playwrightCode && (
                               <button
                                 type="button"
                                 onClick={() => {
                                   if (onViewPlaywrightCode) {
                                     onViewPlaywrightCode(testCase);
-                                  } else {
-                                    console.log('View Playwright code:', testCase.playwrightCode);
                                   }
                                 }}
                                 className={`rounded p-1.5 transition-colors ${
@@ -992,11 +1566,44 @@ function TestSuiteTab({
                       {suite.testCases.length} test cases
                     </div>
                   </button>
-                  {/* Edit and Delete buttons - show on hover */}
+                  {/* Action buttons - show on hover */}
                   <div
                     className={`absolute right-2 top-2 flex gap-1 opacity-0 transition-opacity group-hover:opacity-100 ${
                       selectedTestSuite === suite.id ? 'opacity-100' : ''
                     }`}>
+                    {onSchedulerSuite && (
+                      <button
+                        type="button"
+                        onClick={e => {
+                          e.stopPropagation();
+                          onSchedulerSuite(suite);
+                        }}
+                        className={`rounded p-1.5 transition-colors ${
+                          isDarkMode
+                            ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
+                            : 'bg-white text-gray-600 hover:bg-gray-50'
+                        } shadow-sm`}
+                        title="Schedule test suite">
+                        <FiClock size={14} />
+                      </button>
+                    )}
+                    {onRunSuite && (
+                      <button
+                        type="button"
+                        onClick={e => {
+                          e.stopPropagation();
+                          onRunSuite(suite);
+                        }}
+                        className={`rounded px-2 py-1 transition-colors ${
+                          isDarkMode
+                            ? 'bg-green-600 text-white hover:bg-green-700'
+                            : 'bg-green-600 text-white hover:bg-green-700'
+                        } shadow-sm flex items-center gap-1`}
+                        title="Run test suite">
+                        <FiBarChart2 size={14} />
+                        <span className="text-xs font-medium">RUN</span>
+                      </button>
+                    )}
                     <button
                       type="button"
                       onClick={e => {
@@ -1032,43 +1639,212 @@ function TestSuiteTab({
           </div>
 
           {/* Test Cases Content */}
-          <div className={`flex-1 overflow-y-auto p-6 ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+          <div className={`flex-1 overflow-hidden flex flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
             {selectedTestSuite ? (
               <>
-                <div className="mb-4 flex items-center justify-between">
-                  <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Cases</h2>
-                  <button
-                    type="button"
-                    onClick={onCreateCase}
-                    className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                      isDarkMode
-                        ? 'bg-blue-600 text-white hover:bg-blue-700'
-                        : 'bg-blue-600 text-white hover:bg-blue-700'
-                    }`}>
-                    <FiPlus size={18} />
-                    Add Test Case
-                  </button>
-                </div>
-                {testCases.length === 0 ? (
-                  <div className={`py-12 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    <p>No test cases yet</p>
+                {/* Test Cases Header */}
+                <div
+                  className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+                  <div className="flex items-center justify-between">
+                    <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                      Test Cases{' '}
+                      {testCases.length > 0 && (
+                        <span className="text-base font-normal text-gray-500">({testCases.length})</span>
+                      )}
+                    </h2>
                     <button
                       type="button"
                       onClick={onCreateCase}
-                      className={`mt-2 text-sm font-medium ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
-                      Create your first test case
+                      className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
+                        isDarkMode
+                          ? 'bg-blue-600 text-white hover:bg-blue-700'
+                          : 'bg-blue-600 text-white hover:bg-blue-700'
+                      }`}>
+                      <FiPlus size={18} />
+                      Add Test Case
                     </button>
                   </div>
+                </div>
+
+                {/* Test Cases Table */}
+                {testCases.length === 0 ? (
+                  <div
+                    className={`flex-1 flex items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <div className="text-center">
+                      <p>No test cases yet</p>
+                      <button
+                        type="button"
+                        onClick={onCreateCase}
+                        className={`mt-2 text-sm font-medium ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                        Create your first test case
+                      </button>
+                    </div>
+                  </div>
                 ) : (
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                    {testCases.map(testCase => (
-                      <TestCaseCard
-                        key={testCase.id}
-                        testCase={testCase}
-                        onRun={() => onRunCase(testCase)}
-                        isDarkMode={isDarkMode}
-                      />
-                    ))}
+                  <div className="flex-1 overflow-auto">
+                    <table className={`w-full ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
+                      <thead className={`sticky top-0 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
+                        <tr>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            NAME
+                          </th>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            DESCRIPTION
+                          </th>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            CODE
+                          </th>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            AUTOMATION PROMPT
+                          </th>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            ENVIRONMENT
+                          </th>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            TAG
+                          </th>
+                          <th
+                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                            ACTIONS
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {testCases.map(testCase => {
+                          const testType =
+                            testCase.prompt?.toLowerCase().includes('api') ||
+                            testCase.description?.toLowerCase().includes('api')
+                              ? 'api'
+                              : 'ui';
+                          return (
+                            <tr
+                              key={testCase.id}
+                              className={`border-b ${isDarkMode ? 'border-slate-700 hover:bg-slate-800' : 'border-gray-200 hover:bg-gray-50'}`}>
+                              <td className="px-4 py-3">
+                                <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                                  {testCase.name}
+                                </div>
+                              </td>
+                              <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                {testCase.description || '-'}
+                              </td>
+                              <td className="px-4 py-3">
+                                {testCase.playwrightCode ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => onViewPlaywrightCode?.(testCase)}
+                                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
+                                      isDarkMode
+                                        ? 'bg-green-900/50 text-green-400 hover:bg-green-900/70'
+                                        : 'bg-green-100 text-green-700 hover:bg-green-200'
+                                    }`}>
+                                    Available
+                                    <FiEye size={12} />
+                                  </button>
+                                ) : (
+                                  <span
+                                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                      isDarkMode ? 'bg-gray-900/50 text-gray-400' : 'bg-gray-100 text-gray-700'
+                                    }`}>
+                                    -
+                                  </span>
+                                )}
+                              </td>
+                              <td className="px-4 py-3">
+                                {testCase.prompt || testCase.plannerDescription ? (
+                                  <button
+                                    type="button"
+                                    onClick={() => onViewPrompt?.(testCase)}
+                                    className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
+                                      isDarkMode
+                                        ? 'bg-blue-900/50 text-blue-400 hover:bg-blue-900/70'
+                                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                                    }`}>
+                                    View Steps
+                                    <FiEye size={12} />
+                                  </button>
+                                ) : (
+                                  <span
+                                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                      isDarkMode ? 'bg-gray-900/50 text-gray-400' : 'bg-gray-100 text-gray-700'
+                                    }`}>
+                                    -
+                                  </span>
+                                )}
+                              </td>
+                              <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                                {testCase.baseUrl || '-'}
+                              </td>
+                              <td className="px-4 py-3">
+                                <span
+                                  className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
+                                    testType === 'ui'
+                                      ? isDarkMode
+                                        ? 'bg-red-900/50 text-red-400'
+                                        : 'bg-red-100 text-red-800'
+                                      : isDarkMode
+                                        ? 'bg-blue-900/50 text-blue-400'
+                                        : 'bg-blue-100 text-blue-800'
+                                  }`}>
+                                  {testType.toUpperCase()}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3">
+                                <div className="flex items-center gap-2">
+                                  {onEditCase && (
+                                    <button
+                                      type="button"
+                                      onClick={() => onEditCase(testCase)}
+                                      className={`rounded p-1.5 transition-colors ${
+                                        isDarkMode
+                                          ? 'text-blue-400 hover:bg-slate-700'
+                                          : 'text-blue-600 hover:bg-gray-100'
+                                      }`}
+                                      title="Edit test case">
+                                      <FiEdit2 size={16} />
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={() => onRunCase(testCase)}
+                                    className={`rounded p-1.5 transition-colors ${
+                                      isDarkMode
+                                        ? 'text-green-400 hover:bg-slate-700'
+                                        : 'text-green-600 hover:bg-gray-100'
+                                    }`}
+                                    title="Run test">
+                                    <FiPlay size={16} />
+                                  </button>
+                                  {testCase.playwrightCode && (
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        if (onViewPlaywrightCode) {
+                                          onViewPlaywrightCode(testCase);
+                                        }
+                                      }}
+                                      className={`rounded p-1.5 transition-colors ${
+                                        isDarkMode
+                                          ? 'text-purple-400 hover:bg-slate-700'
+                                          : 'text-purple-600 hover:bg-gray-100'
+                                      }`}
+                                      title="View Playwright code">
+                                      <FiCode size={16} />
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
                   </div>
                 )}
               </>
@@ -1262,7 +2038,9 @@ interface ReportTabProps {
 }
 
 function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
-  // Load all test cases for all suites
+  const [selectedSuiteId, setSelectedSuiteId] = useState<string | null>(
+    testSuites.length > 0 ? testSuites[0].id : null,
+  );
   const [allTestCases, setAllTestCases] = useState<TestCase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -1285,13 +2063,25 @@ function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
     loadAllCases();
   }, [testSuites]);
 
-  const stats = {
+  // Overall stats across all suites
+  const overallStats = {
     total: allTestCases.length,
     passed: allTestCases.filter(c => c.status === 'pass').length,
     failed: allTestCases.filter(c => c.status === 'fail').length,
     pending: allTestCases.filter(c => c.status === 'pending').length,
-    running: allTestCases.filter(c => c.status === 'running').length,
   };
+
+  // Stats for selected suite
+  const selectedSuite = testSuites.find(s => s.id === selectedSuiteId);
+  const selectedSuiteCases = selectedSuite ? allTestCases.filter(c => c.testSuiteId === selectedSuiteId) : [];
+  const suiteStats = selectedSuite
+    ? {
+        total: selectedSuiteCases.length,
+        passed: selectedSuiteCases.filter(c => c.status === 'pass').length,
+        failed: selectedSuiteCases.filter(c => c.status === 'fail').length,
+        pending: selectedSuiteCases.filter(c => c.status === 'pending').length,
+      }
+    : { total: 0, passed: 0, failed: 0, pending: 0 };
 
   if (isLoading) {
     return (
@@ -1305,22 +2095,75 @@ function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
   }
 
   return (
-    <div className={`h-full overflow-y-auto p-6 ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
-      <h2 className={`mb-6 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Report</h2>
-
-      {/* Stats */}
-      <div className="mb-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-        <StatBox label="Total" value={stats.total} color="blue" isDarkMode={isDarkMode} />
-        <StatBox label="Passed" value={stats.passed} color="green" isDarkMode={isDarkMode} />
-        <StatBox label="Failed" value={stats.failed} color="red" isDarkMode={isDarkMode} />
-        <StatBox label="Pending" value={stats.pending} color="gray" isDarkMode={isDarkMode} />
+    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+      <div
+        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+        <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Report</h2>
       </div>
 
-      {/* Test Cases by Suite */}
-      <div className="space-y-4">
-        {testSuites.map(suite => (
-          <SuiteReport key={suite.id} suite={suite} isDarkMode={isDarkMode} />
-        ))}
+      {/* Overall Stats */}
+      <div
+        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+        <h3 className={`mb-3 text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          Overall Statistics
+        </h3>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <StatBox label="Total" value={overallStats.total} color="blue" isDarkMode={isDarkMode} />
+          <StatBox label="Passed" value={overallStats.passed} color="green" isDarkMode={isDarkMode} />
+          <StatBox label="Failed" value={overallStats.failed} color="red" isDarkMode={isDarkMode} />
+          <StatBox label="Pending" value={overallStats.pending} color="gray" isDarkMode={isDarkMode} />
+        </div>
+      </div>
+
+      {/* Suite Tabs */}
+      <div className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6`}>
+        <div className="flex gap-1 overflow-x-auto">
+          {testSuites.map(suite => {
+            const suiteCases = allTestCases.filter(c => c.testSuiteId === suite.id);
+            const isActive = selectedSuiteId === suite.id;
+            return (
+              <button
+                key={suite.id}
+                type="button"
+                onClick={() => setSelectedSuiteId(suite.id)}
+                className={`relative flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                  isActive
+                    ? 'border-blue-500 text-blue-600'
+                    : isDarkMode
+                      ? 'border-transparent text-gray-400 hover:border-gray-600 hover:text-gray-300'
+                      : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                }`}>
+                {suite.name}
+                <span
+                  className={`rounded-full px-2 py-0.5 text-xs ${
+                    isActive
+                      ? 'bg-blue-100 text-blue-600'
+                      : isDarkMode
+                        ? 'bg-slate-700 text-gray-400'
+                        : 'bg-gray-100 text-gray-600'
+                  }`}>
+                  {suiteCases.length}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Selected Suite Report */}
+      <div className="flex-1 overflow-y-auto p-6">
+        {selectedSuite ? (
+          <SuiteReport
+            suite={selectedSuite}
+            testCases={selectedSuiteCases}
+            stats={suiteStats}
+            isDarkMode={isDarkMode}
+          />
+        ) : (
+          <div className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            <p>No test suite selected</p>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -1351,53 +2194,211 @@ function StatBox({ label, value, color, isDarkMode }: StatBoxProps) {
 
 interface SuiteReportProps {
   suite: TestSuite;
+  testCases: TestCase[];
+  stats: { total: number; passed: number; failed: number; pending: number };
   isDarkMode: boolean;
 }
 
-function SuiteReport({ suite, isDarkMode }: SuiteReportProps) {
-  const [cases, setCases] = useState<TestCase[]>([]);
+function SuiteReport({ suite, testCases, stats, isDarkMode }: SuiteReportProps) {
+  const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
 
-  useEffect(() => {
-    const loadCases = async () => {
-      const suiteCases = await testSuiteStorage.getTestCasesBySuite(suite.id);
-      setCases(suiteCases);
-    };
-    loadCases();
-  }, [suite.id]);
+  const toggleCase = (caseId: string) => {
+    const newExpanded = new Set(expandedCases);
+    if (newExpanded.has(caseId)) {
+      newExpanded.delete(caseId);
+    } else {
+      newExpanded.add(caseId);
+    }
+    setExpandedCases(newExpanded);
+  };
+
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard.writeText(code);
+    alert('Playwright code copied to clipboard!');
+  };
+
+  const handleDownloadCode = (code: string, name: string) => {
+    const blob = new Blob([code], { type: 'text/typescript' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${name}.spec.ts`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const passedPercentage = stats.total > 0 ? ((stats.passed / stats.total) * 100).toFixed(1) : '0';
+  const failedPercentage = stats.total > 0 ? ((stats.failed / stats.total) * 100).toFixed(1) : '0';
+  const pendingPercentage = stats.total > 0 ? ((stats.pending / stats.total) * 100).toFixed(1) : '0';
 
   return (
-    <div
-      className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
-      <h3 className={`mb-3 font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h3>
-      <div className="space-y-2">
-        {cases.map(testCase => (
+    <div className="space-y-6">
+      {/* Suite KPIs */}
+      <div>
+        <h3 className={`mb-3 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h3>
+        {suite.description && (
+          <p className={`mb-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{suite.description}</p>
+        )}
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div
-            key={testCase.id}
-            className={`flex items-center justify-between rounded border p-2 ${
-              isDarkMode ? 'border-slate-700 bg-slate-750' : 'border-gray-200 bg-gray-50'
-            }`}>
-            <div className="flex-1">
-              <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{testCase.name}</div>
-              <div className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testCase.prompt}</div>
-            </div>
-            <div
-              className={`text-sm font-medium ${
-                testCase.status === 'pass'
-                  ? isDarkMode
-                    ? 'text-green-400'
-                    : 'text-green-600'
-                  : testCase.status === 'fail'
-                    ? isDarkMode
-                      ? 'text-red-400'
-                      : 'text-red-600'
-                    : isDarkMode
-                      ? 'text-gray-400'
-                      : 'text-gray-600'
-              }`}>
-              {testCase.status}
+            className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+            <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total</div>
+            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              {stats.total}
             </div>
           </div>
-        ))}
+          <div
+            className={`rounded-lg border p-4 ${isDarkMode ? 'border-green-700 bg-green-900/20' : 'border-green-200 bg-green-50'}`}>
+            <div className={`text-sm font-medium ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>Passed</div>
+            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+              {stats.passed}
+            </div>
+            <div className={`mt-1 text-xs ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
+              {passedPercentage}%
+            </div>
+          </div>
+          <div
+            className={`rounded-lg border p-4 ${isDarkMode ? 'border-red-700 bg-red-900/20' : 'border-red-200 bg-red-50'}`}>
+            <div className={`text-sm font-medium ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>Failed</div>
+            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
+              {stats.failed}
+            </div>
+            <div className={`mt-1 text-xs ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>{failedPercentage}%</div>
+          </div>
+          <div
+            className={`rounded-lg border p-4 ${isDarkMode ? 'border-gray-700 bg-gray-900/20' : 'border-gray-200 bg-gray-50'}`}>
+            <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pending</div>
+            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              {stats.pending}
+            </div>
+            <div className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{pendingPercentage}%</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Test Cases List */}
+      <div className="space-y-3">
+        <h4 className={`text-md font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Cases</h4>
+        {testCases.length === 0 ? (
+          <div
+            className={`rounded-lg border p-4 text-center ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+            <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>No test cases in this suite</p>
+          </div>
+        ) : (
+          testCases.map(testCase => {
+            const isExpanded = expandedCases.has(testCase.id);
+            const statusColors = {
+              pass: isDarkMode ? 'text-green-400 bg-green-900/20' : 'text-green-600 bg-green-50',
+              fail: isDarkMode ? 'text-red-400 bg-red-900/20' : 'text-red-600 bg-red-50',
+              pending: isDarkMode ? 'text-gray-400 bg-gray-900/20' : 'text-gray-600 bg-gray-50',
+              running: isDarkMode ? 'text-blue-400 bg-blue-900/20' : 'text-blue-600 bg-blue-50',
+            };
+
+            return (
+              <div
+                key={testCase.id}
+                className={`rounded-lg border ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+                <div className="p-4">
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <h5 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                          {testCase.name}
+                        </h5>
+                        <span
+                          className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${statusColors[testCase.status]}`}>
+                          {testCase.status === 'pass' && <FiCheckCircle size={12} />}
+                          {testCase.status === 'fail' && <FiXCircle size={12} />}
+                          {testCase.status === 'pending' && <FiClock size={12} />}
+                          {testCase.status === 'running' && <FiClock size={12} />}
+                          {testCase.status}
+                        </span>
+                      </div>
+                      {testCase.description && (
+                        <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                          {testCase.description}
+                        </p>
+                      )}
+                      {testCase.plannerDescription && (
+                        <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          {testCase.plannerDescription}
+                        </p>
+                      )}
+                    </div>
+                    {testCase.playwrightCode && (
+                      <button
+                        type="button"
+                        onClick={() => toggleCase(testCase.id)}
+                        className={`ml-4 rounded p-1.5 transition-colors ${
+                          isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
+                        }`}>
+                        {isExpanded ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
+                      </button>
+                    )}
+                  </div>
+                  {testCase.errorMessage && (
+                    <div
+                      className={`mt-2 rounded bg-red-50 p-2 text-xs text-red-600 ${
+                        isDarkMode ? 'bg-red-900/20 text-red-400' : ''
+                      }`}>
+                      {testCase.errorMessage}
+                    </div>
+                  )}
+                </div>
+
+                {/* Expanded Playwright Code */}
+                {isExpanded && testCase.playwrightCode && (
+                  <div
+                    className={`border-t ${isDarkMode ? 'border-slate-700 bg-slate-900' : 'border-gray-200 bg-gray-50'} p-4`}>
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        Playwright Code
+                      </span>
+                      <div className="flex items-center gap-2">
+                        <button
+                          type="button"
+                          onClick={() => handleCopyCode(testCase.playwrightCode!)}
+                          className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                            isDarkMode
+                              ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          }`}>
+                          <FiCopy size={12} />
+                          Copy
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadCode(testCase.playwrightCode!, testCase.name)}
+                          className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                            isDarkMode
+                              ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                          }`}>
+                          <FiDownload size={12} />
+                          Download
+                        </button>
+                      </div>
+                    </div>
+                    <div className="relative">
+                      <textarea
+                        readOnly
+                        value={testCase.playwrightCode}
+                        rows={15}
+                        className={`w-full rounded-lg border px-3 py-2 font-mono text-xs ${
+                          isDarkMode
+                            ? 'border-slate-600 bg-slate-950 text-white'
+                            : 'border-gray-300 bg-white text-gray-900'
+                        } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })
+        )}
       </div>
     </div>
   );
@@ -1792,23 +2793,94 @@ function CreateSuiteModal({
 }
 
 interface CreateCaseModalProps {
-  formData: { name: string; description: string; prompt: string };
-  setFormData: (data: { name: string; description: string; prompt: string }) => void;
+  formData: { name: string; description: string; prompt: string; playwrightCode: string };
+  setFormData: (data: { name: string; description: string; prompt: string; playwrightCode: string }) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
+  editingTestCase?: TestCase | null;
   isDarkMode: boolean;
 }
 
-function CreateCaseModal({ formData, setFormData, onSubmit, onClose, isDarkMode }: CreateCaseModalProps) {
+function CreateCaseModal({
+  formData,
+  setFormData,
+  onSubmit,
+  onClose,
+  editingTestCase,
+  isDarkMode,
+}: CreateCaseModalProps) {
+  const [isEditingCode, setIsEditingCode] = useState(false);
+  const [codeLineNumbers, setCodeLineNumbers] = useState<string[]>([]);
+  const codeTextareaRef = React.useRef<HTMLTextAreaElement>(null);
+  const lineNumbersRef = React.useRef<HTMLDivElement>(null);
+
+  // Update line numbers when code changes
+  useEffect(() => {
+    if (formData.playwrightCode) {
+      const lines = formData.playwrightCode.split('\n');
+      setCodeLineNumbers(lines.map((_, i) => String(i + 1)));
+    } else {
+      setCodeLineNumbers([]);
+    }
+  }, [formData.playwrightCode]);
+
+  // Sync scrolling between textarea and line numbers
+  const handleCodeScroll = () => {
+    if (codeTextareaRef.current && lineNumbersRef.current) {
+      lineNumbersRef.current.scrollTop = codeTextareaRef.current.scrollTop;
+    }
+  };
+
+  const handleCopyCode = () => {
+    if (formData.playwrightCode) {
+      navigator.clipboard.writeText(formData.playwrightCode);
+      alert('Playwright code copied to clipboard!');
+    }
+  };
+
+  const handleDownloadCode = () => {
+    if (formData.playwrightCode) {
+      const blob = new Blob([formData.playwrightCode], { type: 'text/typescript' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${editingTestCase?.name || 'test'}.spec.ts`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    if (editingTestCase) {
+      setFormData({
+        ...formData,
+        playwrightCode: editingTestCase.playwrightCode || '',
+      });
+    }
+    setIsEditingCode(false);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div
-        className={`w-full max-w-2xl rounded-lg border p-6 shadow-xl ${
+        className={`w-full max-w-4xl rounded-lg border p-6 shadow-xl ${
           isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
         }`}>
-        <h2 className={`mb-4 text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Create Test Case
-        </h2>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            {editingTestCase ? 'Edit Test Case' : 'Create Test Case'}
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className={`rounded p-1.5 transition-colors ${
+              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
+            }`}>
+            <FiX size={20} />
+          </button>
+        </div>
         <form onSubmit={onSubmit}>
           <div className="mb-4">
             <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
@@ -1843,7 +2915,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, isDarkMode 
               placeholder="Enter description"
             />
           </div>
-          <div className="mb-6">
+          <div className="mb-4">
             <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
               Automation Prompt *
             </label>
@@ -1857,9 +2929,126 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, isDarkMode 
                   ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
                   : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter the automation prompt for this test case (e.g., 'Navigate to login page and verify elements')"
+              placeholder="Enter the automation prompt for this test case"
             />
+            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              Note: Planner description will appear here after the test case is executed with the planner agent.
+            </p>
           </div>
+
+          {/* Playwright Code Section - Only show when editing */}
+          {editingTestCase && (
+            <div className="mb-6">
+              <div className="mb-2 flex items-center justify-between">
+                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  Playwright Code
+                </label>
+                <div className="flex items-center gap-2">
+                  {!isEditingCode ? (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingCode(true)}
+                        className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                          isDarkMode
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                        }`}>
+                        <FiEdit2 size={12} />
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleCopyCode}
+                        className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                          isDarkMode
+                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}>
+                        <FiCopy size={12} />
+                        Copy
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleDownloadCode}
+                        className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
+                          isDarkMode
+                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}>
+                        <FiDownload size={12} />
+                        Download
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        type="button"
+                        onClick={handleCancelEdit}
+                        className={`rounded px-2 py-1 text-xs transition-colors ${
+                          isDarkMode
+                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                        }`}>
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingCode(false)}
+                        className={`rounded px-2 py-1 text-xs transition-colors ${
+                          isDarkMode
+                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                            : 'bg-blue-600 text-white hover:bg-blue-700'
+                        }`}>
+                        Save
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div className="relative">
+                {/* Line Numbers */}
+                {formData.playwrightCode && (
+                  <div
+                    ref={lineNumbersRef}
+                    className={`absolute left-0 top-0 h-full overflow-hidden border-r pr-2 text-right font-mono text-xs ${
+                      isDarkMode ? 'border-slate-600 text-gray-500' : 'border-gray-300 text-gray-400'
+                    }`}
+                    style={{ width: '40px', paddingTop: '12px', paddingBottom: '12px' }}>
+                    {codeLineNumbers.map((line, idx) => (
+                      <div key={idx} className="leading-6">
+                        {line}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {/* Code Textarea */}
+                <textarea
+                  ref={codeTextareaRef}
+                  readOnly={!isEditingCode}
+                  value={formData.playwrightCode}
+                  onChange={e => setFormData({ ...formData, playwrightCode: e.target.value })}
+                  onScroll={handleCodeScroll}
+                  rows={15}
+                  className={`w-full rounded-lg border px-3 py-2 font-mono text-sm ${
+                    isDarkMode
+                      ? isEditingCode
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
+                        : 'border-slate-600 bg-slate-900 text-white placeholder-gray-400'
+                      : isEditingCode
+                        ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                        : 'border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500'
+                  } ${formData.playwrightCode ? 'pl-12' : ''} focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  placeholder="Playwright code will appear here after test execution"
+                  style={{ resize: 'vertical' }}
+                />
+              </div>
+              <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                Note: Edit the Playwright code directly. Changes will be saved when you update the test case.
+              </p>
+            </div>
+          )}
+
           <div className="flex justify-end gap-3">
             <button
               type="button"
@@ -1874,7 +3063,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, isDarkMode 
             <button
               type="submit"
               className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
-              Create Test Case
+              {editingTestCase ? 'Update Test Case' : 'Create Test Case'}
             </button>
           </div>
         </form>

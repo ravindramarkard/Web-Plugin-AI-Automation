@@ -146,4 +146,158 @@ export class WebPlanner {
       return { result: null, error: errorMessage };
     }
   }
+
+  /**
+   * Generate Playwright test code based on tracked actions
+   * This is called at the end of task completion to produce a Playwright script
+   */
+  async generatePlaywrightCode(
+    steps: Array<{
+      action: string;
+      params: Record<string, any>;
+      elementMetadata?: {
+        tagName?: string;
+        attributes?: Record<string, string>;
+        text?: string;
+        name?: string;
+        id?: string;
+        type?: string;
+        role?: string;
+        ariaLabel?: string;
+        placeholder?: string;
+        xpath?: string;
+      };
+    }>,
+    testName: string,
+    baseUrl?: string,
+  ): Promise<{ code: string; error?: string }> {
+    try {
+      console.log('[WebPlanner] Generating Playwright code for', steps.length, 'steps');
+
+      // Build a prompt for the planner to generate Playwright code
+      const stepsDescription = steps
+        .map((step, idx) => {
+          const stepInfo = `Step ${idx + 1}: ${step.action}`;
+          const params = Object.entries(step.params)
+            .filter(([key]) => key !== 'index') // Exclude index from params to discourage its use
+            .map(([key, value]) => `${key}: ${typeof value === 'string' ? value : JSON.stringify(value)}`)
+            .join(', ');
+
+          // Emphasize element metadata for proper selector generation
+          const metadata = step.elementMetadata
+            ? `\n  ELEMENT METADATA (USE THESE FOR SELECTORS - DO NOT USE INDEX):` +
+              `\n    - tagName: ${step.elementMetadata.tagName || 'unknown'}` +
+              `\n    - id: ${step.elementMetadata.id || 'none'} ${step.elementMetadata.id ? '← USE THIS FIRST' : ''}` +
+              `\n    - name: ${step.elementMetadata.name || 'none'} ${step.elementMetadata.name ? '← USE THIS FOR INPUTS' : ''}` +
+              `\n    - class: ${step.elementMetadata.attributes?.class || 'none'} ${step.elementMetadata.attributes?.class ? '← USE IF UNIQUE' : ''}` +
+              `\n    - type: ${step.elementMetadata.type || 'none'}` +
+              `\n    - role: ${step.elementMetadata.role || 'none'} ${step.elementMetadata.role ? '← USE WITH getByRole()' : ''}` +
+              `\n    - ariaLabel: ${step.elementMetadata.ariaLabel || 'none'} ${step.elementMetadata.ariaLabel ? '← USE WITH getByRole()' : ''}` +
+              `\n    - placeholder: ${step.elementMetadata.placeholder || 'none'} ${step.elementMetadata.placeholder ? '← USE getByPlaceholder()' : ''}` +
+              `\n    - text: ${step.elementMetadata.text?.substring(0, 100) || 'none'} ${step.elementMetadata.text ? '← USE WITH getByRole()' : ''}` +
+              `\n    - xpath: ${step.elementMetadata.xpath || 'none'} ${step.elementMetadata.xpath && !step.elementMetadata.id && !step.elementMetadata.name ? '← USE AS LAST RESORT' : ''}` +
+              `\n  ⚠️ DO NOT USE INDEX: ${step.params.index !== undefined ? step.params.index : 'N/A'} (index is unreliable and should NOT be used in generated code)`
+            : step.params.index !== undefined
+              ? `\n  ⚠️ WARNING: Only index available (${step.params.index}) - try to infer selector from context or use xpath if available`
+              : '';
+          return `${stepInfo}\n  Params: ${params}${metadata}`;
+        })
+        .join('\n\n');
+
+      const playwrightPrompt = `You are a Playwright test automation expert. Generate a complete, production-ready Playwright test script based on the following automation steps.
+
+Task: ${testName}
+Base URL: ${baseUrl || 'Not specified'}
+
+Automation Steps:
+${stepsDescription}
+
+CRITICAL REQUIREMENTS:
+1. Generate a complete Playwright test script using @playwright/test
+2. **NEVER use index-based element selection** (e.g., "element at index 15", "clickableElements[15]", "elements[14]", ".nth(15)", "all()[15]")
+3. **ALWAYS use proper selectors in this priority order:**
+   - **id** (most reliable): page.locator('#elementId') or page.getByTestId('testId')
+   - **name attribute**: page.locator('input[name="fieldName"]') or page.getByRole('textbox', { name: 'Field Label' })
+   - **role + accessible name**: page.getByRole('button', { name: 'Submit' })
+   - **placeholder**: page.getByPlaceholder('Enter username')
+   - **class** (if unique and stable): page.locator('.unique-class-name')
+   - **xpath** (last resort, only if no other selector available): page.locator('xpath=//button[@id="submit"]')
+4. For each element, use the BEST available selector from the element metadata provided
+5. If element metadata shows id, name, class, or xpath, use those instead of index
+6. Include proper waits: await element.waitFor({ state: 'visible', timeout: 15000 })
+7. Use test.step() for each action with descriptive names
+8. Include error handling with try-catch
+9. Use allure-js-commons for reporting (import * as allure from 'allure-js-commons')
+10. Make the code production-ready and maintainable
+11. Include console.log statements for debugging
+12. Add proper comments explaining each step
+13. Use page.waitForLoadState('networkidle') after navigation
+14. Add assertions to verify actions succeeded
+
+EXAMPLE OF GOOD SELECTOR USAGE:
+- If element has id="registerBtn": page.locator('#registerBtn')
+- If element has name="firstName": page.locator('input[name="firstName"]')
+- If element has role="button" and text="Register": page.getByRole('button', { name: 'Register' })
+- If element has placeholder="Enter email": page.getByPlaceholder('Enter email')
+
+EXAMPLE OF BAD SELECTOR USAGE (DO NOT USE):
+- const elements = await page.locator('a, button').all(); const target = elements[15]; // WRONG!
+- clickableElements[14].click(); // WRONG!
+- "element at index 15" // WRONG!
+- await page.locator('a, button').nth(15).click(); // WRONG!
+- const allElements = await page.locator('a, button').all(); if (allElements.length > 15) { await allElements[15].click(); } // WRONG!
+- await page.locator('a, button').filter((_, i) => i === 15).click(); // WRONG!
+
+Return ONLY the complete Playwright test code as a code block, starting with the imports and ending with the closing braces. Do not include any explanations outside the code.`;
+
+      const messages = [
+        new SystemMessage(
+          'You are an expert Playwright test automation engineer. Generate production-ready Playwright test scripts based on automation steps.',
+        ),
+        new HumanMessage(playwrightPrompt),
+      ];
+
+      const response = await this.chatLLM.invoke(messages, {
+        signal: this.context.controller.signal,
+      });
+
+      let playwrightCode = '';
+      if (typeof response.content === 'string') {
+        playwrightCode = response.content;
+      } else if (Array.isArray(response.content)) {
+        playwrightCode = response.content.map(c => (typeof c === 'string' ? c : c.text || '')).join('');
+      } else {
+        playwrightCode = JSON.stringify(response.content);
+      }
+
+      // Extract code from markdown code blocks if present
+      const codeBlockMatch = playwrightCode.match(/```(?:typescript|javascript|ts|js)?\s*([\s\S]*?)\s*```/);
+      if (codeBlockMatch) {
+        playwrightCode = codeBlockMatch[1].trim();
+      }
+
+      // If no code was generated, fall back to the generator function
+      if (!playwrightCode || playwrightCode.length < 100) {
+        console.warn('[WebPlanner] LLM did not generate valid code, falling back to generator');
+        const { generateDetailedPlaywrightCode } = await import('./playwrightGenerator');
+        playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl);
+      }
+
+      console.log('[WebPlanner] Generated Playwright code, length:', playwrightCode.length);
+      return { code: playwrightCode };
+    } catch (error) {
+      console.error('[WebPlanner] Error generating Playwright code:', error);
+      // Fall back to the generator function
+      try {
+        const { generateDetailedPlaywrightCode } = await import('./playwrightGenerator');
+        const playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl);
+        return { code: playwrightCode };
+      } catch (fallbackError) {
+        return {
+          code: '',
+          error: error instanceof Error ? error.message : 'Failed to generate Playwright code',
+        };
+      }
+    }
+  }
 }

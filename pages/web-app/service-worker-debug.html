@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Service Worker Debug Tool</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .step { margin: 20px 0; padding: 15px; background: #2d2d2d; border-radius: 4px; border-left: 4px solid #569cd6; }
+    .success { border-left-color: #4ec9b0; }
+    .error { border-left-color: #f48771; }
+    .warning { border-left-color: #dcdcaa; }
+    button { padding: 10px 20px; margin: 5px; background: #0e639c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1177bb; }
+    code { background: #252526; padding: 2px 6px; border-radius: 3px; }
+    pre { background: #252526; padding: 10px; border-radius: 4px; overflow-x: auto; }
+    .checklist { list-style: none; padding-left: 0; }
+    .checklist li { padding: 8px 0; border-bottom: 1px solid #3c3c3c; }
+    .checklist li:before { content: "☐ "; margin-right: 8px; }
+    .checklist li.checked:before { content: "✅ "; }
+  </style>
+</head>
+<body>
+  <h1>🔧 Service Worker Debug Tool</h1>
+  <p>Use this tool to diagnose why your extension service worker isn't running.</p>
+
+  <div class="step">
+    <h3>Step 1: Check Extension Status</h3>
+    <ol>
+      <li>Open <code>chrome://extensions</code> in a new tab</li>
+      <li>Enable <strong>Developer mode</strong> (toggle top-right)</li>
+      <li>Find your <strong>AITestGen</strong> extension</li>
+      <li>Check if extension is <strong>enabled</strong> (toggle should be ON/blue)</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <h3>Step 2: Check Service Worker Status</h3>
+    <ol>
+      <li>In <code>chrome://extensions</code>, find your extension</li>
+      <li>Look for <strong>"service worker"</strong> link (or "background page")</li>
+      <li>Click it to open the service worker console</li>
+      <li>Check what it shows:
+        <ul>
+          <li><strong>"running"</strong> ✅ - Service worker is active</li>
+          <li><strong>"inactive"</strong> ❌ - Service worker is not running</li>
+          <li><strong>Error messages</strong> ❌ - There's a problem</li>
+        </ul>
+      </li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <h3>Step 3: Check Service Worker Console</h3>
+    <p>After clicking "service worker", check the console for:</p>
+    <ul>
+      <li>✅ <code>background loaded</code> - Service worker started successfully</li>
+      <li>❌ <strong>Red error messages</strong> - These indicate what's wrong</li>
+      <li>❌ <strong>Import/module errors</strong> - Build or dependency issues</li>
+      <li>❌ <strong>Syntax errors</strong> - Code issues</li>
+    </ul>
+  </div>
+
+  <div class="step error">
+    <h3>🔴 Common Service Worker Issues & Fixes</h3>
+    
+    <h4>Issue 1: Service Worker Shows "Inactive"</h4>
+    <p><strong>Fix:</strong></p>
+    <ol>
+      <li>Click the <strong>🔄 Reload</strong> button on the extension</li>
+      <li>Wait for reload to complete</li>
+      <li>Click "service worker" again</li>
+      <li>It should now show "running"</li>
+    </ol>
+
+    <h4>Issue 2: Errors in Service Worker Console</h4>
+    <p><strong>Common errors and fixes:</strong></p>
+    <ul>
+      <li><strong>"Failed to load service worker"</strong>
+        <ul>
+          <li>Check if <code>dist/background.iife.js</code> exists</li>
+          <li>Rebuild: <code>pnpm -F chrome-extension build</code></li>
+          <li>Reload extension</li>
+        </ul>
+      </li>
+      <li><strong>"Uncaught SyntaxError"</strong>
+        <ul>
+          <li>There's a syntax error in the code</li>
+          <li>Check TypeScript: <code>pnpm -F chrome-extension type-check</code></li>
+          <li>Fix errors and rebuild</li>
+        </ul>
+      </li>
+      <li><strong>"Failed to import module"</strong>
+        <ul>
+          <li>Missing dependency or import issue</li>
+          <li>Check build output for errors</li>
+          <li>Reinstall dependencies: <code>pnpm install</code></li>
+        </ul>
+      </li>
+      <li><strong>"chrome.runtime is undefined"</strong>
+        <ul>
+          <li>Extension context invalidated (extension was reloaded)</li>
+          <li>Reload the extension again</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h4>Issue 3: Service Worker Keeps Going Inactive</h4>
+    <p><strong>Possible causes:</strong></p>
+    <ul>
+      <li>Service worker crashes due to an error</li>
+      <li>Check console for recurring errors</li>
+      <li>Look for infinite loops or memory issues</li>
+      <li>Try restarting Chrome completely</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Step 4: Force Service Worker to Start</h3>
+    <p>If service worker is inactive, try these steps:</p>
+    <ol>
+      <li><strong>Reload the extension</strong> (🔄 button in chrome://extensions)</li>
+      <li><strong>Send a message to wake it up:</strong>
+        <pre id="wakeup-code">// Run this in the service worker console or web page console
+chrome.runtime.sendMessage('YOUR_EXTENSION_ID', { action: 'ping' }, (response) => {
+  console.log('Response:', response);
+  console.log('Error:', chrome.runtime.lastError);
+});</pre>
+        <button onclick="copyWakeupCode()">Copy Code</button>
+      </li>
+      <li><strong>Check if it responds</strong> - If it does, service worker is now active</li>
+    </ol>
+  </div>
+
+  <div class="step warning">
+    <h3>⚠️ Important Notes</h3>
+    <ul>
+      <li><strong>Service workers go inactive</strong> when Chrome thinks they're not needed</li>
+      <li><strong>After building</strong>, you MUST reload the extension</li>
+      <li><strong>Service workers can't be woken up</strong> by external messages if they're inactive</li>
+      <li><strong>You must manually reload</strong> the extension in chrome://extensions</li>
+      <li><strong>Check the console</strong> for errors - they prevent the service worker from starting</li>
+    </ul>
+  </div>
+
+  <div class="step">
+    <h3>Step 5: Verify Service Worker is Running</h3>
+    <p>Once you've fixed the issues:</p>
+    <ol>
+      <li>Go to <code>chrome://extensions</code></li>
+      <li>Click "service worker" link</li>
+      <li>Verify it shows <strong>"running"</strong></li>
+      <li>Check console for <code>background loaded</code></li>
+      <li>Go to <a href="/debug-extension.html" style="color: #569cd6;">debug-extension.html</a> and test connection</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <h3>Quick Checklist</h3>
+    <ul class="checklist" id="checklist">
+      <li>Extension is enabled in chrome://extensions</li>
+      <li>Extension was reloaded after last build</li>
+      <li>Service worker shows "running" (not "inactive")</li>
+      <li>Service worker console shows "background loaded"</li>
+      <li>No errors in service worker console</li>
+      <li>Extension ID is correct</li>
+      <li>Web app is at http://localhost:3000 (not file://)</li>
+    </ul>
+  </div>
+
+  <script>
+    function copyWakeupCode() {
+      const code = document.getElementById('wakeup-code').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert('Code copied! Paste it in the service worker console or web page console.');
+      });
+    }
+
+    // Load saved extension ID if available
+    window.onload = () => {
+      const savedId = localStorage.getItem('extension_id');
+      if (savedId) {
+        const code = document.getElementById('wakeup-code');
+        code.textContent = code.textContent.replace('YOUR_EXTENSION_ID', savedId);
+      }
+    };
+  </script>
+</body>
+</html>
+

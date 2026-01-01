@@ -55,14 +55,34 @@ export default function ExtensionSettings() {
   const [statusMessage, setStatusMessage] = useState<string>('');
 
   useEffect(() => {
-    // Load saved extension ID
-    const savedId = extensionBridge.getExtensionId();
-    if (savedId) {
-      setExtensionId(savedId);
-      checkExtension();
-    } else {
-      setStatusMessage('Extension ID not configured. Please enter your extension ID.');
-    }
+    // Try to auto-detect extension ID first
+    const autoDetectExtension = async () => {
+      try {
+        const detectedId = await extensionBridge.detectExtensionId();
+        if (detectedId) {
+          setExtensionId(detectedId);
+          setStatusMessage('Extension ID auto-detected. Checking connection...');
+          // Small delay to ensure state is updated
+          setTimeout(() => {
+            checkExtension();
+          }, 100);
+          return;
+        }
+      } catch (error) {
+        console.warn('[ExtensionSettings] Auto-detection failed:', error);
+      }
+
+      // Fall back to saved extension ID
+      const savedId = extensionBridge.getExtensionId();
+      if (savedId) {
+        setExtensionId(savedId);
+        checkExtension();
+      } else {
+        setStatusMessage('Extension ID not configured. Click "Auto-Detect" or enter manually.');
+      }
+    };
+
+    autoDetectExtension();
   }, []);
 
   const checkExtension = async () => {
@@ -119,33 +139,119 @@ export default function ExtensionSettings() {
     await checkExtension();
   };
 
+  const autoDetectExtensionId = async () => {
+    setIsChecking(true);
+    setStatusMessage('Auto-detecting extension ID... This may take a few seconds.');
+
+    try {
+      const detectedId = await extensionBridge.detectExtensionId();
+      if (detectedId) {
+        setExtensionId(detectedId);
+        setStatusMessage('✅ Extension ID auto-detected! Checking connection...');
+        // Small delay to ensure state is updated
+        setTimeout(async () => {
+          await checkExtension();
+        }, 100);
+      } else {
+        // Try to get saved ID and test it
+        const savedId = extensionBridge.getExtensionId();
+        if (savedId) {
+          setExtensionId(savedId);
+          setStatusMessage(
+            '⚠️ Could not auto-detect, but found saved ID. Testing saved ID...\n\n' +
+              'If this fails, please:\n' +
+              '1. Go to chrome://extensions\n' +
+              '2. Find AITestGen extension\n' +
+              '3. Copy the ID shown\n' +
+              '4. Paste it above and click "Save & Check"',
+          );
+          setTimeout(async () => {
+            await checkExtension();
+          }, 100);
+        } else {
+          setStatusMessage(
+            '❌ Could not auto-detect extension ID. Please:\n' +
+              '1. Go to chrome://extensions (click "Open Extensions Page" below)\n' +
+              '2. Find "AITestGen" extension\n' +
+              '3. Copy the ID shown under the extension name\n' +
+              '4. Paste it above and click "Save & Check"\n\n' +
+              'Note: Make sure the extension is installed, enabled, and reloaded.',
+          );
+        }
+      }
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('[ExtensionSettings] Auto-detection error:', error);
+      setStatusMessage(
+        `❌ Auto-detection failed: ${errorMessage}\n\n` +
+          'Please enter the extension ID manually:\n' +
+          '1. Go to chrome://extensions\n' +
+          '2. Find AITestGen and copy its ID\n' +
+          '3. Paste it above',
+      );
+    } finally {
+      setIsChecking(false);
+    }
+  };
+
+  const openExtensionsPage = () => {
+    // Open chrome://extensions in a new tab
+    window.open('chrome://extensions', '_blank');
+    setStatusMessage(
+      'Opened extensions page. Find "AITestGen", copy its ID, and paste it above.\n\n' +
+        'Tip: The ID is shown directly under the extension name.',
+    );
+  };
+
   const getExtensionIdInstructions = () => {
     return (
       <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <h3 className="font-semibold mb-2">How to find your Extension ID:</h3>
+        <div className="flex items-center justify-between mb-2">
+          <h3 className="font-semibold">How to find your Extension ID:</h3>
+          <Button onClick={openExtensionsPage} variant="outline" className="text-sm">
+            Open Extensions Page
+          </Button>
+        </div>
         <ol className="list-decimal list-inside space-y-2 text-sm">
           <li>
-            Open Chrome and go to <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">chrome://extensions</code>
+            Click "Open Extensions Page" above or go to{' '}
+            <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">chrome://extensions</code>
           </li>
-          <li>Enable "Developer mode" (toggle in top right)</li>
+          <li>Enable "Developer mode" (toggle in top right) if not already enabled</li>
           <li>Find "AITestGen" extension in the list</li>
           <li>
             Copy the <strong>ID</strong> shown under the extension name (a long string like
             "abcdefghijklmnopqrstuvwxyz123456")
             <br />
             <span className="text-xs text-gray-600 dark:text-gray-400">
-              Note: This is different from the extension name or version
+              Note: This is different from the extension name or version. For unpacked extensions, the ID changes when
+              you reload.
             </span>
           </li>
           <li>Paste it in the field above and click "Save & Check"</li>
           <li>
             If you just installed/updated the extension, make sure to <strong>reload the extension</strong> by clicking
-            the reload icon (🔄) next to it
+            the reload icon (🔄) next to it, then copy the new ID
           </li>
         </ol>
         <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs">
           <strong>Tip:</strong> After building the extension with <code>pnpm build</code>, load it as unpacked from the{' '}
-          <code>dist/</code> directory. The extension ID will be shown on the extensions page.
+          <code>dist/</code> directory. The extension ID will be shown on the extensions page. Click "Auto-Detect" to
+          try automatic detection.
+        </div>
+        <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded text-xs">
+          <strong>💡 Quick Method:</strong>
+          <ol className="list-decimal list-inside mt-1 space-y-1">
+            <li>Click "Open Extensions Page" button above</li>
+            <li>Find "AITestGen" in the list</li>
+            <li>The ID is shown directly under the extension name (looks like: abcdefghijklmnopqrstuvwxyz123456)</li>
+            <li>Click on the ID text to select it, then copy (Cmd+C / Ctrl+C)</li>
+            <li>Paste it in the field above</li>
+          </ol>
+          <p className="mt-2 text-xs text-gray-600 dark:text-gray-400">
+            <strong>Note:</strong> For unpacked extensions, the ID changes when you reload. After reloading the
+            extension, copy the new ID.
+          </p>
         </div>
       </div>
     );
@@ -174,6 +280,9 @@ export default function ExtensionSettings() {
               placeholder="Enter your Chrome extension ID"
               className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
             />
+            <Button onClick={autoDetectExtensionId} disabled={isChecking} variant="outline">
+              Auto-Detect
+            </Button>
             <Button onClick={saveExtensionId} disabled={isChecking || !extensionId.trim()}>
               Save & Check
             </Button>

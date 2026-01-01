@@ -648,10 +648,42 @@ function GeneratedCodeModal({
                 Copy Code
               </button>
             </div>
-            <pre
-              className={`max-h-96 overflow-auto rounded-lg border p-4 text-xs ${isDarkMode ? 'border-slate-600 bg-slate-950 text-gray-300' : 'border-gray-300 bg-gray-900 text-gray-100'}`}>
-              <code>{code}</code>
-            </pre>
+            <div
+              className={`relative max-h-96 overflow-auto rounded-lg border ${
+                isDarkMode ? 'border-slate-600 bg-[#1e1e1e]' : 'border-gray-300 bg-[#1e1e1e]'
+              }`}
+              style={{
+                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+              }}>
+              <pre
+                className={`m-0 p-4 text-xs leading-relaxed text-white`}
+                style={{
+                  userSelect: 'text',
+                  WebkitUserSelect: 'text',
+                  MozUserSelect: 'text',
+                  msUserSelect: 'text',
+                  whiteSpace: 'pre',
+                  overflowWrap: 'normal',
+                  wordBreak: 'normal',
+                  fontFamily: 'inherit',
+                  backgroundColor: '#1e1e1e',
+                  color: '#ffffff',
+                  margin: 0,
+                  padding: '1rem',
+                }}>
+                <code
+                  className="block"
+                  style={{
+                    fontFamily: 'inherit',
+                    fontSize: '13px',
+                    lineHeight: '1.6',
+                    color: '#ffffff',
+                    display: 'block',
+                  }}>
+                  {code}
+                </code>
+              </pre>
+            </div>
           </div>
         </div>
 

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Get Extension ID Helper</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .step { margin: 20px 0; padding: 15px; background: #2d2d2d; border-radius: 4px; border-left: 4px solid #569cd6; }
+    .success { border-left-color: #4ec9b0; }
+    .error { border-left-color: #f48771; }
+    .warning { border-left-color: #dcdcaa; }
+    button { padding: 10px 20px; margin: 5px; background: #0e639c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1177bb; }
+    input { padding: 8px; width: 500px; background: #3c3c3c; color: #d4d4d4; border: 1px solid #555; border-radius: 4px; }
+    code { background: #252526; padding: 2px 6px; border-radius: 3px; }
+    .copy-btn { background: #4ec9b0; }
+    .copy-btn:hover { background: #45b8a0; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Extension ID Helper</h1>
+  <p>This tool helps you find the correct extension ID for your unpacked extension.</p>
+
+  <div class="step">
+    <h3>Step 1: Open Chrome Extensions Page</h3>
+    <p>1. Open a new tab in Chrome</p>
+    <p>2. Go to: <code>chrome://extensions</code></p>
+    <p>3. Enable <strong>Developer mode</strong> (toggle in top-right corner)</p>
+  </div>
+
+  <div class="step">
+    <h3>Step 2: Find Your Extension</h3>
+    <p>1. Look for <strong>"AITestGen"</strong> or <strong>"__MSG_app_metadata_name__"</strong> in the list</p>
+    <p>2. Find the <strong>ID</strong> shown directly under the extension name</p>
+    <p>3. It looks like: <code>abcdefghijklmnopqrstuvwxyz123456</code></p>
+    <p><strong>⚠️ Important:</strong> For unpacked extensions, this ID is different from the published extension ID!</p>
+  </div>
+
+  <div class="step">
+    <h3>Step 3: Copy the Extension ID</h3>
+    <p>Copy the ID and paste it below:</p>
+    <input type="text" id="ext-id-input" placeholder="Paste extension ID here">
+    <button onclick="copyToClipboard()" class="copy-btn">Copy to Clipboard</button>
+  </div>
+
+  <div class="step">
+    <h3>Step 4: Reload the Extension</h3>
+    <p><strong>⚠️ CRITICAL:</strong> After building, you MUST reload the extension!</p>
+    <ol>
+      <li>In <code>chrome://extensions</code>, find your AITestGen extension</li>
+      <li>Click the <strong>🔄 Reload</strong> button (circular arrow icon)</li>
+      <li>Wait for it to reload</li>
+      <li>Click the <strong>"service worker"</strong> link (or "background page")</li>
+      <li>Verify it shows <strong>"running"</strong> (not "inactive")</li>
+      <li>Check the console for errors - you should see: <code>background loaded</code></li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <h3>Step 5: Test Connection</h3>
+    <p>Once you have the extension ID and have reloaded the extension:</p>
+    <ol>
+      <li>Go to: <a href="/debug-extension.html" style="color: #569cd6;">http://localhost:3000/debug-extension.html</a></li>
+      <li>Enter the extension ID</li>
+      <li>Click "Test Connection"</li>
+    </ol>
+  </div>
+
+  <div class="step warning">
+    <h3>⚠️ Common Issues</h3>
+    <ul>
+      <li><strong>Service worker inactive:</strong> Reload the extension and check the service worker console</li>
+      <li><strong>Wrong extension ID:</strong> Make sure you're using the ID from <code>chrome://extensions</code>, not a published ID</li>
+      <li><strong>Extension not enabled:</strong> Make sure the toggle is ON (blue/enabled)</li>
+      <li><strong>Extension not reloaded after build:</strong> Always reload after running <code>pnpm -F chrome-extension build</code></li>
+      <li><strong>Wrong origin:</strong> Make sure web app is at <code>http://localhost:3000</code> (not <code>file://</code>)</li>
+    </ul>
+  </div>
+
+  <script>
+    function copyToClipboard() {
+      const input = document.getElementById('ext-id-input');
+      const id = input.value.trim();
+      if (!id) {
+        alert('Please enter an extension ID first');
+        return;
+      }
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(id).then(() => {
+        alert('Extension ID copied to clipboard!');
+        
+        // Also save to localStorage
+        localStorage.setItem('extension_id', id);
+        console.log('Extension ID saved to localStorage:', id);
+        
+        // Show success message
+        const msg = document.createElement('div');
+        msg.style.cssText = 'margin-top: 10px; padding: 10px; background: #4ec9b0; color: white; border-radius: 4px;';
+        msg.textContent = '✅ Extension ID copied and saved! You can now use it in the debug tool.';
+        input.parentElement.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        alert('Failed to copy. Please copy manually: ' + id);
+      });
+    }
+
+    // Load saved extension ID if available
+    window.onload = () => {
+      const savedId = localStorage.getItem('extension_id');
+      if (savedId) {
+        document.getElementById('ext-id-input').value = savedId;
+        console.log('Loaded saved extension ID:', savedId);
+      }
+    };
+  </script>
+</body>
+</html>
+

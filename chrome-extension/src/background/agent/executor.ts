@@ -177,41 +177,6 @@ export class Executor {
       const isCompleted = latestPlanOutput?.result?.done === true;
 
       if (isCompleted) {
-        // Store Playwright testcode from planner output if available
-        if (latestPlanOutput?.result?.testcode) {
-          (this.context as any).playwrightTestCode = latestPlanOutput.result.testcode;
-          logger.info(
-            '[Executor] ✅ Received Playwright testcode from Planner, length:',
-            latestPlanOutput.result.testcode.length,
-          );
-        } else {
-          // If planner didn't provide testcode, call it again to generate Playwright script
-          logger.info('[Executor] Planner did not provide testcode, calling again to generate Playwright script...');
-          try {
-            // Add a message asking planner to generate Playwright script
-            const { HumanMessage } = await import('@langchain/core/messages');
-            const generateScriptPrompt =
-              "Please generate a Playwright TypeScript test script for all the automation steps that were executed. The script should capture all navigation steps, clicks, form fills, and other actions that were performed. Use Playwright's standard APIs (page.goto, page.click, page.fill, etc.) and format the code properly with proper indentation and comments. Include the testcode field in your JSON response.";
-            const scriptMessage = new HumanMessage(generateScriptPrompt);
-            this.context.messageManager.addMessageWithTokens(scriptMessage);
-
-            // Call planner to generate the script
-            const scriptPlanOutput = await this.runPlanner();
-            if (scriptPlanOutput?.result?.testcode && scriptPlanOutput.result.testcode.trim().length > 0) {
-              (this.context as any).playwrightTestCode = scriptPlanOutput.result.testcode;
-              logger.info(
-                '[Executor] ✅ Generated Playwright testcode from Planner, length:',
-                scriptPlanOutput.result.testcode.length,
-              );
-            } else {
-              logger.warning('[Executor] ⚠️ Planner did not generate testcode in response');
-            }
-          } catch (error) {
-            logger.error('[Executor] Failed to generate Playwright script from Planner:', error);
-            // Continue with task completion even if script generation fails
-          }
-        }
-
         // Emit final answer if available, otherwise use task ID
         const finalMessage = this.context.finalAnswer || this.context.taskId;
         this.context.emitEvent(Actors.SYSTEM, ExecutionState.TASK_OK, finalMessage);

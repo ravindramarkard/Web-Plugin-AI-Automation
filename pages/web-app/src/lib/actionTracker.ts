@@ -9,6 +9,18 @@ export interface NavigatorStep {
   timestamp: number;
   success: boolean;
   error?: string;
+  elementMetadata?: {
+    tagName?: string;
+    attributes?: Record<string, string>;
+    text?: string;
+    name?: string;
+    id?: string;
+    type?: string;
+    role?: string;
+    ariaLabel?: string;
+    placeholder?: string;
+    xpath?: string;
+  };
 }
 
 class ActionTracker {
@@ -16,6 +28,7 @@ class ActionTracker {
   private currentTaskId: string | null = null;
   private prompt: string = '';
   private baseUrl: string = '';
+  private plannerDescription: string = ''; // Store planner's next_steps or description
 
   /**
    * Start tracking actions for a new task
@@ -35,7 +48,13 @@ class ActionTracker {
   /**
    * Add a navigator step
    */
-  addStep(action: string, params: Record<string, any>, success: boolean = true, error?: string) {
+  addStep(
+    action: string,
+    params: Record<string, any>,
+    success: boolean = true,
+    error?: string,
+    elementMetadata?: NavigatorStep['elementMetadata'],
+  ) {
     if (!this.currentTaskId) {
       console.warn('[ActionTracker] No active task to track, ignoring step:', action);
       return;
@@ -47,6 +66,7 @@ class ActionTracker {
       timestamp: Date.now(),
       success,
       error,
+      elementMetadata,
     };
 
     this.steps.push(step);
@@ -54,6 +74,7 @@ class ActionTracker {
       action,
       params: JSON.stringify(params).substring(0, 100),
       success,
+      elementMetadata: elementMetadata ? 'present' : 'missing',
       totalSteps: this.steps.length,
     });
   }
@@ -88,6 +109,23 @@ class ActionTracker {
   }
 
   /**
+   * Set planner description (from planner events)
+   */
+  setPlannerDescription(description: string) {
+    if (description && description.trim()) {
+      this.plannerDescription = description.trim();
+      console.log('[ActionTracker] Set planner description:', this.plannerDescription.substring(0, 100));
+    }
+  }
+
+  /**
+   * Get planner description
+   */
+  getPlannerDescription(): string {
+    return this.plannerDescription;
+  }
+
+  /**
    * Clear tracking data
    */
   clear() {
@@ -95,6 +133,7 @@ class ActionTracker {
     this.currentTaskId = null;
     this.prompt = '';
     this.baseUrl = '';
+    this.plannerDescription = '';
   }
 
   /**

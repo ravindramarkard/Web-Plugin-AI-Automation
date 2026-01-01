@@ -75,7 +75,24 @@ export class WebActionBuilder {
         if (input.index !== undefined) params.index = input.index;
         if (input.xpath) params.xpath = input.xpath;
         if (result.interactedElement?.xpath) params.xpath = result.interactedElement.xpath;
-        actionTracker.addStep('click_element', params, result.success, result.error || undefined);
+
+        // Extract element metadata for better selector generation
+        const elementMetadata = result.interactedElement
+          ? {
+              tagName: result.interactedElement.tagName,
+              attributes: result.interactedElement.attributes,
+              text: result.interactedElement.text,
+              name: result.interactedElement.attributes?.name,
+              id: result.interactedElement.attributes?.id,
+              type: result.interactedElement.attributes?.type,
+              role: result.interactedElement.attributes?.role,
+              ariaLabel: result.interactedElement.attributes?.['aria-label'],
+              placeholder: result.interactedElement.attributes?.placeholder,
+              xpath: result.interactedElement.xpath,
+            }
+          : undefined;
+
+        actionTracker.addStep('click_element', params, result.success, result.error || undefined, elementMetadata);
 
         return result;
       },
@@ -101,7 +118,24 @@ export class WebActionBuilder {
         if (input.index !== undefined) params.index = input.index;
         if (input.xpath) params.xpath = input.xpath;
         if (result.interactedElement?.xpath) params.xpath = result.interactedElement.xpath;
-        actionTracker.addStep('input_text', params, result.success, result.error || undefined);
+
+        // Extract element metadata for better selector generation
+        const elementMetadata = result.interactedElement
+          ? {
+              tagName: result.interactedElement.tagName,
+              attributes: result.interactedElement.attributes,
+              text: result.interactedElement.text,
+              name: result.interactedElement.attributes?.name,
+              id: result.interactedElement.attributes?.id,
+              type: result.interactedElement.attributes?.type,
+              role: result.interactedElement.attributes?.role,
+              ariaLabel: result.interactedElement.attributes?.['aria-label'],
+              placeholder: result.interactedElement.attributes?.placeholder,
+              xpath: result.interactedElement.xpath,
+            }
+          : undefined;
+
+        actionTracker.addStep('input_text', params, result.success, result.error || undefined, elementMetadata);
 
         return result;
       },

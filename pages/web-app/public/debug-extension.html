@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Extension Connection Debug</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .test { margin: 10px 0; padding: 10px; background: #2d2d2d; border-radius: 4px; }
+    .success { border-left: 4px solid #4ec9b0; }
+    .error { border-left: 4px solid #f48771; }
+    .info { border-left: 4px solid #569cd6; }
+    button { padding: 10px 20px; margin: 5px; background: #0e639c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1177bb; }
+    input { padding: 8px; width: 400px; background: #3c3c3c; color: #d4d4d4; border: 1px solid #555; border-radius: 4px; }
+    pre { background: #252526; padding: 10px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Extension Connection Debug Tool</h1>
+  
+  <div class="test info">
+    <h3>Step 1: Check Chrome Runtime</h3>
+    <div id="chrome-check"></div>
+  </div>
+  
+  <div class="test info">
+    <h3>Step 2: Enter Extension ID</h3>
+    <input type="text" id="ext-id" value="obdjgoklifihgkklclbcjkpejipfjhkm" placeholder="Enter extension ID">
+    <button onclick="testConnection()">Test Connection</button>
+  </div>
+  
+  <div class="test info">
+    <h3>Step 3: Test Results</h3>
+    <div id="results"></div>
+  </div>
+  
+  <div class="test info">
+    <h3>Step 4: Console Output</h3>
+    <pre id="console-output"></pre>
+  </div>
+
+  <script>
+    const output = document.getElementById('console-output');
+    const originalLog = console.log;
+    const originalError = console.error;
+    
+    function log(msg, type = 'log') {
+      const time = new Date().toLocaleTimeString();
+      output.textContent += `[${time}] ${type === 'error' ? '❌' : 'ℹ️'} ${msg}\n`;
+      output.scrollTop = output.scrollHeight;
+      if (type === 'error') originalError(msg);
+      else originalLog(msg);
+    }
+    
+    // Check Chrome Runtime
+    function checkChromeRuntime() {
+      const checkDiv = document.getElementById('chrome-check');
+      let diagnostics = [];
+      
+      // Check browser
+      const isChrome = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+      const isEdge = /Edg/.test(navigator.userAgent);
+      const isFirefox = /Firefox/.test(navigator.userAgent);
+      
+      if (!isChrome && !isEdge) {
+        diagnostics.push('⚠️ Not using Chrome/Edge browser');
+        if (isFirefox) {
+          diagnostics.push('❌ Firefox does not support Chrome extension APIs');
+        }
+      } else {
+        diagnostics.push('✅ Using Chrome/Edge browser');
+      }
+      
+      // Check URL
+      const currentUrl = window.location.href;
+      if (currentUrl.startsWith('file://')) {
+        diagnostics.push('❌ Page opened as file:// URL');
+        diagnostics.push('❌ Chrome extension APIs are NOT available for file:// URLs');
+        diagnostics.push('🔧 Fix: Serve from http://localhost:3000');
+      } else if (currentUrl.startsWith('http://localhost:3000') || currentUrl.startsWith('http://127.0.0.1:3000')) {
+        diagnostics.push('✅ Page served from correct origin');
+      } else {
+        diagnostics.push('⚠️ Page served from: ' + window.location.origin);
+        diagnostics.push('⚠️ Should be: http://localhost:3000');
+      }
+      
+      // Check chrome object
+      if (typeof chrome === 'undefined') {
+        diagnostics.push('❌ chrome is undefined');
+        diagnostics.push('🔧 Possible causes:');
+        diagnostics.push('   1. Not using Chrome/Edge browser');
+        diagnostics.push('   2. Page opened as file:// URL');
+        diagnostics.push('   3. Page served from wrong origin');
+        checkDiv.innerHTML = diagnostics.map(d => `<div style="margin: 5px 0;">${d}</div>`).join('');
+        return false;
+      }
+      
+      diagnostics.push('✅ chrome object exists');
+      
+      // Check chrome.runtime
+      if (!chrome.runtime) {
+        diagnostics.push('❌ chrome.runtime is undefined');
+        diagnostics.push('🔧 This means Chrome extension APIs are not available');
+        diagnostics.push('🔧 Make sure:');
+        diagnostics.push('   1. You are using Chrome or Edge browser');
+        diagnostics.push('   2. Page is served from http://localhost:3000 (not file://)');
+        diagnostics.push('   3. Web app server is running: cd pages/web-app && pnpm dev');
+        checkDiv.innerHTML = diagnostics.map(d => `<div style="margin: 5px 0;">${d}</div>`).join('');
+        return false;
+      }
+      
+      diagnostics.push('✅ chrome.runtime exists');
+      
+      // Check chrome.runtime.sendMessage
+      if (!chrome.runtime.sendMessage) {
+        diagnostics.push('❌ chrome.runtime.sendMessage is undefined');
+        checkDiv.innerHTML = diagnostics.map(d => `<div style="margin: 5px 0;">${d}</div>`).join('');
+        return false;
+      }
+      
+      diagnostics.push('✅ chrome.runtime.sendMessage is available');
+      
+      // Check if using polyfill
+      if (chrome.runtime.id === 'web-app') {
+        diagnostics.push('⚠️ Using chrome.runtime polyfill (id: web-app)');
+        diagnostics.push('⚠️ Real extension APIs may not be available');
+      } else {
+        diagnostics.push('✅ Real Chrome extension APIs available');
+      }
+      
+      checkDiv.innerHTML = diagnostics.map(d => `<div style="margin: 5px 0;">${d}</div>`).join('');
+      log('Chrome runtime check complete');
+      return true;
+    }
+    
+    async function testConnection() {
+      const extId = document.getElementById('ext-id').value.trim();
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = '<p>Testing...</p>';
+      
+      if (!checkChromeRuntime()) {
+        resultsDiv.innerHTML = '<p style="color: #f48771">❌ Chrome runtime not available. Make sure you are in Chrome/Edge.</p>';
+        return;
+      }
+      
+      if (!extId) {
+        resultsDiv.innerHTML = '<p style="color: #f48771">❌ Please enter an extension ID</p>';
+        return;
+      }
+      
+      log(`Testing connection to extension: ${extId}`);
+      log(`Current URL: ${window.location.href}`);
+      log(`Origin: ${window.location.origin}`);
+      
+      // Verify origin matches allowed origins
+      const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173', 'http://127.0.0.1:3000', 'http://127.0.0.1:5173'];
+      if (!allowedOrigins.includes(window.location.origin)) {
+        log(`⚠️ Warning: Origin ${window.location.origin} may not be in manifest's externally_connectable`, 'error');
+      }
+      
+      // Test 1: Direct ping
+      log('Test 1: Sending ping message...');
+      log('⚠️ IMPORTANT: If this fails, check:');
+      log('   1. Go to chrome://extensions');
+      log('   2. Find AITestGen extension');
+      log('   3. Copy the ID shown (it may be different from what you entered)');
+      log('   4. Make sure extension is enabled and reloaded');
+      log('   5. Click "service worker" link and verify it shows "running"');
+      
+      try {
+        const pingResult = await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('Ping timeout after 5 seconds. Service worker may be inactive. Try reloading the extension.'));
+          }, 5000);
+          
+          chrome.runtime.sendMessage(extId, { action: 'ping' }, (response) => {
+            clearTimeout(timeout);
+            const lastError = chrome.runtime.lastError;
+            if (lastError) {
+              reject(new Error(lastError.message));
+            } else {
+              resolve(response);
+            }
+          });
+        });
+        
+        log(`✅ Ping successful: ${JSON.stringify(pingResult)}`);
+        resultsDiv.innerHTML = `
+          <div class="test success">
+            <h4>✅ Connection Successful!</h4>
+            <p>Extension ID: ${extId}</p>
+            <p>Response: ${JSON.stringify(pingResult, null, 2)}</p>
+          </div>
+        `;
+      } catch (error) {
+        log(`❌ Ping failed: ${error.message}`, 'error');
+        
+        let errorDetails = `<div class="test error"><h4>❌ Connection Failed</h4><p><strong>Error:</strong> ${error.message}</p>`;
+        
+        if (error.message.includes('Could not establish connection')) {
+          errorDetails += `
+            <h5>Possible causes:</h5>
+            <ul>
+              <li>Extension ID is incorrect</li>
+              <li>Extension is not installed or disabled</li>
+              <li>Extension needs to be reloaded</li>
+              <li>Manifest may not have externally_connectable configured</li>
+              <li>Web app origin (${window.location.origin}) may not match allowed origins</li>
+            </ul>
+            <h5>Debugging steps:</h5>
+            <ol>
+              <li>Go to <code>chrome://extensions/</code></li>
+              <li>Find AITestGen extension</li>
+              <li>Check the ID shown (it may be different from ${extId})</li>
+              <li>Make sure extension is enabled (toggle ON)</li>
+              <li>Click the reload icon (🔄) on the extension</li>
+              <li>Check the extension's service worker console for errors</li>
+            </ol>
+          `;
+        }
+        
+        errorDetails += '</div>';
+        resultsDiv.innerHTML = errorDetails;
+      }
+      
+      // Test 2: Check if extension exists by trying to get its manifest
+      log('Test 2: Checking if extension exists...');
+      try {
+        const manifestUrl = chrome.runtime.getURL('manifest.json');
+        log(`Manifest URL would be: ${manifestUrl}`);
+        // Note: We can't actually fetch this from external page, but we can try to connect
+      } catch (e) {
+        log(`Note: ${e.message}`);
+      }
+    }
+    
+    // Auto-check on load
+    window.onload = () => {
+      log('Debug tool loaded');
+      log('Current URL: ' + window.location.href);
+      log('Browser: ' + navigator.userAgent);
+      
+      if (window.location.href.startsWith('file://')) {
+        log('❌ ERROR: Page opened as file:// URL', 'error');
+        log('Chrome extension APIs are NOT available for file:// URLs', 'error');
+        log('🔧 SOLUTION: Start web app server and navigate to http://localhost:3000/debug-extension.html', 'error');
+        log('   Run: cd pages/web-app && pnpm dev', 'error');
+      }
+      
+      const runtimeAvailable = checkChromeRuntime();
+      if (runtimeAvailable) {
+        log('✅ Chrome runtime is available. Enter extension ID and click "Test Connection"');
+      } else {
+        log('❌ Chrome runtime is NOT available. See diagnostics above.', 'error');
+      }
+    };
+  </script>
+</body>
+</html>
+

@@ -154,11 +154,10 @@ export class ActionBuilder {
 
     const done = new Action(async (input: z.infer<typeof doneActionSchema.schema>) => {
       this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_START, doneActionSchema.name);
-      const message = input.text || input.message || 'Task completed';
-      this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, message);
+      this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, input.text);
       return new ActionResult({
         isDone: true,
-        extractedContent: message,
+        extractedContent: input.text,
       });
     }, doneActionSchema);
     actions.push(done);

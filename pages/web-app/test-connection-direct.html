@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Direct Connection Test</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .test { margin: 20px 0; padding: 15px; background: #2d2d2d; border-radius: 4px; border-left: 4px solid #569cd6; }
+    .success { border-left-color: #4ec9b0; }
+    .error { border-left-color: #f48771; }
+    button { padding: 10px 20px; margin: 5px; background: #0e639c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1177bb; }
+    input { padding: 8px; width: 500px; background: #3c3c3c; color: #d4d4d4; border: 1px solid #555; border-radius: 4px; }
+    pre { background: #252526; padding: 10px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Direct Connection Test</h1>
+  <p>Your service worker is <strong style="color: #4ec9b0;">RUNNING</strong> ✅</p>
+  <p>Let's test the connection directly...</p>
+
+  <div class="test">
+    <h3>Step 1: Enter Extension ID</h3>
+    <p>From your service worker page, the Extension ID is: <code style="background: #252526; padding: 4px 8px; border-radius: 3px;">obdjgoklifihgkklclbcjkpejipfjhkm</code></p>
+    <input type="text" id="ext-id" value="obdjgoklifihgkklclbcjkpejipfjhkm" placeholder="Extension ID">
+    <button onclick="testPing()">Test Ping</button>
+    <button onclick="testPort()">Test Port Connection</button>
+  </div>
+
+  <div class="test">
+    <h3>Step 2: Test Results</h3>
+    <div id="results"></div>
+  </div>
+
+  <div class="test">
+    <h3>Step 3: Console Output</h3>
+    <pre id="console-output"></pre>
+  </div>
+
+  <script>
+    const output = document.getElementById('console-output');
+    const resultsDiv = document.getElementById('results');
+
+    function log(msg, type = 'log') {
+      const time = new Date().toLocaleTimeString();
+      output.textContent += `[${time}] ${type === 'error' ? '❌' : 'ℹ️'} ${msg}\n`;
+      output.scrollTop = output.scrollHeight;
+      if (type === 'error') console.error(msg);
+      else console.log(msg);
+    }
+
+    async function testPing() {
+      const extId = document.getElementById('ext-id').value.trim();
+      resultsDiv.innerHTML = '<p>Testing ping...</p>';
+      log(`Testing ping to extension: ${extId}`);
+      log(`Current origin: ${window.location.origin}`);
+
+      if (!extId) {
+        resultsDiv.innerHTML = '<p style="color: #f48771;">❌ Please enter extension ID</p>';
+        return;
+      }
+
+      try {
+        const response = await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('Ping timeout after 5 seconds'));
+          }, 5000);
+
+          chrome.runtime.sendMessage(extId, { action: 'ping' }, (response) => {
+            clearTimeout(timeout);
+            const lastError = chrome.runtime.lastError;
+            if (lastError) {
+              reject(new Error(lastError.message));
+            } else {
+              resolve(response);
+            }
+          });
+        });
+
+        log(`✅ Ping successful! Response: ${JSON.stringify(response)}`);
+        resultsDiv.innerHTML = `
+          <div class="test success">
+            <h4>✅ Connection Successful!</h4>
+            <p><strong>Extension ID:</strong> ${extId}</p>
+            <p><strong>Response:</strong></p>
+            <pre>${JSON.stringify(response, null, 2)}</pre>
+            <p style="color: #4ec9b0;">🎉 Your extension is connected and responding!</p>
+          </div>
+        `;
+      } catch (error) {
+        log(`❌ Ping failed: ${error.message}`, 'error');
+        resultsDiv.innerHTML = `
+          <div class="test error">
+            <h4>❌ Connection Failed</h4>
+            <p><strong>Error:</strong> ${error.message}</p>
+            <h5>Possible causes:</h5>
+            <ul>
+              <li>Extension ID is incorrect</li>
+              <li>Web app origin (${window.location.origin}) not in manifest's externally_connectable</li>
+              <li>Service worker is running but not handling messages</li>
+            </ul>
+            <h5>Next steps:</h5>
+            <ol>
+              <li>Verify extension ID matches: <code>obdjgoklifihgkklclbcjkpejipfjhkm</code></li>
+              <li>Check manifest.json has your origin in externally_connectable</li>
+              <li>Check service worker console for errors when message is sent</li>
+            </ol>
+          </div>
+        `;
+      }
+    }
+
+    async function testPort() {
+      const extId = document.getElementById('ext-id').value.trim();
+      resultsDiv.innerHTML = '<p>Testing port connection...</p>';
+      log(`Testing port connection to extension: ${extId}`);
+
+      if (!extId) {
+        resultsDiv.innerHTML = '<p style="color: #f48771;">❌ Please enter extension ID</p>';
+        return;
+      }
+
+      try {
+        const port = chrome.runtime.connect(extId, { name: 'web-app-connection' });
+        
+        const lastError = chrome.runtime.lastError;
+        if (lastError) {
+          throw new Error(lastError.message);
+        }
+
+        log('✅ Port connected successfully!');
+
+        port.onMessage.addListener((msg) => {
+          log(`📨 Received message: ${JSON.stringify(msg)}`);
+        });
+
+        port.onDisconnect.addListener(() => {
+          const error = chrome.runtime.lastError;
+          if (error) {
+            log(`❌ Port disconnected: ${error.message}`, 'error');
+          } else {
+            log('Port disconnected (normal)');
+          }
+        });
+
+        // Send a test message
+        port.postMessage({ type: 'heartbeat' });
+        log('📤 Sent heartbeat message');
+
+        resultsDiv.innerHTML = `
+          <div class="test success">
+            <h4>✅ Port Connection Successful!</h4>
+            <p><strong>Extension ID:</strong> ${extId}</p>
+            <p><strong>Port Name:</strong> web-app-connection</p>
+            <p style="color: #4ec9b0;">🎉 Port connection established! Check console for messages.</p>
+          </div>
+        `;
+      } catch (error) {
+        log(`❌ Port connection failed: ${error.message}`, 'error');
+        resultsDiv.innerHTML = `
+          <div class="test error">
+            <h4>❌ Port Connection Failed</h4>
+            <p><strong>Error:</strong> ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    window.onload = () => {
+      log('Direct connection test tool loaded');
+      log(`Current URL: ${window.location.href}`);
+      log(`Origin: ${window.location.origin}`);
+      log('Service worker status: RUNNING ✅');
+      log('Ready to test connection...');
+    };
+  </script>
+</body>
+</html>
+

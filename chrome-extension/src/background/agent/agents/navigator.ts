@@ -40,15 +40,6 @@ interface ParsedModelOutput {
 
 export class NavigatorActionRegistry {
   private actions: Record<string, Action> = {};
-  // Action name aliases to map incorrect names to correct ones
-  private actionAliases: Record<string, string> = {
-    goto: 'go_to_url',
-    navigate: 'go_to_url',
-    open_url: 'go_to_url',
-    select_dropdown: 'select_dropdown_option',
-    select_option: 'select_dropdown_option',
-    close_browser: 'close_tab', // Note: close_tab requires tab_id
-  };
 
   constructor(actions: Action[]) {
     for (const action of actions) {
@@ -65,19 +56,7 @@ export class NavigatorActionRegistry {
   }
 
   getAction(name: string): Action | undefined {
-    // First try direct lookup
-    if (this.actions[name]) {
-      return this.actions[name];
-    }
-
-    // Then try alias lookup
-    const aliasedName = this.actionAliases[name];
-    if (aliasedName && this.actions[aliasedName]) {
-      logger.warn(`[NavigatorActionRegistry] Action "${name}" not found, using alias "${aliasedName}"`);
-      return this.actions[aliasedName];
-    }
-
-    return undefined;
+    return this.actions[name];
   }
 
   setupModelOutputSchema(): z.ZodType {
@@ -136,16 +115,23 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
 
         // Try to extract JSON from markdown code blocks if parsing failed
         const errorMessage = error instanceof Error ? error.message : String(error);
-        if (
-          errorMessage.includes('is not valid JSON') &&
-          response?.raw?.content &&
-          typeof response.raw.content === 'string'
-        ) {
+        logger.info(`Structured output parsing failed, attempting manual parse: ${errorMessage}`);
+
+        // Try manual parsing from raw content if available
+        if (response?.raw?.content && typeof response.raw.content === 'string') {
+          logger.info('Attempting manual parse from raw content');
           const parsed = this.manuallyParseResponse(response.raw.content);
           if (parsed) {
+            logger.info('Successfully parsed response manually after structured output failure');
             return parsed;
           }
         }
+
+        // If we have raw response but no content string, try to extract from the response object
+        if (response?.raw && !response.raw.content) {
+          logger.info('Raw response exists but has no content string, checking for alternative formats');
+        }
+
         throw new Error(`Failed to invoke ${this.modelName} with structured output: \n${errorMessage}`);
       }
 
@@ -169,13 +155,26 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
           action: [...toolCall.args.action],
         };
       }
-      // Try to manually parse the raw response as a fallback
-      if (response.raw?.content && typeof response.raw.content === 'string') {
-        const parsed = this.manuallyParseResponse(response.raw.content);
+
+      // Try to manually parse the raw content as fallback
+      if (rawResponse.content && typeof rawResponse.content === 'string') {
+        logger.info('Attempting to manually parse navigator response from raw content');
+        const parsed = this.manuallyParseResponse(rawResponse.content);
         if (parsed) {
+          logger.info('Successfully parsed navigator response manually');
           return parsed;
         }
       }
+
+      // Log detailed error information for debugging
+      logger.error('Could not parse navigator response', {
+        hasParsed: !!response.parsed,
+        hasToolCalls: !!(rawResponse.tool_calls && rawResponse.tool_calls.length > 0),
+        hasRawContent: !!(rawResponse.content && typeof rawResponse.content === 'string'),
+        rawContentType: typeof rawResponse.content,
+        rawContentPreview: rawResponse.content ? String(rawResponse.content).substring(0, 200) : 'no content',
+      });
+
       throw new ResponseParseError('Could not parse navigator response');
     }
 
@@ -366,11 +365,11 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
       // if the item is null, skip it
       actions = response.action.filter((item: unknown) => item !== null);
       if (actions.length === 0) {
-        logger.warning('No valid actions found', response.action);
+        logger.info('No valid actions found', response.action);
       }
     } else if (typeof response.action === 'string') {
       try {
-        logger.warning('Unexpected action format', response.action);
+        logger.info('Unexpected action format', response.action);
         // First try to parse the action string directly
         actions = JSON.parse(response.action);
       } catch (parseError) {
@@ -411,26 +410,9 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
           return results;
         }
 
-        // Handle special case: close_browser should get current tab ID
-        if (actionName === 'close_browser') {
-          const currentPage = await browserContext.getCurrentPage();
-          if (currentPage?.tabId) {
-            actionName = 'close_tab';
-            actionArgs = { tab_id: currentPage.tabId, ...actionArgs };
-          } else {
-            throw new Error('Cannot close browser: no current tab found');
-          }
-        }
-
         const actionInstance = this.actionRegistry.getAction(actionName);
         if (actionInstance === undefined) {
           throw new Error(`Action ${actionName} not exists`);
-        }
-
-        // Normalize action arguments for common parameter name mismatches
-        if (actionName === 'switch_tab' && 'id' in actionArgs && !('tab_id' in actionArgs)) {
-          actionArgs = { ...actionArgs, tab_id: actionArgs.id };
-          delete actionArgs.id;
         }
 
         const indexArg = actionInstance.getIndexArg(actionArgs);

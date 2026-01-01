@@ -7,7 +7,8 @@ export interface TestCase {
   testSuiteId: string;
   name: string;
   description: string;
-  prompt: string; // The automation prompt for this test case
+  prompt: string; // The original automation prompt for this test case
+  plannerDescription?: string; // The planner's description/steps (next_steps from planner)
   status: 'pass' | 'fail' | 'pending' | 'running';
   testType?: 'UI Test' | 'API Test' | 'Integration Test'; // Type of test
   createdAt: number;
@@ -19,6 +20,16 @@ export interface TestCase {
   baseUrl?: string; // Base URL for the test
 }
 
+export interface TestSuiteSchedule {
+  cronExpression: string;
+  environment: string;
+  enabled: boolean;
+  headless: boolean;
+  workers: number; // 1-10
+  createdAt: number;
+  updatedAt: number;
+}
+
 export interface TestSuite {
   id: string;
   projectId: string;
@@ -26,6 +37,7 @@ export interface TestSuite {
   description: string;
   testType?: 'UI Tests' | 'API Tests' | 'Integration Tests'; // Type of test suite
   testCases: string[]; // Array of test case IDs
+  schedule?: TestSuiteSchedule;
   createdAt: number;
   updatedAt: number;
 }

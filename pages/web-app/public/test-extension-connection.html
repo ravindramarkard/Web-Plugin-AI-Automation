@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extension Connection Test</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 900px;
+      margin: 50px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .input-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    button {
+      background: #4285f4;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+    button:hover {
+      background: #357ae8;
+    }
+    button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .results {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 4px;
+      border-left: 4px solid #4285f4;
+    }
+    .test-item {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+      background: white;
+    }
+    .test-item.success {
+      border-left: 4px solid #34a853;
+      background: #e8f5e9;
+    }
+    .test-item.error {
+      border-left: 4px solid #ea4335;
+      background: #fce8e6;
+    }
+    .test-item.pending {
+      border-left: 4px solid #fbbc04;
+      background: #fff8e1;
+    }
+    .console-output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #1e1e1e;
+      color: #d4d4d4;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .summary.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+    .summary.error {
+      background: #fce8e6;
+      color: #c62828;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 Extension Connection E2E Test</h1>
+    <p class="subtitle">Test the connection between the web app and Chrome extension</p>
+    
+    <div id="url-warning" style="display: none; background: #ffebee; border: 1px solid #f44336; padding: 15px; border-radius: 4px; margin-bottom: 20px; color: #c62828;">
+      <strong>❌ Error:</strong> This page must be served from <code>http://localhost:3000</code>, not opened as a file.<br>
+      <strong>Solution:</strong> Start the web app server and navigate to <code>http://localhost:3000/test-extension-connection.html</code>
+    </div>
+    
+    <div class="input-group">
+      <label for="extension-id">Extension ID:</label>
+      <input 
+        type="text" 
+        id="extension-id" 
+        placeholder="obdjgoklifihgkklclbcjkpejipfjhkm"
+        value="obdjgoklifihgkklclbcjkpejipfjhkm"
+      />
+    </div>
+    
+    <div class="input-group">
+      <label for="web-app-url">Web App URL (for verification):</label>
+      <input 
+        type="text" 
+        id="web-app-url" 
+        value="http://localhost:3000"
+        readonly
+      />
+    </div>
+    
+    <button id="run-test" onclick="runTests()">Run All Tests</button>
+    <button id="test-ping" onclick="testPing()">Test Ping Only</button>
+    <button id="test-check" onclick="testCheckLLM()">Test LLM Check</button>
+    <button id="clear-results" onclick="clearResults()">Clear Results</button>
+    
+    <div id="results" class="results" style="display: none;">
+      <h3>Test Results:</h3>
+      <div id="test-results"></div>
+      <div id="summary"></div>
+    </div>
+    
+    <div class="console-output" id="console-output"></div>
+  </div>
+
+  <script>
+    // Check if page is being served correctly
+    (function checkPageContext() {
+      const currentUrl = window.location.href;
+      const warningDiv = document.getElementById('url-warning');
+      
+      if (currentUrl.startsWith('file://')) {
+        warningDiv.style.display = 'block';
+        console.error('❌ Page opened as file:// URL. Chrome extension APIs are not available.');
+        console.error('Please serve this page from http://localhost:3000');
+      } else if (!currentUrl.startsWith('http://localhost:3000') && !currentUrl.startsWith('http://127.0.0.1:3000')) {
+        console.warn('⚠️ Page not served from localhost:3000. Extension connection may not work.');
+        console.warn('Current URL:', currentUrl);
+      }
+      
+      // Check if chrome.runtime is available
+      if (typeof chrome === 'undefined') {
+        warningDiv.style.display = 'block';
+        warningDiv.innerHTML = '<strong>❌ Error:</strong> Chrome API not available. Make sure you are using Chrome/Edge browser.';
+        console.error('❌ Chrome API not available');
+      } else if (!chrome.runtime) {
+        warningDiv.style.display = 'block';
+        warningDiv.innerHTML = '<strong>❌ Error:</strong> chrome.runtime not available. Make sure this page is served from http://localhost:3000';
+        console.error('❌ chrome.runtime not available');
+      } else if (chrome.runtime.id === 'web-app') {
+        warningDiv.style.display = 'block';
+        warningDiv.innerHTML = '<strong>⚠️ Warning:</strong> Using chrome.runtime polyfill. Real extension APIs may not be available.';
+        console.warn('⚠️ Using chrome.runtime polyfill - extension communication may not work');
+      } else {
+        console.log('✅ Chrome runtime API is available');
+        console.log('Extension ID:', chrome.runtime.id || 'N/A (external page)');
+      }
+    })();
+    
+    // Capture console output
+    const originalLog = console.log;
+    const originalError = console.error;
+    const originalWarn = console.warn;
+    const consoleOutput = document.getElementById('console-output');
+    
+    function addToConsole(message, type = 'log') {
+      const timestamp = new Date().toLocaleTimeString();
+      const prefix = type === 'error' ? '❌' : type === 'warn' ? '⚠️' : 'ℹ️';
+      consoleOutput.textContent += `[${timestamp}] ${prefix} ${message}\n`;
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+    
+    console.log = function(...args) {
+      originalLog.apply(console, args);
+      addToConsole(args.join(' '), 'log');
+    };
+    
+    console.error = function(...args) {
+      originalError.apply(console, args);
+      addToConsole(args.join(' '), 'error');
+    };
+    
+    console.warn = function(...args) {
+      originalWarn.apply(console, args);
+      addToConsole(args.join(' '), 'warn');
+    };
+    
+    function clearResults() {
+      document.getElementById('test-results').innerHTML = '';
+      document.getElementById('summary').innerHTML = '';
+      document.getElementById('results').style.display = 'none';
+      consoleOutput.textContent = '';
+    }
+    
+    function addTestResult(testName, success, message) {
+      const resultsDiv = document.getElementById('test-results');
+      const testItem = document.createElement('div');
+      testItem.className = `test-item ${success ? 'success' : 'error'}`;
+      testItem.innerHTML = `
+        <strong>${testName}:</strong> ${success ? '✅ PASS' : '❌ FAIL'}
+        ${message ? `<br><small>${message}</small>` : ''}
+      `;
+      resultsDiv.appendChild(testItem);
+      document.getElementById('results').style.display = 'block';
+    }
+    
+    async function testPing() {
+      const extensionId = document.getElementById('extension-id').value.trim();
+      if (!extensionId) {
+        alert('Please enter an extension ID');
+        return;
+      }
+      
+      console.log(`[${new Date().toLocaleTimeString()}] Testing ping with extension ID: ${extensionId}`);
+      addTestResult('Ping Test', false, 'Running...');
+      
+      try {
+        // Check if chrome.runtime is available
+        if (typeof chrome === 'undefined') {
+          throw new Error('Chrome API not available. Make sure:\n1. You are using Chrome/Edge browser\n2. This page is served from http://localhost:3000 (not file://)');
+        }
+        
+        if (!chrome.runtime) {
+          throw new Error('chrome.runtime not available. Make sure:\n1. This page is served from http://localhost:3000\n2. You are using Chrome/Edge browser\n3. The page is not opened as a file:// URL');
+        }
+        
+        // Check if we're using the polyfill (which won't work for extension communication)
+        if (chrome.runtime.id === 'web-app') {
+          throw new Error('Using chrome.runtime polyfill - real Chrome extension APIs not available.\nMake sure:\n1. This page is served from http://localhost:3000\n2. You are using Chrome/Edge browser\n3. The extension is installed');
+        }
+        
+        console.log(`[${new Date().toLocaleTimeString()}] ℹ️ Testing ping with extension ID: ${extensionId}`);
+        
+        const response = await new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error('Ping timeout after 5 seconds. Service worker may be inactive. Try reloading the extension.'));
+          }, 5000);
+          
+          chrome.runtime.sendMessage(
+            extensionId,
+            { action: 'ping' },
+            (response) => {
+              clearTimeout(timeout);
+              const lastError = chrome.runtime.lastError;
+              if (lastError) {
+                reject(new Error(lastError.message));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+        
+        if (response && response.success) {
+          console.log('✅ Ping successful:', response);
+          addTestResult('Ping Test', true, JSON.stringify(response));
+        } else {
+          console.error('❌ Ping failed:', response);
+          addTestResult('Ping Test', false, JSON.stringify(response));
+        }
+      } catch (error) {
+        console.error('❌ Ping error:', error.message);
+        addTestResult('Ping Test', false, error.message);
+      }
+    }
+    
+    async function testCheckLLM() {
+      const extensionId = document.getElementById('extension-id').value.trim();
+      if (!extensionId) {
+        alert('Please enter an extension ID');
+        return;
+      }
+      
+      console.log(`Testing LLM check with extension ID: ${extensionId}`);
+      addTestResult('LLM Check Test', false, 'Running...');
+      
+      try {
+        const response = await new Promise((resolve, reject) => {
+          if (typeof chrome === 'undefined' || !chrome.runtime) {
+            reject(new Error('Chrome runtime API not available'));
+            return;
+          }
+          
+          chrome.runtime.sendMessage(
+            extensionId,
+            { action: 'check_llm_configured' },
+            (response) => {
+              const lastError = chrome.runtime.lastError;
+              if (lastError) {
+                reject(new Error(lastError.message));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+        
+        if (response && response.success) {
+          console.log('✅ LLM check successful:', response.data);
+          addTestResult('LLM Check Test', true, JSON.stringify(response.data, null, 2));
+        } else {
+          console.error('❌ LLM check failed:', response);
+          addTestResult('LLM Check Test', false, JSON.stringify(response));
+        }
+      } catch (error) {
+        console.error('❌ LLM check error:', error.message);
+        addTestResult('LLM Check Test', false, error.message);
+      }
+    }
+    
+    async function runTests() {
+      clearResults();
+      const extensionId = document.getElementById('extension-id').value.trim();
+      
+      if (!extensionId) {
+        alert('Please enter an extension ID');
+        return;
+      }
+      
+      console.log('🧪 Starting E2E Extension Connection Test...');
+      console.log(`Extension ID: ${extensionId}`);
+      console.log(`Current URL: ${window.location.href}`);
+      console.log('');
+      
+      const results = {
+        ping: false,
+        checkLLMConfigured: false,
+        syncProvider: false,
+        syncAgentModel: false,
+      };
+      
+      // Test 1: Ping
+      console.log('📡 Test 1: Ping Extension');
+      try {
+        const pingResponse = await new Promise((resolve, reject) => {
+          if (typeof chrome === 'undefined' || !chrome.runtime) {
+            reject(new Error('Chrome runtime API not available'));
+            return;
+          }
+          
+          chrome.runtime.sendMessage(
+            extensionId,
+            { action: 'ping' },
+            (response) => {
+              const lastError = chrome.runtime.lastError;
+              if (lastError) {
+                reject(new Error(lastError.message));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+        
+        if (pingResponse && pingResponse.success) {
+          console.log('✅ Ping successful:', pingResponse);
+          results.ping = true;
+          addTestResult('Ping Test', true);
+        } else {
+          console.error('❌ Ping failed:', pingResponse);
+          addTestResult('Ping Test', false, JSON.stringify(pingResponse));
+        }
+      } catch (error) {
+        console.error('❌ Ping error:', error.message);
+        addTestResult('Ping Test', false, error.message);
+      }
+      console.log('');
+      
+      // Test 2: Check LLM
+      console.log('🔍 Test 2: Check LLM Configuration');
+      try {
+        const checkResponse = await new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage(
+            extensionId,
+            { action: 'check_llm_configured' },
+            (response) => {
+              const lastError = chrome.runtime.lastError;
+              if (lastError) {
+                reject(new Error(lastError.message));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+        
+        if (checkResponse && checkResponse.success) {
+          console.log('✅ LLM check successful:', checkResponse.data);
+          results.checkLLMConfigured = true;
+          addTestResult('LLM Check Test', true, JSON.stringify(checkResponse.data, null, 2));
+        } else {
+          console.error('❌ LLM check failed:', checkResponse);
+          addTestResult('LLM Check Test', false, JSON.stringify(checkResponse));
+        }
+      } catch (error) {
+        console.error('❌ LLM check error:', error.message);
+        addTestResult('LLM Check Test', false, error.message);
+      }
+      console.log('');
+      
+      // Test 3: Sync Provider
+      console.log('🔄 Test 3: Sync LLM Provider');
+      try {
+        const mockProvider = {
+          type: 'openai',
+          apiKey: 'test-key-12345',
+          baseUrl: 'https://api.openai.com/v1',
+        };
+        
+        const syncProviderResponse = await new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage(
+            extensionId,
+            {
+              action: 'sync_llm_provider',
+              data: {
+                providerId: 'test_provider',
+                providerConfig: mockProvider,
+              },
+            },
+            (response) => {
+              const lastError = chrome.runtime.lastError;
+              if (lastError) {
+                reject(new Error(lastError.message));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+        
+        if (syncProviderResponse && syncProviderResponse.success) {
+          console.log('✅ Provider sync successful:', syncProviderResponse);
+          results.syncProvider = true;
+          addTestResult('Sync Provider Test', true);
+        } else {
+          console.error('❌ Provider sync failed:', syncProviderResponse);
+          addTestResult('Sync Provider Test', false, JSON.stringify(syncProviderResponse));
+        }
+      } catch (error) {
+        console.error('❌ Provider sync error:', error.message);
+        addTestResult('Sync Provider Test', false, error.message);
+      }
+      console.log('');
+      
+      // Test 4: Sync Agent Model
+      console.log('🤖 Test 4: Sync Agent Model');
+      try {
+        const mockModelConfig = {
+          provider: 'test_provider',
+          modelName: 'gpt-4',
+          parameters: {
+            temperature: 0.1,
+            topP: 0.1,
+          },
+        };
+        
+        const syncModelResponse = await new Promise((resolve, reject) => {
+          chrome.runtime.sendMessage(
+            extensionId,
+            {
+              action: 'sync_agent_model',
+              data: {
+                agentName: 'navigator',
+                modelConfig: mockModelConfig,
+              },
+            },
+            (response) => {
+              const lastError = chrome.runtime.lastError;
+              if (lastError) {
+                reject(new Error(lastError.message));
+              } else {
+                resolve(response);
+              }
+            }
+          );
+        });
+        
+        if (syncModelResponse && syncModelResponse.success) {
+          console.log('✅ Agent model sync successful:', syncModelResponse);
+          results.syncAgentModel = true;
+          addTestResult('Sync Agent Model Test', true);
+        } else {
+          console.error('❌ Agent model sync failed:', syncModelResponse);
+          addTestResult('Sync Agent Model Test', false, JSON.stringify(syncModelResponse));
+        }
+      } catch (error) {
+        console.error('❌ Agent model sync error:', error.message);
+        addTestResult('Sync Agent Model Test', false, error.message);
+      }
+      console.log('');
+      
+      // Summary
+      const allPassed = results.ping && results.checkLLMConfigured && results.syncProvider && results.syncAgentModel;
+      const summaryDiv = document.getElementById('summary');
+      summaryDiv.className = `summary ${allPassed ? 'success' : 'error'}`;
+      summaryDiv.innerHTML = `
+        <h3>📊 Test Summary:</h3>
+        <p>Ping: ${results.ping ? '✅' : '❌'}</p>
+        <p>Check LLM Configured: ${results.checkLLMConfigured ? '✅' : '❌'}</p>
+        <p>Sync Provider: ${results.syncProvider ? '✅' : '❌'}</p>
+        <p>Sync Agent Model: ${results.syncAgentModel ? '✅' : '❌'}</p>
+        <p><strong>${allPassed ? '🎉 All tests passed!' : '⚠️ Some tests failed'}</strong></p>
+      `;
+      
+      console.log('📊 Test Summary:');
+      console.log(`Ping: ${results.ping ? '✅' : '❌'}`);
+      console.log(`Check LLM Configured: ${results.checkLLMConfigured ? '✅' : '❌'}`);
+      console.log(`Sync Provider: ${results.syncProvider ? '✅' : '❌'}`);
+      console.log(`Sync Agent Model: ${results.syncAgentModel ? '✅' : '❌'}`);
+      console.log(`\n${allPassed ? '🎉 All tests passed!' : '⚠️ Some tests failed'}`);
+    }
+  </script>
+</body>
+</html>
+

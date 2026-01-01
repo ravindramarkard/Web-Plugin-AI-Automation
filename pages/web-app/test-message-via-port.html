@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Message Via Port</title>
+  <style>
+    body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+    .test { margin: 20px 0; padding: 15px; background: #2d2d2d; border-radius: 4px; border-left: 4px solid #569cd6; }
+    .success { border-left-color: #4ec9b0; }
+    .error { border-left-color: #f48771; }
+    button { padding: 10px 20px; margin: 5px; background: #0e639c; color: white; border: none; border-radius: 4px; cursor: pointer; }
+    button:hover { background: #1177bb; }
+    input { padding: 8px; width: 500px; background: #3c3c3c; color: #d4d4d4; border: 1px solid #555; border-radius: 4px; }
+    pre { background: #252526; padding: 10px; border-radius: 4px; overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>🔍 Test Message Via Port</h1>
+  <p>Since port connection works, let's test sending messages through the port instead of sendMessage.</p>
+
+  <div class="test">
+    <h3>Step 1: Enter Extension ID</h3>
+    <input type="text" id="ext-id" value="obdjgoklifihgkklclbcjkpejipfjhkm" placeholder="Extension ID">
+    <button onclick="testPingViaPort()">Test Ping Via Port</button>
+  </div>
+
+  <div class="test">
+    <h3>Step 2: Test Results</h3>
+    <div id="results"></div>
+  </div>
+
+  <div class="test">
+    <h3>Step 3: Console Output</h3>
+    <pre id="console-output"></pre>
+  </div>
+
+  <script>
+    const output = document.getElementById('console-output');
+    const resultsDiv = document.getElementById('results');
+    let port = null;
+
+    function log(msg, type = 'log') {
+      const time = new Date().toLocaleTimeString();
+      output.textContent += `[${time}] ${type === 'error' ? '❌' : 'ℹ️'} ${msg}\n`;
+      output.scrollTop = output.scrollHeight;
+      if (type === 'error') console.error(msg);
+      else console.log(msg);
+    }
+
+    function testPingViaPort() {
+      const extId = document.getElementById('ext-id').value.trim();
+      resultsDiv.innerHTML = '<p>Testing ping via port...</p>';
+      log(`Testing ping via port to extension: ${extId}`);
+
+      if (!extId) {
+        resultsDiv.innerHTML = '<p style="color: #f48771;">❌ Please enter extension ID</p>';
+        return;
+      }
+
+      try {
+        // Connect via port
+        port = chrome.runtime.connect(extId, { name: 'web-app-connection' });
+        
+        const lastError = chrome.runtime.lastError;
+        if (lastError) {
+          throw new Error(lastError.message);
+        }
+
+        log('✅ Port connected successfully!');
+
+        // Set up message listener
+        port.onMessage.addListener((msg) => {
+          log(`📨 Received message: ${JSON.stringify(msg)}`);
+          
+          if (msg.type === 'heartbeat_ack') {
+            log('✅ Heartbeat acknowledged!');
+          } else if (msg.success !== undefined || msg.data) {
+            log(`✅ Ping response received: ${JSON.stringify(msg)}`);
+            resultsDiv.innerHTML = `
+              <div class="test success">
+                <h4>✅ Ping Successful Via Port!</h4>
+                <p><strong>Extension ID:</strong> ${extId}</p>
+                <p><strong>Response:</strong></p>
+                <pre>${JSON.stringify(msg, null, 2)}</pre>
+                <p style="color: #4ec9b0;">🎉 Port-based messaging works! This is a workaround for sendMessage.</p>
+              </div>
+            `;
+          }
+        });
+
+        port.onDisconnect.addListener(() => {
+          const error = chrome.runtime.lastError;
+          if (error) {
+            log(`❌ Port disconnected: ${error.message}`, 'error');
+          } else {
+            log('Port disconnected (normal)');
+          }
+        });
+
+        // Send ping message via port
+        log('📤 Sending ping message via port...');
+        port.postMessage({ type: 'heartbeat' });
+        
+        // Also try sending a custom ping message
+        setTimeout(() => {
+          log('📤 Sending custom ping message...');
+          port.postMessage({ action: 'ping', type: 'ping' });
+        }, 500);
+
+        resultsDiv.innerHTML = `
+          <div class="test">
+            <h4>⏳ Waiting for response...</h4>
+            <p>Check console output for messages from extension.</p>
+          </div>
+        `;
+      } catch (error) {
+        log(`❌ Port connection failed: ${error.message}`, 'error');
+        resultsDiv.innerHTML = `
+          <div class="test error">
+            <h4>❌ Port Connection Failed</h4>
+            <p><strong>Error:</strong> ${error.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    window.onload = () => {
+      log('Port-based message test tool loaded');
+      log(`Current URL: ${window.location.href}`);
+      log(`Origin: ${window.location.origin}`);
+      log('Ready to test port-based messaging...');
+    };
+  </script>
+</body>
+</html>
+

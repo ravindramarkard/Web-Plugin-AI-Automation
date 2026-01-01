@@ -145,294 +145,299 @@ class WebService {
               }
             }
 
-            // Get current tab first
-            const tabResponse = await extensionBridge.sendMessage({
-              action: 'get_current_tab',
-            });
+            // Set up event listener for extension events FIRST (before sending task)
+            console.log('[WebService] Attempting to connect to extension port...');
+            const port = extensionBridge.connect('web-app-connection');
+            console.log('[WebService] Port connection result:', port ? 'SUCCESS' : 'FAILED');
+            if (port) {
+              console.log('[WebService] ✅ Port connected, setting up message listener');
 
-            if (tabResponse.success && tabResponse.data?.tabId) {
-              // Set up event listener for extension events FIRST (before sending task)
-              console.log('[WebService] Attempting to connect to extension port...');
-              const port = extensionBridge.connect('web-app-connection');
-              console.log('[WebService] Port connection result:', port ? 'SUCCESS' : 'FAILED');
-              if (port) {
-                console.log('[WebService] ✅ Port connected, setting up message listener');
-                // Handle port disconnection
-                port.onDisconnect.addListener(() => {
-                  console.log('[WebService] ========== Port onDisconnect triggered ==========');
-                  // Check for lastError only if chrome.runtime is available
-                  // onDisconnect doesn't always have a lastError, so we check safely
-                  let errorMessage = 'Extension port disconnected';
-                  if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.lastError) {
-                    const lastError = chrome.runtime.lastError;
-                    errorMessage = lastError.message || errorMessage;
-                    // Only log as warning if it's an actual error, not a normal disconnect
-                    if (lastError.message && !lastError.message.includes('Receiving end does not exist')) {
-                      console.warn('[WebService] Extension port disconnected:', lastError.message);
-                    } else {
-                      console.log('[WebService] Extension port disconnected (normal disconnect)');
-                    }
+              // Handle port disconnection
+              port.onDisconnect.addListener(() => {
+                console.log('[WebService] ========== Port onDisconnect triggered ==========');
+                // Check for lastError only if chrome.runtime is available
+                // onDisconnect doesn't always have a lastError, so we check safely
+                let errorMessage = 'Extension port disconnected';
+                if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.lastError) {
+                  const lastError = chrome.runtime.lastError;
+                  errorMessage = lastError.message || errorMessage;
+                  // Only log as warning if it's an actual error, not a normal disconnect
+                  if (lastError.message && !lastError.message.includes('Receiving end does not exist')) {
+                    console.warn('[WebService] Extension port disconnected:', lastError.message);
                   } else {
-                    console.log('[WebService] Extension port disconnected (no error)');
+                    console.log('[WebService] Extension port disconnected (normal disconnect)');
+                  }
+                } else {
+                  console.log('[WebService] Extension port disconnected (no error)');
+                }
+
+                console.log('[WebService] Cleaning up executor state');
+                this.isExecuting = false;
+                this.currentExecutor = null;
+              });
+
+              port.onMessage.addListener(async (msg: any) => {
+                console.log('[WebService] ========== Received event from extension ==========');
+                console.log('[WebService] Raw message:', JSON.stringify(msg, null, 2));
+                console.log('[WebService] Message keys:', Object.keys(msg));
+                console.log('[WebService] Message type:', msg.type);
+                console.log('[WebService] Message actor:', msg.actor);
+                console.log('[WebService] Message state:', msg.state);
+                console.log('[WebService] Message data:', msg.data);
+
+                if (msg.type === EventType.EXECUTION || msg.actor || msg.state) {
+                  // Ensure the event has the correct format
+                  // Normalize actor to match Actors enum (lowercase string)
+                  let normalizedActor = msg.actor || 'system';
+                  if (typeof normalizedActor === 'string') {
+                    normalizedActor = normalizedActor.toLowerCase() as Actors;
                   }
 
-                  console.log('[WebService] Cleaning up executor state');
-                  this.isExecuting = false;
-                  this.currentExecutor = null;
-                });
+                  // Extract content from multiple possible locations
+                  const content =
+                    msg.data?.details ||
+                    msg.data?.message ||
+                    msg.data?.content ||
+                    msg.content ||
+                    msg.message ||
+                    msg.details ||
+                    '';
 
-                port.onMessage.addListener(async (msg: any) => {
-                  console.log('[WebService] ========== Received event from extension ==========');
-                  console.log('[WebService] Raw message:', JSON.stringify(msg, null, 2));
-                  console.log('[WebService] Message keys:', Object.keys(msg));
-                  console.log('[WebService] Message type:', msg.type);
-                  console.log('[WebService] Message actor:', msg.actor);
-                  console.log('[WebService] Message state:', msg.state);
-                  console.log('[WebService] Message data:', msg.data);
+                  const event: AgentEvent = {
+                    actor: normalizedActor,
+                    state: msg.state || ExecutionState.TASK_START,
+                    data: {
+                      taskId: msg.data?.taskId || msg.taskId || this.currentTaskId || '',
+                      step: msg.data?.step || msg.step || 0,
+                      maxSteps: msg.data?.maxSteps || msg.maxSteps || 50,
+                      details: content,
+                      message: content,
+                      content: content,
+                      ...msg.data, // Include any other data fields
+                    },
+                    timestamp: msg.timestamp || Date.now(),
+                    type: msg.type || EventType.EXECUTION,
+                  };
+                  console.log('[WebService] ========== Formatted event ==========');
+                  console.log('[WebService] Raw actor:', msg.actor);
+                  console.log('[WebService] Normalized actor:', normalizedActor);
+                  console.log('[WebService] Event state:', event.state);
+                  console.log('[WebService] Event details:', event.data?.details);
+                  console.log('[WebService] Full event:', JSON.stringify(event, null, 2));
 
-                  if (msg.type === EventType.EXECUTION || msg.actor || msg.state) {
-                    // Ensure the event has the correct format
-                    // Normalize actor to match Actors enum (lowercase string)
-                    let normalizedActor = msg.actor || 'system';
-                    if (typeof normalizedActor === 'string') {
-                      normalizedActor = normalizedActor.toLowerCase() as Actors;
-                    }
+                  // Track actions from extension events
+                  console.log('[WebService] Checking if should track action:', {
+                    actor: event.actor,
+                    state: event.state,
+                    isNavigator: event.actor === 'navigator',
+                    isActOk: event.state === ExecutionState.ACT_OK,
+                    ExecutionState_ACT_OK: ExecutionState.ACT_OK,
+                  });
 
-                    // Extract content from multiple possible locations
-                    const content =
-                      msg.data?.details ||
-                      msg.data?.message ||
-                      msg.data?.content ||
-                      msg.content ||
-                      msg.message ||
-                      msg.details ||
-                      '';
+                  // Handle testCodeGenerated event from extension
+                  if (event.type === 'testCodeGenerated' && event.data?.testCode) {
+                    console.log('[WebService] ✅ Received Playwright code from extension');
+                    try {
+                      const { testSuiteStorage } = await import('./testSuiteStorage');
+                      const { promptStorage } = await import('./promptStorage');
+                      const { projectStorage } = await import('./projectStorage');
 
-                    const event: AgentEvent = {
-                      actor: normalizedActor,
-                      state: msg.state || ExecutionState.TASK_START,
-                      data: {
-                        taskId: msg.data?.taskId || msg.taskId || this.currentTaskId || '',
-                        step: msg.data?.step || msg.step || 0,
-                        maxSteps: msg.data?.maxSteps || msg.maxSteps || 50,
-                        details: content,
-                        message: content,
-                        content: content,
-                        ...msg.data, // Include any other data fields
-                      },
-                      timestamp: msg.timestamp || Date.now(),
-                      type: msg.type || EventType.EXECUTION,
-                    };
-                    console.log('[WebService] ========== Formatted event ==========');
-                    console.log('[WebService] Raw actor:', msg.actor);
-                    console.log('[WebService] Normalized actor:', normalizedActor);
-                    console.log('[WebService] Event state:', event.state);
-                    console.log('[WebService] Event details:', event.data?.details);
-                    console.log('[WebService] Full event:', JSON.stringify(event, null, 2));
+                      const testCode = event.data.testCode;
+                      const testName = event.data.testName || 'Generated Test';
+                      const baseUrl = event.data.baseUrl || '';
+                      const prompt = event.data.prompt || '';
 
-                    // Track actions from extension events
-                    console.log('[WebService] Checking if should track action:', {
-                      actor: event.actor,
-                      state: event.state,
-                      isNavigator: event.actor === 'navigator',
-                      isActOk: event.state === ExecutionState.ACT_OK,
-                      ExecutionState_ACT_OK: ExecutionState.ACT_OK,
-                    });
+                      console.log('[WebService] Test code length:', testCode.length);
+                      console.log('[WebService] Test name:', testName);
+                      console.log('[WebService] Base URL:', baseUrl);
+                      console.log('[WebService] Prompt:', prompt.substring(0, 100));
 
-                    // Handle testCodeGenerated event from extension
-                    if (event.type === 'testCodeGenerated' && event.data?.testCode) {
-                      console.log('[WebService] ✅ Received Playwright code from extension');
-                      try {
-                        const { testSuiteStorage } = await import('./testSuiteStorage');
-                        const { promptStorage } = await import('./promptStorage');
-                        const { projectStorage } = await import('./projectStorage');
+                      // Find matching prompt and project
+                      let matchingPrompt = null;
+                      let projectId = '';
+                      const allProjects = await projectStorage.getAllProjects();
 
-                        const testCode = event.data.testCode;
-                        const testName = event.data.testName || 'Generated Test';
-                        const baseUrl = event.data.baseUrl || '';
-                        const prompt = event.data.prompt || '';
-
-                        console.log('[WebService] Test code length:', testCode.length);
-                        console.log('[WebService] Test name:', testName);
-                        console.log('[WebService] Base URL:', baseUrl);
-                        console.log('[WebService] Prompt:', prompt.substring(0, 100));
-
-                        // Find matching prompt and project
-                        let matchingPrompt = null;
-                        let projectId = '';
-                        const allProjects = await projectStorage.getAllProjects();
-
-                        for (const project of allProjects) {
-                          const projectPrompts = await promptStorage.getPromptsByProject(project.id);
-                          const found = projectPrompts.find(
-                            p => p.promptContent === prompt || prompt.includes(p.promptContent.substring(0, 50)),
-                          );
-                          if (found) {
-                            matchingPrompt = found;
-                            projectId = project.id;
-                            break;
-                          }
+                      for (const project of allProjects) {
+                        const projectPrompts = await promptStorage.getPromptsByProject(project.id);
+                        const found = projectPrompts.find(
+                          p => p.promptContent === prompt || prompt.includes(p.promptContent.substring(0, 50)),
+                        );
+                        if (found) {
+                          matchingPrompt = found;
+                          projectId = project.id;
+                          break;
                         }
+                      }
 
-                        // Use first project if no match found
-                        if (!projectId && allProjects.length > 0) {
-                          projectId = allProjects[0].id;
-                        }
+                      // Use first project if no match found
+                      if (!projectId && allProjects.length > 0) {
+                        projectId = allProjects[0].id;
+                      }
 
-                        if (projectId) {
-                          // Find or create test suite with UI Tests type
-                          let testSuite = (await testSuiteStorage.getTestSuitesByProject(projectId)).find(
-                            s => s.testType === 'UI Tests',
-                          );
-                          if (!testSuite) {
-                            testSuite = await testSuiteStorage.createTestSuite({
-                              projectId,
-                              name: 'UI Tests',
-                              description: 'UI test cases automatically generated from successful prompt executions',
-                              testType: 'UI Tests',
-                            });
-                            console.log('[WebService] Created new UI Tests suite:', testSuite.id);
-                          }
-
-                          // Save test case with UI Test type
-                          const newTestCase = await testSuiteStorage.createTestCase({
-                            testSuiteId: testSuite.id,
-                            name: matchingPrompt?.title || testName,
-                            description:
-                              matchingPrompt?.description ||
-                              `Auto-generated from task execution: ${prompt.substring(0, 100)}`,
-                            prompt: prompt,
-                            playwrightCode: testCode,
-                            baseUrl: baseUrl,
-                            testType: 'UI Test',
-                            status: 'pass',
-                            lastRunAt: Date.now(),
+                      if (projectId) {
+                        // Find or create test suite with UI Tests type
+                        let testSuite = (await testSuiteStorage.getTestSuitesByProject(projectId)).find(
+                          s => s.testType === 'UI Tests',
+                        );
+                        if (!testSuite) {
+                          testSuite = await testSuiteStorage.createTestSuite({
+                            projectId,
+                            name: 'UI Tests',
+                            description: 'UI test cases automatically generated from successful prompt executions',
+                            testType: 'UI Tests',
                           });
-
-                          console.log('[WebService] ✅ Test case saved from extension:', newTestCase.id);
-
-                          // Dispatch event to UI
-                          window.dispatchEvent(
-                            new CustomEvent('testCaseCreated', {
-                              detail: {
-                                testCaseId: newTestCase.id,
-                                suiteId: testSuite.id,
-                                projectId: projectId,
-                              },
-                            }),
-                          );
+                          console.log('[WebService] Created new UI Tests suite:', testSuite.id);
                         }
-                      } catch (error) {
-                        console.error('[WebService] ❌ Failed to save test case from extension:', error);
+
+                        // Save test case with UI Test type
+                        const newTestCase = await testSuiteStorage.createTestCase({
+                          testSuiteId: testSuite.id,
+                          name: matchingPrompt?.title || testName,
+                          description:
+                            matchingPrompt?.description ||
+                            `Auto-generated from task execution: ${prompt.substring(0, 100)}`,
+                          prompt: prompt,
+                          playwrightCode: testCode,
+                          baseUrl: baseUrl,
+                          testType: 'UI Test',
+                          status: 'pass',
+                          lastRunAt: Date.now(),
+                        });
+
+                        console.log('[WebService] ✅ Test case saved from extension:', newTestCase.id);
+
+                        // Dispatch event to UI
+                        window.dispatchEvent(
+                          new CustomEvent('testCaseCreated', {
+                            detail: {
+                              testCaseId: newTestCase.id,
+                              suiteId: testSuite.id,
+                              projectId: projectId,
+                            },
+                          }),
+                        );
                       }
+                    } catch (error) {
+                      console.error('[WebService] ❌ Failed to save test case from extension:', error);
                     }
-
-                    if (event.actor === 'navigator' && event.state === ExecutionState.ACT_OK) {
-                      console.log('[WebService] ✅ Navigator ACT_OK detected - tracking action');
-                      try {
-                        const { actionTracker } = await import('./actionTracker');
-                        const details = event.data?.details || '';
-                        const eventData = event.data || {};
-
-                        console.log('[WebService] Action details to parse:', details);
-                        console.log('[WebService] Event data:', eventData);
-
-                        // Try to extract action info from event data first (structured data)
-                        if (eventData.action) {
-                          // Extension sent structured action data
-                          const actionName = eventData.action;
-                          const actionParams = eventData.params || eventData.input || {};
-                          actionTracker.addStep(actionName, actionParams, true);
-                          console.log('[WebService] Tracked action from structured data:', actionName, actionParams);
-                        } else {
-                          // Fallback: Parse action from details string
-                          if (
-                            details.includes('Navigating to') ||
-                            details.includes('go to') ||
-                            details.includes('navigate to')
-                          ) {
-                            const urlMatch = details.match(/(https?:\/\/[^\s]+)/);
-                            if (urlMatch) {
-                              actionTracker.addStep('go_to_url', { url: urlMatch[1] }, true);
-                              console.log('[WebService] Tracked go_to_url action from extension (parsed)');
-                            }
-                          } else if (details.includes('Clicking') || details.includes('Click')) {
-                            const indexMatch = details.match(/(?:element|index)[\s:]+(\d+)/i);
-                            const xpathMatch = details.match(/xpath[:\s]+([^\s]+)/i);
-                            const params: Record<string, any> = {};
-                            if (indexMatch) params.index = parseInt(indexMatch[1], 10);
-                            if (xpathMatch) params.xpath = xpathMatch[1];
-                            actionTracker.addStep('click_element', params, true);
-                            console.log('[WebService] Tracked click_element action from extension (parsed)');
-                          } else if (
-                            details.includes('Typing') ||
-                            details.includes('Input') ||
-                            details.includes('Entering')
-                          ) {
-                            const textMatch = details.match(/["']([^"']+)["']/);
-                            const indexMatch = details.match(/(?:element|index|field)[\s:]+(\d+)/i);
-                            const xpathMatch = details.match(/xpath[:\s]+([^\s]+)/i);
-                            const params: Record<string, any> = {};
-                            if (textMatch) params.text = textMatch[1];
-                            if (indexMatch) params.index = parseInt(indexMatch[1], 10);
-                            if (xpathMatch) params.xpath = xpathMatch[1];
-                            actionTracker.addStep('input_text', params, true);
-                            console.log('[WebService] Tracked input_text action from extension (parsed)');
-                          } else if (
-                            details.includes('Task completed') ||
-                            details.includes('done') ||
-                            details.includes('completed')
-                          ) {
-                            actionTracker.addStep('done', { text: details, success: true }, true);
-                            console.log('[WebService] Tracked done action from extension (parsed)');
-                          } else {
-                            // Generic action tracking - at least record that navigator did something
-                            console.log(
-                              "[WebService] ⚠️ Navigator ACT_OK but details don't match known patterns:",
-                              details,
-                            );
-                            console.log('[WebService] Details length:', details.length);
-                            console.log('[WebService] Details preview:', details.substring(0, 200));
-                          }
-                        }
-                      } catch (error) {
-                        console.error('[WebService] ❌ Failed to track action from extension event:', error);
-                      }
-                    } else {
-                      console.log('[WebService] Not tracking - actor:', event.actor, 'state:', event.state);
-                    }
-
-                    // Forward executor events to our event callbacks
-                    console.log('[WebService] Forwarding event to ChatPage');
-                    this.emitEvent(event);
-                  } else {
-                    console.warn('[WebService] ⚠️ Message does not match event format, ignoring');
                   }
-                });
 
-                port.onDisconnect.addListener(() => {
-                  console.log('[WebService] Extension connection closed');
-                  this.isExecuting = false;
-                  this.currentExecutor = null;
-                });
-              }
+                  // Track planner events to capture planner description
+                  if (event.actor === 'planner' && event.state === ExecutionState.STEP_OK) {
+                    console.log('[WebService] ✅ Planner STEP_OK detected - capturing planner description');
+                    try {
+                      const { actionTracker } = await import('./actionTracker');
+                      const plannerDescription =
+                        event.data?.details || event.data?.message || event.data?.content || '';
+                      if (plannerDescription) {
+                        actionTracker.setPlannerDescription(plannerDescription);
+                        console.log('[WebService] Captured planner description:', plannerDescription.substring(0, 100));
+                      }
+                    } catch (error) {
+                      console.error('[WebService] ❌ Failed to capture planner description:', error);
+                    }
+                  }
 
-              // Send task to extension
+                  if (event.actor === 'navigator' && event.state === ExecutionState.ACT_OK) {
+                    console.log('[WebService] ✅ Navigator ACT_OK detected - tracking action');
+                    try {
+                      const { actionTracker } = await import('./actionTracker');
+                      const details = event.data?.details || '';
+                      const eventData = event.data || {};
+
+                      console.log('[WebService] Action details to parse:', details);
+                      console.log('[WebService] Event data:', eventData);
+
+                      // Try to extract action info from event data first (structured data)
+                      if (eventData.action) {
+                        // Extension sent structured action data
+                        const actionName = eventData.action;
+                        const actionParams = eventData.params || eventData.input || {};
+                        actionTracker.addStep(actionName, actionParams, true);
+                        console.log('[WebService] Tracked action from structured data:', actionName, actionParams);
+                      } else {
+                        // Fallback: Parse action from details string
+                        if (
+                          details.includes('Navigating to') ||
+                          details.includes('go to') ||
+                          details.includes('navigate to')
+                        ) {
+                          const urlMatch = details.match(/(https?:\/\/[^\s]+)/);
+                          if (urlMatch) {
+                            actionTracker.addStep('go_to_url', { url: urlMatch[1] }, true);
+                            console.log('[WebService] Tracked go_to_url action from extension (parsed)');
+                          }
+                        } else if (details.includes('Clicking') || details.includes('Click')) {
+                          const indexMatch = details.match(/(?:element|index)[\s:]+(\d+)/i);
+                          const xpathMatch = details.match(/xpath[:\s]+([^\s]+)/i);
+                          const params: Record<string, any> = {};
+                          if (indexMatch) params.index = parseInt(indexMatch[1], 10);
+                          if (xpathMatch) params.xpath = xpathMatch[1];
+                          actionTracker.addStep('click_element', params, true);
+                          console.log('[WebService] Tracked click_element action from extension (parsed)');
+                        } else if (
+                          details.includes('Typing') ||
+                          details.includes('Input') ||
+                          details.includes('Entering')
+                        ) {
+                          const textMatch = details.match(/["']([^"']+)["']/);
+                          const indexMatch = details.match(/(?:element|index|field)[\s:]+(\d+)/i);
+                          const xpathMatch = details.match(/xpath[:\s]+([^\s]+)/i);
+                          const params: Record<string, any> = {};
+                          if (textMatch) params.text = textMatch[1];
+                          if (indexMatch) params.index = parseInt(indexMatch[1], 10);
+                          if (xpathMatch) params.xpath = xpathMatch[1];
+                          actionTracker.addStep('input_text', params, true);
+                          console.log('[WebService] Tracked input_text action from extension (parsed)');
+                        } else if (
+                          details.includes('Task completed') ||
+                          details.includes('done') ||
+                          details.includes('completed')
+                        ) {
+                          actionTracker.addStep('done', { text: details, success: true }, true);
+                          console.log('[WebService] Tracked done action from extension (parsed)');
+                        } else {
+                          // Generic action tracking - at least record that navigator did something
+                          console.log(
+                            "[WebService] ⚠️ Navigator ACT_OK but details don't match known patterns:",
+                            details,
+                          );
+                          console.log('[WebService] Details length:', details.length);
+                          console.log('[WebService] Details preview:', details.substring(0, 200));
+                        }
+                      }
+                    } catch (error) {
+                      console.error('[WebService] ❌ Failed to track action from extension event:', error);
+                    }
+                  } else {
+                    console.log('[WebService] Not tracking - actor:', event.actor, 'state:', event.state);
+                  }
+
+                  // Forward executor events to our event callbacks
+                  console.log('[WebService] Forwarding event to ChatPage');
+                  this.emitEvent(event);
+                } else {
+                  console.warn('[WebService] ⚠️ Message does not match event format, ignoring');
+                }
+              });
+
+              // Send task to extension - it will create a new browser window automatically
+              // Pass createNewTab: true to ensure a new browser window is always created
               const response = await extensionBridge.sendMessage({
                 action: 'new_task',
                 task: message.task,
                 taskId: this.currentTaskId,
-                tabId: tabResponse.data.tabId,
+                createNewTab: true, // Always create a new browser window for task execution
               });
 
               if (response.success) {
-                console.log('[WebService] Task started in extension');
+                console.log('[WebService] Task started in extension with new browser window');
                 return { type: 'task_started', taskId: this.currentTaskId };
               } else {
                 throw new Error(response.error || 'Failed to start task in extension');
               }
             } else {
-              throw new Error('No active tab found. Please open a browser tab first.');
+              throw new Error('Failed to connect to extension port');
             }
           } catch (error) {
             console.warn('[WebService] Extension task failed:', error);
@@ -739,6 +744,11 @@ class WebService {
 
       const prompt = actionTracker.getPrompt();
       const baseUrl = actionTracker.getBaseUrl();
+      const plannerDescription = actionTracker.getPlannerDescription();
+      console.log(
+        '[WebService] Planner description:',
+        plannerDescription ? plannerDescription.substring(0, 100) : 'none',
+      );
       console.log('[WebService] Prompt:', prompt ? prompt.substring(0, 100) : 'null');
       console.log('[WebService] Base URL:', baseUrl);
       console.log('[WebService] Steps tracked:', steps.length);
@@ -785,9 +795,93 @@ class WebService {
 
       if (matchingPrompt) {
         console.log('[WebService] Found matching prompt:', matchingPrompt.title);
-        // Generate Playwright code
+        // Generate Playwright code using planner
         const testName = matchingPrompt.title || 'Generated Test';
-        const playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl || matchingPrompt.baseUrl);
+        let playwrightCode = '';
+
+        try {
+          // Try to get planner from current executor if available
+          // Otherwise, create a temporary planner instance
+          const { createChatModel } = await import('./webCreateChatModel');
+          const { llmProviderStore, agentModelStore, AgentNameEnum } = await import('@extension/storage');
+          const { WebPlanner } = await import('./webPlanner');
+          const { WebBrowserContext } = await import('./webBrowserContext');
+          const { WebMessageManager } = await import('./webMessageManager');
+          const { WebEventManager } = await import('./webEventManager');
+          // AgentContext is an interface, we'll create an object that implements it
+
+          // Get providers and models
+          const providers = await llmProviderStore.getAllProviders();
+          const agentModels = await agentModelStore.getAllAgentModels();
+          const plannerModel = agentModels[AgentNameEnum.Planner];
+
+          if (plannerModel && providers[plannerModel.provider]) {
+            console.log('[WebService] Creating planner instance to generate Playwright code');
+            const plannerProviderConfig = providers[plannerModel.provider];
+            const plannerLLM = createChatModel(plannerProviderConfig, plannerModel);
+
+            // Create minimal context for planner (similar to webExecutorSimple)
+            const browserContext = new WebBrowserContext();
+            const messageManager = new WebMessageManager();
+            const eventManager = new WebEventManager();
+            const controller = new AbortController();
+            type AgentContextType = import('./webAgentTypes').AgentContext;
+            const context: AgentContextType = {
+              taskId: taskId || this.currentTaskId || '',
+              browserContext,
+              messageManager,
+              eventManager,
+              options: {
+                maxSteps: 50,
+                maxFailures: 5,
+                maxActionsPerStep: 10,
+                useVision: false,
+                useVisionForPlanner: false,
+                planningInterval: 5,
+              },
+              nSteps: 0,
+              consecutiveFailures: 0,
+              paused: false,
+              stopped: false,
+              controller,
+              emitEvent: async () => {},
+              stop: async () => {
+                controller.abort();
+              },
+            };
+
+            const planner = new WebPlanner(plannerLLM, context);
+
+            // Generate Playwright code using planner
+            const result = await planner.generatePlaywrightCode(
+              steps.map(s => ({
+                action: s.action,
+                params: s.params,
+                elementMetadata: s.elementMetadata,
+              })),
+              testName,
+              baseUrl || matchingPrompt.baseUrl,
+            );
+
+            playwrightCode = result.code || '';
+            if (result.error) {
+              console.warn('[WebService] Planner generated code with error:', result.error);
+            }
+          } else {
+            console.warn('[WebService] Planner model not available, falling back to generator');
+            playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl || matchingPrompt.baseUrl);
+          }
+        } catch (error) {
+          console.error('[WebService] Error generating Playwright code with planner:', error);
+          // Fall back to generator
+          playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl || matchingPrompt.baseUrl);
+        }
+
+        if (!playwrightCode) {
+          console.warn('[WebService] No Playwright code generated, using fallback');
+          playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl || matchingPrompt.baseUrl);
+        }
+
         console.log('[WebService] Generated Playwright code, length:', playwrightCode.length);
 
         // Find or create a default test suite for this project
@@ -816,6 +910,7 @@ class WebService {
               matchingPrompt.description ||
               `Auto-generated from prompt: ${matchingPrompt.promptContent.substring(0, 100)}`,
             prompt: matchingPrompt.promptContent,
+            plannerDescription: plannerDescription || undefined, // Store planner description if available
             playwrightCode: playwrightCode,
             baseUrl: baseUrl || matchingPrompt.baseUrl,
             testType: 'UI Test',
