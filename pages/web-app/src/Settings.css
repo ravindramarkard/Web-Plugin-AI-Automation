@@ -1,0 +1,11 @@
+/* Settings page styles */
+.settings-container {
+  min-height: 100vh;
+}
+
+/* Ensure proper scrolling in main content area */
+.settings-main {
+  overflow-y: auto;
+  max-height: 100vh;
+}
+

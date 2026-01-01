@@ -9,10 +9,15 @@ export interface ActionSchema {
 export const doneActionSchema: ActionSchema = {
   name: 'done',
   description: 'Complete task',
-  schema: z.object({
-    text: z.string(),
-    success: z.boolean(),
-  }),
+  schema: z
+    .object({
+      text: z.string().optional(), // Make text optional
+      message: z.string().optional(), // Allow message as alternative
+      success: z.boolean(),
+    })
+    .refine(data => data.text || data.message, {
+      message: 'Either text or message must be provided',
+    }),
 };
 
 // Basic Navigation Actions

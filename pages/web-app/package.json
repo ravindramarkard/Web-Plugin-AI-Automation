@@ -1,0 +1,58 @@
+{
+  "name": "@extension/web-app",
+  "version": "0.1.13",
+  "description": "AITestGen web application",
+  "private": true,
+  "sideEffects": true,
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "clean:node_modules": "pnpx rimraf node_modules",
+    "clean:turbo": "rimraf .turbo",
+    "clean": "pnpm clean:turbo && pnpm clean:node_modules",
+    "build": "vite build",
+    "dev": "cross-env __DEV__=true vite",
+    "preview": "vite preview",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "pnpm lint --fix",
+    "prettier": "prettier . --write --ignore-path ../../.prettierignore",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "react-router-dom": "^6.28.0",
+    "react-icons": "^5.0.0",
+    "@extension/shared": "workspace:*",
+    "@extension/storage": "workspace:*",
+    "@extension/i18n": "workspace:*",
+    "@extension/ui": "workspace:*",
+    "@langchain/core": "0.3.79",
+    "@langchain/anthropic": "0.3.33",
+    "@langchain/cerebras": "0.0.4",
+    "@langchain/deepseek": "0.1.0",
+    "@langchain/google-genai": "0.2.18",
+    "@langchain/groq": "0.2.4",
+    "@langchain/ollama": "0.2.4",
+    "@langchain/openai": "0.6.16",
+    "@langchain/xai": "^0.1.0"
+  },
+  "devDependencies": {
+    "@extension/tailwindcss-config": "workspace:*",
+    "@extension/tsconfig": "workspace:*",
+    "@extension/vite-config": "workspace:*",
+    "@types/react": "^18.3.27",
+    "@types/react-dom": "^18.3.7",
+    "@types/react-router-dom": "^5.3.3",
+    "postcss-load-config": "^6.0.1",
+    "cross-env": "^7.0.3",
+    "vite": "^6.4.1"
+  },
+  "postcss": {
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
+  }
+}

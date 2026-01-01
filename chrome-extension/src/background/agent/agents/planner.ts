@@ -45,6 +45,7 @@ export const plannerOutputSchema = z.object({
       throw new Error('Invalid boolean string');
     }),
   ]),
+  testcode: z.preprocess(val => (val === undefined || val === null ? '' : val), z.string()).default(''),
 });
 
 export type PlannerOutput = z.infer<typeof plannerOutputSchema>;

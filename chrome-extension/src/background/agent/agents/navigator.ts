@@ -40,6 +40,15 @@ interface ParsedModelOutput {
 
 export class NavigatorActionRegistry {
   private actions: Record<string, Action> = {};
+  // Action name aliases to map incorrect names to correct ones
+  private actionAliases: Record<string, string> = {
+    goto: 'go_to_url',
+    navigate: 'go_to_url',
+    open_url: 'go_to_url',
+    select_dropdown: 'select_dropdown_option',
+    select_option: 'select_dropdown_option',
+    close_browser: 'close_tab', // Note: close_tab requires tab_id
+  };
 
   constructor(actions: Action[]) {
     for (const action of actions) {
@@ -56,7 +65,19 @@ export class NavigatorActionRegistry {
   }
 
   getAction(name: string): Action | undefined {
-    return this.actions[name];
+    // First try direct lookup
+    if (this.actions[name]) {
+      return this.actions[name];
+    }
+
+    // Then try alias lookup
+    const aliasedName = this.actionAliases[name];
+    if (aliasedName && this.actions[aliasedName]) {
+      logger.warn(`[NavigatorActionRegistry] Action "${name}" not found, using alias "${aliasedName}"`);
+      return this.actions[aliasedName];
+    }
+
+    return undefined;
   }
 
   setupModelOutputSchema(): z.ZodType {
@@ -147,6 +168,13 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
           current_state: toolCall.args.currentState,
           action: [...toolCall.args.action],
         };
+      }
+      // Try to manually parse the raw response as a fallback
+      if (response.raw?.content && typeof response.raw.content === 'string') {
+        const parsed = this.manuallyParseResponse(response.raw.content);
+        if (parsed) {
+          return parsed;
+        }
       }
       throw new ResponseParseError('Could not parse navigator response');
     }
@@ -383,9 +411,26 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
           return results;
         }
 
+        // Handle special case: close_browser should get current tab ID
+        if (actionName === 'close_browser') {
+          const currentPage = await browserContext.getCurrentPage();
+          if (currentPage?.tabId) {
+            actionName = 'close_tab';
+            actionArgs = { tab_id: currentPage.tabId, ...actionArgs };
+          } else {
+            throw new Error('Cannot close browser: no current tab found');
+          }
+        }
+
         const actionInstance = this.actionRegistry.getAction(actionName);
         if (actionInstance === undefined) {
           throw new Error(`Action ${actionName} not exists`);
+        }
+
+        // Normalize action arguments for common parameter name mismatches
+        if (actionName === 'switch_tab' && 'id' in actionArgs && !('tab_id' in actionArgs)) {
+          actionArgs = { ...actionArgs, tab_id: actionArgs.id };
+          delete actionArgs.id;
         }
 
         const indexArg = actionInstance.getIndexArg(actionArgs);
