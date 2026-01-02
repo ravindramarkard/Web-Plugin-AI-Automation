@@ -43,3 +43,11 @@ Port 3000 is in use, trying another one...
 11:04:46 AM [vite] server restarted.
 11:06:41 AM [vite] vite.config.mts changed, restarting server...
 11:06:43 AM [vite] server restarted.
+11:18:30 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:18:49 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:19:57 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:23:22 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:23:38 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:39:43 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:40:10 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+11:42:34 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
