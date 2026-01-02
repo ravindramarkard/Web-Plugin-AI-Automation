@@ -1,0 +1,45 @@
+
+> @extension/web-app@0.1.13 dev /Users/ravindramarkard/scriptplugin/pluginnew/pages/web-app
+> cross-env __DEV__=true vite
+
+Port 3000 is in use, trying another one...
+
+  VITE v6.4.1  ready in 883 ms
+
+  ➜  Local:   http://localhost:3001/
+  ➜  Network: use --host to expose
+10:42:12 AM [vite] (client) hmr update /src/components/EnvironmentSettings.tsx, /src/index.css
+10:42:27 AM [vite] (client) hmr update /src/components/EnvironmentSettings.tsx, /src/index.css
+10:43:00 AM [vite] (client) hmr update /src/components/EnvironmentSettings.tsx, /src/index.css
+10:43:17 AM [vite] (client) hmr update /src/components/EnvironmentSettings.tsx, /src/index.css
+10:43:36 AM [vite] (client) hmr update /src/components/EnvironmentSettings.tsx, /src/index.css
+10:43:48 AM [vite] (client) hmr update /src/components/EnvironmentSettings.tsx, /src/index.css
+10:56:52 AM [vite] (client) hmr update /src/App.tsx, /src/index.css
+10:57:19 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+10:57:32 AM [vite] (client) hmr update /src/pages/ProjectDetailPage.tsx, /src/index.css
+10:58:18 AM [vite] (client) page reload src/lib/apiConfig.ts
+10:58:36 AM [vite] (client) page reload src/lib/apiConfig.ts
+10:58:57 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+10:59:17 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+10:59:30 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+10:59:47 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+11:00:09 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+11:00:24 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+11:00:24 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+11:00:44 AM [vite] (client) page reload src/lib/testSuiteStorage.ts
+11:01:03 AM [vite] (client) hmr update /src/index.css, /src/pages/DashboardPage.tsx, /src/pages/ProjectsPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/pages/ChatPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:01:22 AM [vite] (client) hmr update /src/index.css, /src/pages/DashboardPage.tsx, /src/pages/ProjectsPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/pages/ChatPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:01:43 AM [vite] (client) hmr update /src/index.css, /src/pages/DashboardPage.tsx, /src/pages/ProjectsPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/pages/ChatPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:01:59 AM [vite] (client) hmr update /src/index.css, /src/pages/DashboardPage.tsx, /src/pages/ProjectsPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/pages/ChatPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:02:17 AM [vite] (client) hmr update /src/index.css, /src/pages/ChatPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:02:42 AM [vite] (client) hmr update /src/index.css, /src/pages/ChatPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:03:01 AM [vite] (client) hmr update /src/index.css, /src/pages/ChatPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:03:16 AM [vite] (client) hmr update /src/index.css, /src/pages/ChatPage.tsx, /src/pages/ProjectDetailPage.tsx, /src/components/ChatView.tsx, /src/components/PromptsTab.tsx
+11:03:34 AM [vite] (client) hmr update /src/index.css, /src/components/EnvironmentSettings.tsx
+11:03:55 AM [vite] (client) hmr update /src/index.css, /src/components/EnvironmentSettings.tsx
+11:04:10 AM [vite] (client) hmr update /src/index.css, /src/components/EnvironmentSettings.tsx
+11:04:25 AM [vite] (client) page reload src/main.tsx
+11:04:45 AM [vite] vite.config.mts changed, restarting server...
+11:04:46 AM [vite] server restarted.
+11:06:41 AM [vite] vite.config.mts changed, restarting server...
+11:06:43 AM [vite] server restarted.

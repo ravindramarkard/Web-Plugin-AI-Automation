@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   FiMessageSquare,
   FiList,
@@ -28,6 +28,7 @@ interface PromptsTabProps {
 
 export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: PromptsTabProps) {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
+  const [isLoadingPrompts, setIsLoadingPrompts] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -48,8 +49,10 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
   });
 
   useEffect(() => {
-    loadPrompts();
-    loadTestSuites();
+    // Load prompts and test suites in parallel for better performance
+    Promise.all([loadPrompts(), loadTestSuites()]).catch(error => {
+      console.error('Failed to load initial data:', error);
+    });
   }, [projectId]);
 
   // Listen for generated test code
@@ -157,22 +160,30 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
 
   const loadPrompts = async () => {
     try {
+      setIsLoadingPrompts(true);
       const projectPrompts = await promptStorage.getPromptsByProject(projectId);
       setPrompts(projectPrompts);
     } catch (error) {
       console.error('Failed to load prompts:', error);
+      setPrompts([]);
+    } finally {
+      setIsLoadingPrompts(false);
     }
   };
 
-  const filteredPrompts = prompts.filter(prompt => {
+  // Memoize filtered prompts for better performance
+  const filteredPrompts = useMemo(() => {
+    if (!searchQuery.trim()) return prompts;
     const query = searchQuery.toLowerCase();
-    return (
-      prompt.title.toLowerCase().includes(query) ||
-      prompt.description.toLowerCase().includes(query) ||
-      prompt.promptContent.toLowerCase().includes(query) ||
-      prompt.tags.some(tag => tag.toLowerCase().includes(query))
-    );
-  });
+    return prompts.filter(prompt => {
+      return (
+        prompt.title.toLowerCase().includes(query) ||
+        prompt.description.toLowerCase().includes(query) ||
+        prompt.promptContent.toLowerCase().includes(query) ||
+        prompt.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+    });
+  }, [prompts, searchQuery]);
 
   const handleCreatePrompt = async (e: React.FormEvent) => {
     e.preventDefault();

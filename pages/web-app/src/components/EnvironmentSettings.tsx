@@ -73,6 +73,13 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
       return;
     }
 
+    // Check if key already exists
+    const existingEnv = environments.find(env => env.key.toLowerCase() === formData.key.toLowerCase());
+    if (existingEnv) {
+      alert(`Environment with key "${formData.key}" already exists. Please use a different key.`);
+      return;
+    }
+
     try {
       await environmentStorage.createEnvironment({
         ...formData,
@@ -83,13 +90,23 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
       resetForm();
     } catch (error) {
       console.error('Failed to create environment:', error);
-      alert('Failed to create environment');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create environment';
+      alert(errorMessage);
     }
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingEnvironment || !formData.name.trim() || !formData.key.trim() || !formData.baseUrl.trim()) {
+      return;
+    }
+
+    // Check if key already exists (excluding current environment)
+    const existingEnv = environments.find(
+      env => env.key.toLowerCase() === formData.key.toLowerCase() && env.id !== editingEnvironment.id,
+    );
+    if (existingEnv) {
+      alert(`Environment with key "${formData.key}" already exists. Please use a different key.`);
       return;
     }
 
@@ -101,7 +118,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
       resetForm();
     } catch (error) {
       console.error('Failed to update environment:', error);
-      alert('Failed to update environment');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to update environment';
+      alert(errorMessage);
     }
   };
 
@@ -113,7 +131,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
       await loadEnvironments();
     } catch (error) {
       console.error('Failed to delete environment:', error);
-      alert('Failed to delete environment');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to delete environment';
+      alert(errorMessage);
     }
   };
 

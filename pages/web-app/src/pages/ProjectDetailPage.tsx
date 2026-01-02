@@ -58,6 +58,8 @@ export default function ProjectDetailPage() {
   const [editingSuite, setEditingSuite] = useState<TestSuite | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingTestCases, setIsLoadingTestCases] = useState(false);
+  const [isLoadingTestSuites, setIsLoadingTestSuites] = useState(false);
   const [viewingPlaywrightCode, setViewingPlaywrightCode] = useState<{ testCase: TestCase } | null>(null);
 
   const [suiteFormData, setSuiteFormData] = useState({ name: '', description: '', testType: 'UI Tests' });
@@ -73,6 +75,7 @@ export default function ProjectDetailPage() {
   // Define loadTestCases and loadTestSuites BEFORE useEffect hooks that use them
   const loadTestCases = async (suiteId?: string) => {
     try {
+      setIsLoadingTestCases(true);
       console.log('[ProjectDetailPage] ========== Loading test cases ==========');
 
       if (suiteId) {
@@ -80,27 +83,33 @@ export default function ProjectDetailPage() {
         console.log('[ProjectDetailPage] Suite ID:', suiteId);
         const cases = await testSuiteStorage.getTestCasesBySuite(suiteId);
         console.log('[ProjectDetailPage] Loaded test cases for suite:', cases.length);
-        setTestCases(cases);
+        setTestCases(Array.isArray(cases) ? cases : []);
       } else {
         // Load all test cases across all suites for the project
-        const allCases = testSuiteStorage.getTestCases();
-        const projectSuites = await testSuiteStorage.getTestSuitesByProject(projectId!);
+        const [allCases, projectSuites] = await Promise.all([
+          testSuiteStorage.getTestCases(),
+          testSuiteStorage.getTestSuitesByProject(projectId!),
+        ]);
         const suiteIds = new Set(projectSuites.map(s => s.id));
-        const projectCases = allCases.filter(tc => suiteIds.has(tc.testSuiteId));
+        const projectCases = Array.isArray(allCases) ? allCases.filter(tc => suiteIds.has(tc.testSuiteId)) : [];
         console.log('[ProjectDetailPage] Loaded all test cases for project:', projectCases.length);
         setTestCases(projectCases);
       }
       console.log('[ProjectDetailPage] ========== Test cases loaded ==========');
     } catch (error) {
       console.error('[ProjectDetailPage] Failed to load test cases:', error);
+      setTestCases([]);
+    } finally {
+      setIsLoadingTestCases(false);
     }
   };
 
   const loadTestSuites = async () => {
     if (!projectId) return;
     try {
+      setIsLoadingTestSuites(true);
       const suites = await testSuiteStorage.getTestSuitesByProject(projectId);
-      setTestSuites(suites);
+      setTestSuites(Array.isArray(suites) ? suites : []);
       if (suites.length > 0 && !selectedTestSuite) {
         setSelectedTestSuite(suites[0].id);
       } else if (suites.length === 0) {
@@ -108,6 +117,9 @@ export default function ProjectDetailPage() {
       }
     } catch (error) {
       console.error('Failed to load test suites:', error);
+      setTestSuites([]);
+    } finally {
+      setIsLoadingTestSuites(false);
     }
   };
 
@@ -115,13 +127,24 @@ export default function ProjectDetailPage() {
     if (!projectId) return;
     try {
       setIsLoading(true);
-      const proj = await projectStorage.getProject(projectId);
+      // Load project and test suites in parallel for better performance
+      const [proj, suites] = await Promise.all([
+        projectStorage.getProject(projectId),
+        testSuiteStorage.getTestSuitesByProject(projectId),
+      ]);
+
       if (!proj) {
         navigate('/projects');
         return;
       }
+
       setProject(proj);
-      await loadTestSuites();
+      setTestSuites(Array.isArray(suites) ? suites : []);
+      if (suites.length > 0 && !selectedTestSuite) {
+        setSelectedTestSuite(suites[0].id);
+      } else if (suites.length === 0) {
+        setSelectedTestSuite(null);
+      }
     } catch (error) {
       console.error('Failed to load project:', error);
       navigate('/projects');
@@ -147,6 +170,7 @@ export default function ProjectDetailPage() {
     if (projectId) {
       loadProjectData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId]);
 
   useEffect(() => {
@@ -272,7 +296,7 @@ export default function ProjectDetailPage() {
 
   const handleEditSuite = (suite: TestSuite) => {
     setEditingSuite(suite);
-    setSuiteFormData({ name: suite.name, description: suite.description });
+    setSuiteFormData({ name: suite.name, description: suite.description, testType: suite.testType || 'UI Tests' });
     setShowCreateSuiteModal(true);
   };
 
@@ -288,7 +312,7 @@ export default function ProjectDetailPage() {
       await loadTestSuites();
       setShowCreateSuiteModal(false);
       setEditingSuite(null);
-      setSuiteFormData({ name: '', description: '' });
+      setSuiteFormData({ name: '', description: '', testType: 'UI Tests' });
     } catch (error) {
       console.error('Failed to update test suite:', error);
     }
@@ -561,6 +585,13 @@ export default function ProjectDetailPage() {
             onEditCase={handleEditCase}
             onViewPlaywrightCode={testCase => setViewingPlaywrightCode({ testCase })}
             onViewPrompt={testCase => setViewingPrompt({ testCase })}
+            onRefreshTestCases={async () => {
+              if (selectedTestSuite) {
+                await loadTestCases(selectedTestSuite);
+              } else if (projectId) {
+                await loadTestCases();
+              }
+            }}
             isDarkMode={isDarkMode}
           />
         )}
@@ -1128,12 +1159,11 @@ interface TestSuiteTabProps {
   onDeleteSuite: (suiteId: string) => void;
   onSchedulerSuite?: (suite: TestSuite) => void;
   onRunSuite?: (suite: TestSuite) => void;
-  onViewPlaywrightCode?: (testCase: TestCase) => void;
-  onViewPrompt?: (testCase: TestCase) => void;
   onCreateCase: () => void;
   onEditCase?: (testCase: TestCase) => void;
   onViewPlaywrightCode?: (testCase: TestCase) => void;
   onViewPrompt?: (testCase: TestCase) => void;
+  onRefreshTestCases?: () => Promise<void>;
   isDarkMode: boolean;
 }
 
@@ -1152,6 +1182,7 @@ function TestSuiteTab({
   onEditCase,
   onViewPlaywrightCode,
   onViewPrompt,
+  onRefreshTestCases,
   isDarkMode,
 }: TestSuiteTabProps) {
   const [view, setView] = useState<'overview' | 'test-suites' | 'collections' | 'all-tests' | 'tags'>('all-tests');
@@ -1204,16 +1235,15 @@ function TestSuiteTab({
     if (!confirm(`Are you sure you want to delete ${selectedTestCases.size} test case(s)?`)) return;
 
     try {
+      const { testSuiteStorage } = await import('../lib/testSuiteStorage');
       for (const testCaseId of selectedTestCases) {
         await testSuiteStorage.deleteTestCase(testCaseId);
       }
       setSelectedTestCases(new Set());
-      // Reload test cases - need to get testSuiteStorage
-      const { testSuiteStorage } = await import('../lib/testSuiteStorage');
-      if (selectedTestSuite) {
-        const cases = await testSuiteStorage.getTestCasesBySuite(selectedTestSuite);
-        // Update parent component's testCases - we'll need to pass a callback
-        // For now, just reload the page or trigger a refresh
+      // Trigger refresh via callback if available, otherwise reload
+      if (onRefreshTestCases) {
+        await onRefreshTestCases();
+      } else {
         window.location.reload();
       }
     } catch (error) {
@@ -1223,18 +1253,10 @@ function TestSuiteTab({
   };
 
   const handleRefresh = async () => {
-    // Trigger reload of test cases
-    if (selectedTestSuite) {
-      const { testSuiteStorage } = await import('../lib/testSuiteStorage');
-      const cases = await testSuiteStorage.getTestCasesBySuite(selectedTestSuite);
-      // We need to update parent state - for now reload
-      window.location.reload();
+    // Trigger reload of test cases via callback if available
+    if (onRefreshTestCases) {
+      await onRefreshTestCases();
     } else {
-      // Load all test cases
-      const { testSuiteStorage } = await import('../lib/testSuiteStorage');
-      const allCases = testSuiteStorage.getTestCases();
-      const projectSuites = testSuites.map(s => s.id);
-      // Update parent - for now reload
       window.location.reload();
     }
   };
@@ -2048,19 +2070,24 @@ function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
     const loadAllCases = async () => {
       try {
         setIsLoading(true);
-        const cases: TestCase[] = [];
-        for (const suite of testSuites) {
-          const suiteCases = await testSuiteStorage.getTestCasesBySuite(suite.id);
-          cases.push(...suiteCases);
-        }
+        // Load all test cases in parallel for better performance
+        const casePromises = testSuites.map(suite => testSuiteStorage.getTestCasesBySuite(suite.id));
+        const allSuiteCases = await Promise.all(casePromises);
+        const cases = allSuiteCases.flat();
         setAllTestCases(cases);
       } catch (error) {
         console.error('Failed to load test cases:', error);
+        setAllTestCases([]);
       } finally {
         setIsLoading(false);
       }
     };
-    loadAllCases();
+    if (testSuites.length > 0) {
+      loadAllCases();
+    } else {
+      setAllTestCases([]);
+      setIsLoading(false);
+    }
   }, [testSuites]);
 
   // Overall stats across all suites
@@ -2405,8 +2432,8 @@ function SuiteReport({ suite, testCases, stats, isDarkMode }: SuiteReportProps) 
 }
 
 interface CreateSuiteModalProps {
-  formData: { name: string; description: string; testType?: string };
-  setFormData: (data: { name: string; description: string; testType?: string }) => void;
+  formData: { name: string; description: string; testType: string };
+  setFormData: (data: { name: string; description: string; testType: string }) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   editingSuite: TestSuite | null;
@@ -2441,10 +2468,14 @@ function CreateSuiteModal({
   // Load available test cases when modal opens
   useEffect(() => {
     const loadTestCases = async () => {
-      const allCases = testSuiteStorage.getTestCases();
-      const projectSuites = await testSuiteStorage.getTestSuitesByProject(projectId);
+      const [allCases, projectSuites] = await Promise.all([
+        testSuiteStorage.getTestCases(),
+        testSuiteStorage.getTestSuitesByProject(projectId),
+      ]);
       const suiteIds = new Set(projectSuites.map(s => s.id));
-      const projectCases = allCases.filter(tc => suiteIds.has(tc.testSuiteId) || !tc.testSuiteId);
+      const projectCases = Array.isArray(allCases)
+        ? allCases.filter(tc => suiteIds.has(tc.testSuiteId) || !tc.testSuiteId)
+        : [];
 
       if (editingSuite) {
         // For editing, separate tests in suite from available tests

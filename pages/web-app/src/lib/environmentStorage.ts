@@ -1,6 +1,9 @@
 /**
- * Web-compatible environment storage using localStorage
+ * Server-side environment storage using API
  */
+
+import { API_ENDPOINTS, apiGet, apiPost, apiPut, apiDelete } from './apiConfig.js';
+import { apiCache } from './apiCache.js';
 
 export interface Environment {
   id: string;
@@ -32,81 +35,73 @@ export interface Environment {
   updatedAt: number;
 }
 
-const ENVIRONMENTS_KEY = 'web_app_environments';
-
 class EnvironmentStorage {
-  private getEnvironments(): Environment[] {
+  async getAllEnvironments(): Promise<Environment[]> {
     try {
-      const stored = localStorage.getItem(ENVIRONMENTS_KEY);
-      if (!stored) return [];
-      return JSON.parse(stored);
+      const environments = await apiGet<Environment[]>(API_ENDPOINTS.environments);
+      return Array.isArray(environments) ? environments : [];
     } catch (error) {
       console.error('[EnvironmentStorage] Failed to get environments:', error);
       return [];
     }
   }
 
-  private saveEnvironments(environments: Environment[]): void {
+  async getEnvironment(id: string): Promise<Environment | null> {
     try {
-      localStorage.setItem(ENVIRONMENTS_KEY, JSON.stringify(environments));
+      return await apiGet<Environment>(`${API_ENDPOINTS.environments}/${id}`);
     } catch (error) {
-      console.error('[EnvironmentStorage] Failed to save environments:', error);
+      console.error('[EnvironmentStorage] Failed to get environment:', error);
+      return null;
     }
   }
 
-  async getAllEnvironments(): Promise<Environment[]> {
-    return this.getEnvironments();
-  }
-
-  async getEnvironment(id: string): Promise<Environment | null> {
-    const environments = this.getEnvironments();
-    return environments.find(e => e.id === id) || null;
-  }
-
   async getEnvironmentByKey(key: string): Promise<Environment | null> {
-    const environments = this.getEnvironments();
-    return environments.find(e => e.key === key) || null;
+    try {
+      return await apiGet<Environment>(`${API_ENDPOINTS.environments}/key/${key}`);
+    } catch (error) {
+      console.error('[EnvironmentStorage] Failed to get environment by key:', error);
+      return null;
+    }
   }
 
   async createEnvironment(
     environment: Omit<Environment, 'id' | 'createdAt' | 'updatedAt' | 'status'> & { status?: Environment['status'] },
   ): Promise<Environment> {
-    const environments = this.getEnvironments();
-    const newEnvironment: Environment = {
-      ...environment,
-      id: `env_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      status: environment.status || 'active',
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    environments.push(newEnvironment);
-    this.saveEnvironments(environments);
-    return newEnvironment;
+    try {
+      return await apiPost<Environment>(
+        API_ENDPOINTS.environments,
+        {
+          ...environment,
+          status: environment.status || 'active',
+        },
+        API_ENDPOINTS.environments,
+      );
+    } catch (error) {
+      console.error('[EnvironmentStorage] Failed to create environment:', error);
+      throw error;
+    }
   }
 
   async updateEnvironment(
     id: string,
     updates: Partial<Omit<Environment, 'id' | 'createdAt'>>,
   ): Promise<Environment | null> {
-    const environments = this.getEnvironments();
-    const index = environments.findIndex(e => e.id === id);
-    if (index === -1) return null;
-
-    environments[index] = {
-      ...environments[index],
-      ...updates,
-      updatedAt: Date.now(),
-    };
-    this.saveEnvironments(environments);
-    return environments[index];
+    try {
+      return await apiPut<Environment>(`${API_ENDPOINTS.environments}/${id}`, updates, API_ENDPOINTS.environments);
+    } catch (error) {
+      console.error('[EnvironmentStorage] Failed to update environment:', error);
+      return null;
+    }
   }
 
   async deleteEnvironment(id: string): Promise<boolean> {
-    const environments = this.getEnvironments();
-    const filtered = environments.filter(e => e.id !== id);
-    if (filtered.length === environments.length) return false;
-    this.saveEnvironments(filtered);
-    return true;
+    try {
+      await apiDelete<{ success: boolean }>(`${API_ENDPOINTS.environments}/${id}`, API_ENDPOINTS.environments);
+      return true;
+    } catch (error) {
+      console.error('[EnvironmentStorage] Failed to delete environment:', error);
+      return false;
+    }
   }
 
   async testEnvironment(id: string): Promise<{ success: boolean; message: string }> {

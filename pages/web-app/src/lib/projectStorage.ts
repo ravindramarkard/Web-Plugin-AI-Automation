@@ -1,6 +1,9 @@
 /**
- * Web-compatible project storage using localStorage
+ * Server-side project storage using API
  */
+
+import { API_ENDPOINTS, apiGet, apiPost, apiPut, apiDelete } from './apiConfig.js';
+import { apiCache } from './apiCache.js';
 
 export interface Project {
   id: string;
@@ -11,70 +14,52 @@ export interface Project {
   updatedAt: number;
 }
 
-const STORAGE_KEY = 'web_app_projects';
-
 class ProjectStorage {
-  private getProjects(): Project[] {
+  async getAllProjects(): Promise<Project[]> {
     try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (!stored) return [];
-      return JSON.parse(stored);
+      const projects = await apiGet<Project[]>(API_ENDPOINTS.projects);
+      return Array.isArray(projects) ? projects : [];
     } catch (error) {
       console.error('[ProjectStorage] Failed to get projects:', error);
       return [];
     }
   }
 
-  private saveProjects(projects: Project[]): void {
+  async getProject(id: string): Promise<Project | null> {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+      return await apiGet<Project>(`${API_ENDPOINTS.projects}/${id}`);
     } catch (error) {
-      console.error('[ProjectStorage] Failed to save projects:', error);
+      console.error('[ProjectStorage] Failed to get project:', error);
+      return null;
     }
   }
 
-  async getAllProjects(): Promise<Project[]> {
-    return this.getProjects();
-  }
-
-  async getProject(id: string): Promise<Project | null> {
-    const projects = this.getProjects();
-    return projects.find(p => p.id === id) || null;
-  }
-
   async createProject(project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>): Promise<Project> {
-    const projects = this.getProjects();
-    const newProject: Project = {
-      ...project,
-      id: `project_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    projects.push(newProject);
-    this.saveProjects(projects);
-    return newProject;
+    try {
+      return await apiPost<Project>(API_ENDPOINTS.projects, project, API_ENDPOINTS.projects);
+    } catch (error) {
+      console.error('[ProjectStorage] Failed to create project:', error);
+      throw error;
+    }
   }
 
   async updateProject(id: string, updates: Partial<Omit<Project, 'id' | 'createdAt'>>): Promise<Project | null> {
-    const projects = this.getProjects();
-    const index = projects.findIndex(p => p.id === id);
-    if (index === -1) return null;
-
-    projects[index] = {
-      ...projects[index],
-      ...updates,
-      updatedAt: Date.now(),
-    };
-    this.saveProjects(projects);
-    return projects[index];
+    try {
+      return await apiPut<Project>(`${API_ENDPOINTS.projects}/${id}`, updates, API_ENDPOINTS.projects);
+    } catch (error) {
+      console.error('[ProjectStorage] Failed to update project:', error);
+      return null;
+    }
   }
 
   async deleteProject(id: string): Promise<boolean> {
-    const projects = this.getProjects();
-    const filtered = projects.filter(p => p.id !== id);
-    if (filtered.length === projects.length) return false;
-    this.saveProjects(filtered);
-    return true;
+    try {
+      await apiDelete<{ success: boolean }>(`${API_ENDPOINTS.projects}/${id}`, API_ENDPOINTS.projects);
+      return true;
+    } catch (error) {
+      console.error('[ProjectStorage] Failed to delete project:', error);
+      return false;
+    }
   }
 }
 

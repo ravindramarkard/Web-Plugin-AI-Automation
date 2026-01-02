@@ -6,14 +6,8 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './index.css';
-import { initializeAllFromEnv } from './lib/initEnvConfig';
-import './lib/testCaseAPI'; // Initialize Test Case API for console access
 
-// Initialize configuration from environment variables
-initializeAllFromEnv().catch(error => {
-  console.error('[App] Failed to initialize from env:', error);
-});
-
+// Defer non-critical initialization
 function init() {
   const rootElement = document.querySelector('#root');
   if (!rootElement) {
@@ -25,6 +19,14 @@ function init() {
       <App />
     </StrictMode>,
   );
+
+  // Initialize non-critical code after render
+  Promise.all([
+    import('./lib/initEnvConfig').then(m => m.initializeAllFromEnv()),
+    import('./lib/testCaseAPI'), // Initialize Test Case API for console access
+  ]).catch(error => {
+    console.error('[App] Failed to initialize:', error);
+  });
 }
 
 init();

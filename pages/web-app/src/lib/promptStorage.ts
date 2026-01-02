@@ -1,7 +1,10 @@
 /**
- * Web-compatible prompt storage using localStorage
+ * Server-side prompt storage using API
  * Each prompt belongs to a project
  */
+
+import { API_ENDPOINTS, apiGet, apiPost, apiPut, apiDelete } from './apiConfig.js';
+import { apiCache } from './apiCache.js';
 
 export interface Prompt {
   id: string;
@@ -18,83 +21,66 @@ export interface Prompt {
   updatedAt: number;
 }
 
-const PROMPTS_KEY = 'web_app_prompts';
-
 class PromptStorage {
-  private getPrompts(): Prompt[] {
+  async getPromptsByProject(projectId: string): Promise<Prompt[]> {
     try {
-      const stored = localStorage.getItem(PROMPTS_KEY);
-      if (!stored) return [];
-      return JSON.parse(stored);
+      return await apiGet<Prompt[]>(`${API_ENDPOINTS.prompts}/project/${projectId}`);
     } catch (error) {
       console.error('[PromptStorage] Failed to get prompts:', error);
       return [];
     }
   }
 
-  private savePrompts(prompts: Prompt[]): void {
+  async getPrompt(id: string): Promise<Prompt | null> {
     try {
-      localStorage.setItem(PROMPTS_KEY, JSON.stringify(prompts));
+      return await apiGet<Prompt>(`${API_ENDPOINTS.prompts}/${id}`);
     } catch (error) {
-      console.error('[PromptStorage] Failed to save prompts:', error);
+      console.error('[PromptStorage] Failed to get prompt:', error);
+      return null;
     }
   }
 
-  async getPromptsByProject(projectId: string): Promise<Prompt[]> {
-    const prompts = this.getPrompts();
-    return prompts.filter(p => p.projectId === projectId);
-  }
-
-  async getPrompt(id: string): Promise<Prompt | null> {
-    const prompts = this.getPrompts();
-    return prompts.find(p => p.id === id) || null;
-  }
-
   async createPrompt(prompt: Omit<Prompt, 'id' | 'createdAt' | 'updatedAt'>): Promise<Prompt> {
-    const prompts = this.getPrompts();
-    const newPrompt: Prompt = {
-      ...prompt,
-      id: `prompt_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    };
-    prompts.push(newPrompt);
-    this.savePrompts(prompts);
-    return newPrompt;
+    try {
+      return await apiPost<Prompt>(API_ENDPOINTS.prompts, prompt, API_ENDPOINTS.prompts);
+    } catch (error) {
+      console.error('[PromptStorage] Failed to create prompt:', error);
+      throw error;
+    }
   }
 
   async updatePrompt(id: string, updates: Partial<Omit<Prompt, 'id' | 'createdAt'>>): Promise<Prompt | null> {
-    const prompts = this.getPrompts();
-    const index = prompts.findIndex(p => p.id === id);
-    if (index === -1) return null;
-
-    prompts[index] = {
-      ...prompts[index],
-      ...updates,
-      updatedAt: Date.now(),
-    };
-    this.savePrompts(prompts);
-    return prompts[index];
+    try {
+      return await apiPut<Prompt>(`${API_ENDPOINTS.prompts}/${id}`, updates, API_ENDPOINTS.prompts);
+    } catch (error) {
+      console.error('[PromptStorage] Failed to update prompt:', error);
+      return null;
+    }
   }
 
   async deletePrompt(id: string): Promise<boolean> {
-    const prompts = this.getPrompts();
-    const filtered = prompts.filter(p => p.id !== id);
-    if (filtered.length === prompts.length) return false;
-    this.savePrompts(filtered);
-    return true;
+    try {
+      await apiDelete<{ success: boolean }>(`${API_ENDPOINTS.prompts}/${id}`, API_ENDPOINTS.prompts);
+      return true;
+    } catch (error) {
+      console.error('[PromptStorage] Failed to delete prompt:', error);
+      return false;
+    }
   }
 
   async duplicatePrompt(id: string, newProjectId?: string): Promise<Prompt | null> {
-    const prompt = await this.getPrompt(id);
-    if (!prompt) return null;
-
-    const duplicated: Omit<Prompt, 'id' | 'createdAt' | 'updatedAt'> = {
-      ...prompt,
-      projectId: newProjectId || prompt.projectId,
-      title: `${prompt.title} (Copy)`,
-    };
-    return this.createPrompt(duplicated);
+    try {
+      return await apiPost<Prompt>(
+        `${API_ENDPOINTS.prompts}/${id}/duplicate`,
+        {
+          projectId: newProjectId,
+        },
+        API_ENDPOINTS.prompts,
+      );
+    } catch (error) {
+      console.error('[PromptStorage] Failed to duplicate prompt:', error);
+      return null;
+    }
   }
 }
 

@@ -1,0 +1,31 @@
+{
+  "name": "@extension/server",
+  "version": "0.1.13",
+  "description": "AITestGen backend API server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext .ts",
+    "prettier": "prettier . --write"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "^16.4.7"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.5.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.4",
+    "eslint": "8.57.0",
+    "prettier": "^3.3.3"
+  }
+}
