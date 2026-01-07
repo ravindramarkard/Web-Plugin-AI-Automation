@@ -26,6 +26,7 @@ class ChatLlama extends ChatOpenAI {
 
   async completionWithRetry(request: any, options?: any): Promise<any> {
     try {
+      // @ts-ignore - Accessing protected/internal method
       const response = await super.completionWithRetry(request, options);
       if (response?.completion_message?.content?.text) {
         const transformedResponse = {
@@ -139,53 +140,53 @@ function createChatModel(
     case ProviderTypeEnum.Anthropic:
       return new ChatAnthropic({
         ...baseConfig,
-        modelName: cleanModelName,
-        anthropicApiKey: providerConfig.apiKey,
-        configuration: {
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
+        clientOptions: {
           baseURL: providerConfig.baseUrl,
         },
       });
 
-    case ProviderTypeEnum.Google:
+    case ProviderTypeEnum.Gemini:
       return new ChatGoogleGenerativeAI({
         ...baseConfig,
-        modelName: cleanModelName,
-        googleApiKey: providerConfig.apiKey,
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
       });
 
-    case ProviderTypeEnum.XAI:
+    case ProviderTypeEnum.Grok:
       return new ChatXAI({
         ...baseConfig,
-        modelName: cleanModelName,
-        xaiApiKey: providerConfig.apiKey,
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
       });
 
     case ProviderTypeEnum.Groq:
       return new ChatGroq({
         ...baseConfig,
-        modelName: cleanModelName,
-        groqApiKey: providerConfig.apiKey,
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
       });
 
     case ProviderTypeEnum.Cerebras:
       return new ChatCerebras({
         ...baseConfig,
-        modelName: cleanModelName,
-        cerebrasApiKey: providerConfig.apiKey,
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
       });
 
     case ProviderTypeEnum.Ollama:
       return new ChatOllama({
         ...baseConfig,
         model: cleanModelName,
-        baseURL: providerConfig.baseUrl,
+        baseUrl: providerConfig.baseUrl,
       });
 
     case ProviderTypeEnum.DeepSeek:
       return new ChatDeepSeek({
         ...baseConfig,
-        modelName: cleanModelName,
-        deepseekApiKey: providerConfig.apiKey,
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
       });
 
     case ProviderTypeEnum.Llama: {
@@ -226,6 +227,25 @@ function createChatModel(
           'HTTP-Referer': typeof window !== 'undefined' ? window.location.origin : 'https://aitestgen.app',
           'X-Title': 'AITestGen Web App',
         },
+      };
+      return new ChatOpenAI(args);
+    }
+
+    case ProviderTypeEnum.GLM: {
+      const args: {
+        model: string;
+        apiKey: string;
+        configuration?: { baseURL?: string };
+        temperature?: number;
+        topP?: number;
+        maxTokens?: number;
+      } = {
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey || '',
+        ...baseConfig,
+      };
+      args.configuration = {
+        baseURL: providerConfig.baseUrl || 'https://open.bigmodel.cn/api/paas/v4/',
       };
       return new ChatOpenAI(args);
     }
@@ -275,7 +295,14 @@ export async function testLLMConnection(
 
     return { success: true, message: 'Connection test successful' };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+    console.error('LLM Connection Test Error:', error);
+    let errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+
+    // Handle specific error case often seen with incompatible API responses
+    if (errorMessage.includes("Cannot read properties of undefined (reading 'message')")) {
+      errorMessage = 'Invalid response from provider. Please check your API Key and Base URL.';
+    }
+
     return { success: false, error: errorMessage };
   }
 }

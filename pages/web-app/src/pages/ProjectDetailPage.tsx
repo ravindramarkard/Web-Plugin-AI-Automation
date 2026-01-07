@@ -532,7 +532,7 @@ export default function ProjectDetailPage() {
         {activeTab === 'prompt' && (
           <div className="flex h-full">
             {/* Prompts List - Left Side */}
-            <div className="w-1/3 border-r overflow-y-auto">
+            <div className="w-1/3 overflow-y-auto border-r">
               <PromptsTab
                 projectId={projectId!}
                 isDarkMode={isDarkMode}
@@ -981,8 +981,8 @@ function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: Schedu
               onChange={e => setCronExpression(e.target.value)}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="0 9 * * 1-5"
             />
@@ -1071,8 +1071,8 @@ function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: Schedu
               onChange={e => setWorkers(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
             />
             <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
@@ -1296,11 +1296,11 @@ function TestSuiteTab({
 
       {/* Content Area */}
       {view === 'all-tests' ? (
-        <div className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex flex-1 flex-col overflow-hidden">
           {/* Header with filters and actions */}
           <div
             className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
-            <div className="flex items-center justify-between mb-4">
+            <div className="mb-4 flex items-center justify-between">
               <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
                 Test Cases{' '}
                 {testCases.length > 0 && (
@@ -1342,7 +1342,7 @@ function TestSuiteTab({
                   onClick={handleDeleteSelected}
                   disabled={selectedTestCases.size === 0}
                   className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                    selectedTestCases.size === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                    selectedTestCases.size === 0 ? 'cursor-not-allowed opacity-50' : ''
                   } ${
                     isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-600 text-white hover:bg-red-700'
                   }`}>
@@ -1620,7 +1620,7 @@ function TestSuiteTab({
                           isDarkMode
                             ? 'bg-green-600 text-white hover:bg-green-700'
                             : 'bg-green-600 text-white hover:bg-green-700'
-                        } shadow-sm flex items-center gap-1`}
+                        } flex items-center gap-1 shadow-sm`}
                         title="Run test suite">
                         <FiBarChart2 size={14} />
                         <span className="text-xs font-medium">RUN</span>
@@ -1661,7 +1661,7 @@ function TestSuiteTab({
           </div>
 
           {/* Test Cases Content */}
-          <div className={`flex-1 overflow-hidden flex flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+          <div className={`flex flex-1 flex-col overflow-hidden ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
             {selectedTestSuite ? (
               <>
                 {/* Test Cases Header */}
@@ -1691,7 +1691,7 @@ function TestSuiteTab({
                 {/* Test Cases Table */}
                 {testCases.length === 0 ? (
                   <div
-                    className={`flex-1 flex items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    className={`flex flex-1 items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                     <div className="text-center">
                       <p>No test cases yet</p>
                       <button
@@ -1893,7 +1893,7 @@ function TestSuiteTab({
           </div>
         </div>
       ) : (
-        <div className={`flex-1 flex items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        <div className={`flex flex-1 items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
           <p>{view.charAt(0).toUpperCase() + view.slice(1).replace('-', ' ')} view coming soon</p>
         </div>
       )}
@@ -1921,7 +1921,7 @@ function NavTab({ label, isActive, onClick, isDarkMode }: NavTabProps) {
             : 'text-gray-600 hover:text-gray-900'
       }`}>
       {label}
-      {isActive && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-500"></div>}
+      {isActive && <div className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-500"></div>}
     </button>
   );
 }
@@ -2585,8 +2585,8 @@ function CreateSuiteModal({
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className={`w-full rounded-lg border px-3 py-2 ${
                     isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                   } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="Enter test suite name"
                 />
@@ -2601,8 +2601,8 @@ function CreateSuiteModal({
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
                   className={`w-full rounded-lg border px-3 py-2 ${
                     isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                   } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="Enter test suite description"
                 />
@@ -2650,7 +2650,7 @@ function CreateSuiteModal({
                       {testsInSuite.map(testCase => (
                         <label
                           key={testCase.id}
-                          className={`flex items-center gap-2 rounded border p-2 cursor-pointer transition-colors ${
+                          className={`flex cursor-pointer items-center gap-2 rounded border p-2 transition-colors ${
                             selectedInSuiteTests.has(testCase.id)
                               ? isDarkMode
                                 ? 'border-blue-500 bg-blue-900/20'
@@ -2683,7 +2683,7 @@ function CreateSuiteModal({
                   disabled={testsInSuite.length === 0}
                   className={`rounded border p-2 transition-colors ${
                     testsInSuite.length === 0
-                      ? 'opacity-50 cursor-not-allowed'
+                      ? 'cursor-not-allowed opacity-50'
                       : isDarkMode
                         ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
                         : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -2698,7 +2698,7 @@ function CreateSuiteModal({
                   disabled={selectedInSuiteTests.size === 0}
                   className={`rounded border p-2 transition-colors ${
                     selectedInSuiteTests.size === 0
-                      ? 'opacity-50 cursor-not-allowed'
+                      ? 'cursor-not-allowed opacity-50'
                       : isDarkMode
                         ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
                         : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -2712,7 +2712,7 @@ function CreateSuiteModal({
                   disabled={selectedAvailableTests.size === 0}
                   className={`rounded border p-2 transition-colors ${
                     selectedAvailableTests.size === 0
-                      ? 'opacity-50 cursor-not-allowed'
+                      ? 'cursor-not-allowed opacity-50'
                       : isDarkMode
                         ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
                         : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -2726,7 +2726,7 @@ function CreateSuiteModal({
                   disabled={availableTestCases.length === 0}
                   className={`rounded border p-2 transition-colors ${
                     availableTestCases.length === 0
-                      ? 'opacity-50 cursor-not-allowed'
+                      ? 'cursor-not-allowed opacity-50'
                       : isDarkMode
                         ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
                         : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -2758,7 +2758,7 @@ function CreateSuiteModal({
                       {availableTestCases.map(testCase => (
                         <label
                           key={testCase.id}
-                          className={`flex items-center gap-2 rounded border p-2 cursor-pointer transition-colors ${
+                          className={`flex cursor-pointer items-center gap-2 rounded border p-2 transition-colors ${
                             selectedAvailableTests.has(testCase.id)
                               ? isDarkMode
                                 ? 'border-blue-500 bg-blue-900/20'
@@ -2924,8 +2924,8 @@ function CreateCaseModal({
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter test case name"
             />
@@ -2940,8 +2940,8 @@ function CreateCaseModal({
               rows={2}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter description"
             />
@@ -2957,8 +2957,8 @@ function CreateCaseModal({
               rows={4}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter the automation prompt for this test case"
             />
@@ -3064,11 +3064,11 @@ function CreateCaseModal({
                   className={`w-full rounded-lg border px-3 py-2 font-mono text-sm ${
                     isDarkMode
                       ? isEditingCode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                        : 'border-slate-600 bg-slate-900 text-white placeholder-gray-400'
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                        : 'border-slate-600 bg-slate-900 text-white placeholder:text-gray-400'
                       : isEditingCode
-                        ? 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
-                        : 'border-gray-300 bg-gray-50 text-gray-900 placeholder-gray-500'
+                        ? 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
+                        : 'border-gray-300 bg-gray-50 text-gray-900 placeholder:text-gray-500'
                   } ${formData.playwrightCode ? 'pl-12' : ''} focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="Playwright code will appear here after test execution"
                   style={{ resize: 'vertical' }}

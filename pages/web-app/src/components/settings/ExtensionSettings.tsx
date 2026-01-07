@@ -205,17 +205,17 @@ export default function ExtensionSettings() {
 
   const getExtensionIdInstructions = () => {
     return (
-      <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <div className="flex items-center justify-between mb-2">
+      <div className="mt-4 rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+        <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold">How to find your Extension ID:</h3>
           <Button onClick={openExtensionsPage} variant="outline" className="text-sm">
             Open Extensions Page
           </Button>
         </div>
-        <ol className="list-decimal list-inside space-y-2 text-sm">
+        <ol className="list-inside list-decimal space-y-2 text-sm">
           <li>
             Click "Open Extensions Page" above or go to{' '}
-            <code className="bg-gray-200 dark:bg-gray-700 px-1 rounded">chrome://extensions</code>
+            <code className="rounded bg-gray-200 px-1 dark:bg-gray-700">chrome://extensions</code>
           </li>
           <li>Enable "Developer mode" (toggle in top right) if not already enabled</li>
           <li>Find "AITestGen" extension in the list</li>
@@ -234,14 +234,14 @@ export default function ExtensionSettings() {
             the reload icon (🔄) next to it, then copy the new ID
           </li>
         </ol>
-        <div className="mt-3 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded text-xs">
+        <div className="mt-3 rounded bg-yellow-50 p-2 text-xs dark:bg-yellow-900/20">
           <strong>Tip:</strong> After building the extension with <code>pnpm build</code>, load it as unpacked from the{' '}
           <code>dist/</code> directory. The extension ID will be shown on the extensions page. Click "Auto-Detect" to
           try automatic detection.
         </div>
-        <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/20 rounded text-xs">
+        <div className="mt-3 rounded bg-green-50 p-3 text-xs dark:bg-green-900/20">
           <strong>💡 Quick Method:</strong>
-          <ol className="list-decimal list-inside mt-1 space-y-1">
+          <ol className="mt-1 list-inside list-decimal space-y-1">
             <li>Click "Open Extensions Page" button above</li>
             <li>Find "AITestGen" in the list</li>
             <li>The ID is shown directly under the extension name (looks like: abcdefghijklmnopqrstuvwxyz123456)</li>
@@ -260,15 +260,15 @@ export default function ExtensionSettings() {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-xl font-semibold mb-4">Chrome Extension Connection</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+        <h2 className="mb-4 text-xl font-semibold">Chrome Extension Connection</h2>
+        <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
           Connect the web app to the Chrome extension for full browser automation capabilities on external websites.
         </p>
       </div>
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="extension-id" className="block text-sm font-medium mb-2">
+          <label htmlFor="extension-id" className="mb-2 block text-sm font-medium">
             Extension ID
           </label>
           <div className="flex gap-2">
@@ -278,7 +278,7 @@ export default function ExtensionSettings() {
               value={extensionId}
               onChange={e => setExtensionId(e.target.value)}
               placeholder="Enter your Chrome extension ID"
-              className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
+              className="flex-1 rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-900 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100"
             />
             <Button onClick={autoDetectExtensionId} disabled={isChecking} variant="outline">
               Auto-Detect
@@ -291,10 +291,10 @@ export default function ExtensionSettings() {
 
         {statusMessage && (
           <div
-            className={`p-3 rounded-md ${
+            className={`rounded-md p-3 ${
               isAvailable
-                ? 'bg-green-50 dark:bg-green-900/20 text-green-800 dark:text-green-200'
-                : 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-800 dark:text-yellow-200'
+                ? 'bg-green-50 text-green-800 dark:bg-green-900/20 dark:text-green-200'
+                : 'bg-yellow-50 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-200'
             }`}>
             {statusMessage}
           </div>
@@ -302,9 +302,9 @@ export default function ExtensionSettings() {
 
         {getExtensionIdInstructions()}
 
-        <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <h3 className="font-semibold mb-2">Benefits of Extension Connection:</h3>
-          <ul className="list-disc list-inside space-y-1 text-sm text-gray-700 dark:text-gray-300">
+        <div className="mt-4 rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+          <h3 className="mb-2 font-semibold">Benefits of Extension Connection:</h3>
+          <ul className="list-inside list-disc space-y-1 text-sm text-gray-700 dark:text-gray-300">
             <li>Full automation on external websites (not limited to localhost)</li>
             <li>Access to all browser tabs and windows</li>
             <li>Cross-origin script injection capabilities</li>
@@ -313,13 +313,13 @@ export default function ExtensionSettings() {
           </ul>
         </div>
 
-        <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-          <h3 className="font-semibold mb-2 text-yellow-800 dark:text-yellow-200">⚠️ Important: Separate Settings</h3>
-          <p className="text-sm text-yellow-800 dark:text-yellow-200 mb-2">
+        <div className="mt-4 rounded-lg bg-yellow-50 p-4 dark:bg-yellow-900/20">
+          <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">⚠️ Important: Separate Settings</h3>
+          <p className="mb-2 text-sm text-yellow-800 dark:text-yellow-200">
             The web app and Chrome extension have <strong>separate settings</strong>. API keys and model configurations
             need to be set up in both places:
           </p>
-          <ol className="list-decimal list-inside space-y-1 text-sm text-yellow-800 dark:text-yellow-200 mb-3">
+          <ol className="mb-3 list-inside list-decimal space-y-1 text-sm text-yellow-800 dark:text-yellow-200">
             <li>
               <strong>Web App Settings</strong> (this page): Configure models here for web-only mode
             </li>
@@ -340,7 +340,7 @@ export default function ExtensionSettings() {
                   window.open('chrome://extensions', '_blank');
                 }
               }}
-              className="bg-yellow-600 hover:bg-yellow-700 text-white">
+              className="bg-yellow-600 text-white hover:bg-yellow-700">
               Open Extension Options
             </Button>
             <Button
@@ -350,14 +350,14 @@ export default function ExtensionSettings() {
               Open Extensions Page
             </Button>
           </div>
-          <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-2">
+          <p className="mt-2 text-xs text-yellow-700 dark:text-yellow-300">
             On the extensions page, find "AITestGen" and click "Options" (or right-click → Options) to configure API
             keys.
           </p>
         </div>
 
         {!isAvailable && (
-          <div className="mt-4 p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+          <div className="mt-4 rounded-lg bg-orange-50 p-4 dark:bg-orange-900/20">
             <p className="text-sm text-orange-800 dark:text-orange-200">
               <strong>Note:</strong> Without the extension, the web app can only interact with pages on the same origin
               (localhost:3000). For full automation capabilities, please install and connect the Chrome extension.

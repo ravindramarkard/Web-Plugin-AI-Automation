@@ -8,6 +8,7 @@ import testCasesRouter from './routes/testCases.js';
 import promptsRouter from './routes/prompts.js';
 import environmentsRouter from './routes/environments.js';
 import testExecutionRouter from './routes/testExecution.js';
+import settingsRouter from './routes/settings.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/test-cases', testCasesRouter);
 app.use('/api/prompts', promptsRouter);
 app.use('/api/environments', environmentsRouter);
 app.use('/api/execution', testExecutionRouter);
+app.use('/api/settings', settingsRouter);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

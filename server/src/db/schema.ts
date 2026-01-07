@@ -1,4 +1,4 @@
-import Database from 'better-sqlite3';
+import type Database from 'better-sqlite3';
 
 export function createProjectsTable(db: Database.Database) {
   db.exec(`
@@ -140,4 +140,14 @@ export function createEnvironmentsTable(db: Database.Database) {
   } catch (e) {
     // Indexes might already exist
   }
+}
+
+export function createSettingsTable(db: Database.Database) {
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updatedAt INTEGER NOT NULL
+    )
+  `);
 }

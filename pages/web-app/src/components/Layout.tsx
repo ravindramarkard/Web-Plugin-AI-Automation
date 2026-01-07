@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FiSettings } from 'react-icons/fi';
 import { GrHistory } from 'react-icons/gr';
@@ -54,7 +54,7 @@ export default function Layout({ children }: LayoutProps) {
               : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
           }`}
           aria-label="Settings">
-          <FiSettings className="h-5 w-5" />
+          <FiSettings className="size-5" />
         </Link>
       </header>
 

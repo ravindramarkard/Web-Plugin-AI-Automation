@@ -1662,8 +1662,8 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                         ? 'bg-blue-600 text-white hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-400'
                                         : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
                                       : isDarkMode
-                                        ? 'bg-slate-600 text-gray-400 cursor-not-allowed'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        ? 'cursor-not-allowed bg-slate-600 text-gray-400'
+                                        : 'cursor-not-allowed bg-gray-300 text-gray-500'
                                   }`}
                                   aria-label="Add model">
                                   Add
@@ -1722,8 +1722,8 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                         ? 'bg-blue-600 text-white hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-400'
                                         : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
                                       : isDarkMode
-                                        ? 'bg-slate-600 text-gray-400 cursor-not-allowed'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        ? 'cursor-not-allowed bg-slate-600 text-gray-400'
+                                        : 'cursor-not-allowed bg-gray-300 text-gray-500'
                                   }`}
                                   aria-label="Add model">
                                   Add

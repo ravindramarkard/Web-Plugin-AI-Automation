@@ -255,7 +255,7 @@ function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick,
       <div
         onClick={handleCardClick}
         className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors ${
-          isDarkMode ? 'border-slate-700 bg-slate-800 hover:bg-slate-750' : 'border-gray-200 bg-white hover:bg-gray-50'
+          isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
         }`}>
         <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900">
           {getIconEmoji(project.icon)}
@@ -291,7 +291,7 @@ function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick,
       <div
         onClick={handleCardClick}
         className={`cursor-pointer rounded-lg border p-6 transition-colors ${
-          isDarkMode ? 'border-slate-700 bg-slate-800 hover:bg-slate-750' : 'border-gray-200 bg-white hover:bg-gray-50'
+          isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
         }`}>
         <div className="mb-4 flex items-center justify-between">
           <div className="flex size-16 items-center justify-center rounded-xl bg-blue-100 text-4xl dark:bg-blue-900">
@@ -332,7 +332,7 @@ function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick,
     <div
       onClick={handleCardClick}
       className={`cursor-pointer rounded-lg border p-4 transition-colors ${
-        isDarkMode ? 'border-slate-700 bg-slate-800 hover:bg-slate-750' : 'border-gray-200 bg-white hover:bg-gray-50'
+        isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
       }`}>
       <div className="mb-3 flex items-center justify-between">
         <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900">
@@ -402,8 +402,8 @@ function CreateProjectModal({
               onChange={e => setFormData({ ...formData, name: e.target.value })}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter project name"
             />
@@ -420,8 +420,8 @@ function CreateProjectModal({
               onChange={e => setFormData({ ...formData, team: e.target.value })}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter team name"
             />

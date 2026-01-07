@@ -28,7 +28,7 @@ export const DEFAULT_AGENT_OPTIONS: AgentOptions = {
   maxInputTokens: 128000,
   maxErrorLength: 400,
   useVision: false,
-  useVisionForPlanner: true,
+  useVisionForPlanner: false,
   includeAttributes: DEFAULT_INCLUDE_ATTRIBUTES,
   planningInterval: 3,
 };
@@ -75,12 +75,13 @@ export class AgentContext {
     this.finalAnswer = null;
   }
 
-  async emitEvent(actor: Actors, state: ExecutionState, eventDetails: string) {
+  async emitEvent(actor: Actors, state: ExecutionState, eventDetails: string, data?: Record<string, any>) {
     const event = new AgentEvent(actor, state, {
       taskId: this.taskId,
       step: this.nSteps,
       maxSteps: this.options.maxSteps,
       details: eventDetails,
+      ...data,
     });
     await this.eventManager.emit(event);
   }

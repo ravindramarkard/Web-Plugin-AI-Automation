@@ -261,7 +261,22 @@ export class ActionBuilder {
               await this.context.browserContext.switchTab(newTabId);
             }
           }
-          this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, msg);
+          this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, msg, {
+            action: 'click_element',
+            params: { index: input.index },
+            elementMetadata: {
+              tagName: elementNode.tagName,
+              attributes: elementNode.attributes,
+              xpath: elementNode.xpath,
+              id: elementNode.attributes.id,
+              name: elementNode.attributes.name,
+              role: elementNode.attributes.role,
+              type: elementNode.attributes.type,
+              placeholder: elementNode.attributes.placeholder,
+              ariaLabel: elementNode.attributes['aria-label'],
+              text: elementNode.getAllTextTillNextClickableElement(2),
+            },
+          });
           return new ActionResult({ extractedContent: msg, includeInMemory: true });
         } catch (error) {
           const msg = t('act_errors_elementNoLongerAvailable', [input.index.toString()]);
@@ -291,7 +306,21 @@ export class ActionBuilder {
 
         await page.inputTextElementNode(this.context.options.useVision, elementNode, input.text);
         const msg = t('act_inputText_ok', [input.text, input.index.toString()]);
-        this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, msg);
+        this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, msg, {
+          action: 'input_text',
+          params: { index: input.index, text: input.text },
+          elementMetadata: {
+            tagName: elementNode.tagName,
+            attributes: elementNode.attributes,
+            xpath: elementNode.xpath,
+            id: elementNode.attributes.id,
+            name: elementNode.attributes.name,
+            role: elementNode.attributes.role,
+            type: elementNode.attributes.type,
+            placeholder: elementNode.attributes.placeholder,
+            ariaLabel: elementNode.attributes['aria-label'],
+          },
+        });
         return new ActionResult({ extractedContent: msg, includeInMemory: true });
       },
       inputTextActionSchema,
@@ -681,7 +710,21 @@ export class ActionBuilder {
         try {
           const result = await page.selectDropdownOption(input.index, input.text);
           const msg = t('act_selectDropdownOption_ok', [input.text, input.index.toString()]);
-          this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, msg);
+          this.context.emitEvent(Actors.NAVIGATOR, ExecutionState.ACT_OK, msg, {
+            action: 'select_option',
+            params: { index: input.index, text: input.text },
+            elementMetadata: {
+              tagName: elementNode.tagName,
+              attributes: elementNode.attributes,
+              xpath: elementNode.xpath,
+              id: elementNode.attributes.id,
+              name: elementNode.attributes.name,
+              role: elementNode.attributes.role,
+              type: elementNode.attributes.type,
+              placeholder: elementNode.attributes.placeholder,
+              ariaLabel: elementNode.attributes['aria-label'],
+            },
+          });
           return new ActionResult({
             extractedContent: result,
             includeInMemory: true,

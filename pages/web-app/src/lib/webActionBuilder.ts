@@ -3,7 +3,7 @@
  * Creates actions that work directly in the browser using DOM APIs
  */
 
-import { z } from 'zod';
+import type { z } from 'zod';
 import { clickElement, typeText, navigateToUrl } from './webBrowserActions';
 import { Action } from './webAction';
 import {

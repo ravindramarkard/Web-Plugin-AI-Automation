@@ -1538,49 +1538,45 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                         </div>
                       )}
 
-                    {/* Base URL input (for custom_openai, ollama, azure_openai, openrouter, and llama) */}
-                    {(providerConfig.type === ProviderTypeEnum.CustomOpenAI ||
-                      providerConfig.type === ProviderTypeEnum.Ollama ||
-                      providerConfig.type === ProviderTypeEnum.AzureOpenAI ||
-                      providerConfig.type === ProviderTypeEnum.OpenRouter ||
-                      providerConfig.type === ProviderTypeEnum.Llama) && (
-                      <div className="flex flex-col">
-                        <div className="flex items-center">
-                          <label
-                            htmlFor={`${providerId}-base-url`}
-                            className={`w-20 text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {/* Adjust Label based on provider */}
-                            {providerConfig.type === ProviderTypeEnum.AzureOpenAI
-                              ? t('options_models_providers_endpoint')
-                              : t('options_models_providers_baseUrl')}
-                            {/* Show asterisk only if required */}
-                            {/* OpenRouter has a default, so not strictly required, but needed for save button */}
-                            {providerConfig.type === ProviderTypeEnum.CustomOpenAI ||
-                            providerConfig.type === ProviderTypeEnum.AzureOpenAI
-                              ? '*'
-                              : ''}
-                          </label>
-                          <input
-                            id={`${providerId}-base-url`}
-                            type="text"
-                            placeholder={
-                              providerConfig.type === ProviderTypeEnum.CustomOpenAI
-                                ? t('options_models_providers_placeholders_baseUrl_custom')
-                                : providerConfig.type === ProviderTypeEnum.AzureOpenAI
-                                  ? t('options_models_providers_placeholders_baseUrl_azure')
-                                  : providerConfig.type === ProviderTypeEnum.OpenRouter
-                                    ? t('options_models_providers_placeholders_baseUrl_openrouter')
-                                    : providerConfig.type === ProviderTypeEnum.Llama
-                                      ? t('options_models_providers_placeholders_baseUrl_llama')
-                                      : t('options_models_providers_placeholders_baseUrl_ollama')
-                            }
-                            value={providerConfig.baseUrl || ''}
-                            onChange={e => handleApiKeyChange(providerId, providerConfig.apiKey || '', e.target.value)}
-                            className={`flex-1 rounded-md border text-sm ${isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-800' : 'border-gray-300 bg-white text-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-200'} p-2 outline-none`}
-                          />
-                        </div>
+                    {/* Base URL input (available for all providers) */}
+                    <div className="flex flex-col">
+                      <div className="flex items-center">
+                        <label
+                          htmlFor={`${providerId}-base-url`}
+                          className={`w-20 text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          {/* Adjust Label based on provider */}
+                          {providerConfig.type === ProviderTypeEnum.AzureOpenAI
+                            ? t('options_models_providers_endpoint')
+                            : t('options_models_providers_baseUrl')}
+                          {/* Show asterisk only if required */}
+                          {/* OpenRouter has a default, so not strictly required, but needed for save button */}
+                          {providerConfig.type === ProviderTypeEnum.CustomOpenAI ||
+                          providerConfig.type === ProviderTypeEnum.AzureOpenAI
+                            ? '*'
+                            : ''}
+                        </label>
+                        <input
+                          id={`${providerId}-base-url`}
+                          type="text"
+                          placeholder={
+                            providerConfig.type === ProviderTypeEnum.CustomOpenAI
+                              ? t('options_models_providers_placeholders_baseUrl_custom')
+                              : providerConfig.type === ProviderTypeEnum.AzureOpenAI
+                                ? t('options_models_providers_placeholders_baseUrl_azure')
+                                : providerConfig.type === ProviderTypeEnum.OpenRouter
+                                  ? t('options_models_providers_placeholders_baseUrl_openrouter')
+                                  : providerConfig.type === ProviderTypeEnum.Llama
+                                    ? t('options_models_providers_placeholders_baseUrl_llama')
+                                    : providerConfig.type === ProviderTypeEnum.Ollama
+                                      ? t('options_models_providers_placeholders_baseUrl_ollama')
+                                      : 'Enter base URL (optional)'
+                          }
+                          value={providerConfig.baseUrl || ''}
+                          onChange={e => handleApiKeyChange(providerId, providerConfig.apiKey || '', e.target.value)}
+                          className={`flex-1 rounded-md border text-sm ${isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-800' : 'border-gray-300 bg-white text-gray-700 focus:border-blue-400 focus:ring-2 focus:ring-blue-200'} p-2 outline-none`}
+                        />
                       </div>
-                    )}
+                    </div>
 
                     {/* Azure Deployment Name input as tags/chips like OpenRouter models */}
                     {(providerConfig.type as ProviderTypeEnum) === ProviderTypeEnum.AzureOpenAI && (
@@ -1717,8 +1713,8 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                         ? 'bg-blue-600 text-white hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-400'
                                         : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
                                       : isDarkMode
-                                        ? 'bg-slate-600 text-gray-400 cursor-not-allowed'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        ? 'cursor-not-allowed bg-slate-600 text-gray-400'
+                                        : 'cursor-not-allowed bg-gray-300 text-gray-500'
                                   }`}
                                   aria-label="Add model">
                                   Add
@@ -1777,8 +1773,8 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                                         ? 'bg-blue-600 text-white hover:bg-blue-500 disabled:bg-slate-600 disabled:text-gray-400'
                                         : 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500'
                                       : isDarkMode
-                                        ? 'bg-slate-600 text-gray-400 cursor-not-allowed'
-                                        : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                        ? 'cursor-not-allowed bg-slate-600 text-gray-400'
+                                        : 'cursor-not-allowed bg-gray-300 text-gray-500'
                                   }`}
                                   aria-label="Add model">
                                   Add

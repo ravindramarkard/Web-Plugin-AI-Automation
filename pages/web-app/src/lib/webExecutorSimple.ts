@@ -100,7 +100,7 @@ export async function setupWebExecutorSimple(
       maxFailures: generalSettings.maxFailures,
       maxActionsPerStep: generalSettings.maxActionsPerStep,
       useVision: generalSettings.useVision,
-      useVisionForPlanner: true,
+      useVisionForPlanner: false,
       planningInterval: generalSettings.planningInterval,
     },
     nSteps: 0,

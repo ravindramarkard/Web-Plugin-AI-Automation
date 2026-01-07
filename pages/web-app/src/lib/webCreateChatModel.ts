@@ -139,66 +139,105 @@ export function createChatModel(
     }
 
     case ProviderTypeEnum.Anthropic: {
-      return new ChatAnthropic({
+      const args: any = {
         model: cleanModelName,
         apiKey: providerConfig.apiKey,
         maxTokens,
         temperature,
-      });
+      };
+      if (providerConfig.baseUrl) {
+        args.clientOptions = { baseURL: providerConfig.baseUrl };
+      }
+      return new ChatAnthropic(args);
     }
 
     case ProviderTypeEnum.DeepSeek: {
-      return new ChatDeepSeek({
+      const args: any = {
         model: cleanModelName,
         apiKey: providerConfig.apiKey,
         temperature,
         topP,
-      }) as BaseChatModel;
+      };
+      if (providerConfig.baseUrl) {
+        args.configuration = { baseURL: providerConfig.baseUrl };
+      }
+      return new ChatDeepSeek(args) as BaseChatModel;
     }
 
     case ProviderTypeEnum.Gemini: {
-      return new ChatGoogleGenerativeAI({
+      const args: any = {
         model: cleanModelName,
         apiKey: providerConfig.apiKey,
         temperature,
         topP,
-      });
+      };
+      if (providerConfig.baseUrl) {
+        // ChatGoogleGenerativeAI uses rootUrl for base URL override in some versions,
+        // or we might need to rely on the SDK's behavior.
+        // For now, attempting to pass it if supported, or assuming users might use it for proxying.
+        args.rootUrl = providerConfig.baseUrl;
+      }
+      return new ChatGoogleGenerativeAI(args);
     }
 
     case ProviderTypeEnum.Grok: {
-      return new ChatXAI({
+      const args: any = {
         model: cleanModelName,
         xaiApiKey: providerConfig.apiKey,
         temperature,
         topP,
-      });
+      };
+      if (providerConfig.baseUrl) {
+        args.configuration = { baseURL: providerConfig.baseUrl };
+      }
+      return new ChatXAI(args);
     }
 
     case ProviderTypeEnum.Groq: {
-      return new ChatGroq({
+      const args: any = {
         model: cleanModelName,
         groqApiKey: providerConfig.apiKey,
         temperature,
         topP,
-      });
+      };
+      if (providerConfig.baseUrl) {
+        args.configuration = { baseURL: providerConfig.baseUrl };
+      }
+      return new ChatGroq(args);
     }
 
     case ProviderTypeEnum.Cerebras: {
-      return new ChatCerebras({
+      const args: any = {
         model: cleanModelName,
         cerebrasApiKey: providerConfig.apiKey,
         temperature,
         topP,
-      });
+      };
+      if (providerConfig.baseUrl) {
+        args.configuration = { baseURL: providerConfig.baseUrl };
+      }
+      return new ChatCerebras(args);
     }
 
     case ProviderTypeEnum.Ollama: {
       return new ChatOllama({
         model: cleanModelName,
-        baseURL: providerConfig.baseUrl || 'http://localhost:11434',
+        baseUrl: providerConfig.baseUrl || 'http://localhost:11434',
         temperature,
         topP,
-        numCtx: maxTokens,
+      });
+    }
+
+    case ProviderTypeEnum.GLM: {
+      return new ChatOpenAI({
+        model: cleanModelName,
+        apiKey: providerConfig.apiKey,
+        configuration: {
+          baseURL: providerConfig.baseUrl || 'https://open.bigmodel.cn/api/paas/v4/',
+        },
+        temperature,
+        topP,
+        maxTokens,
       });
     }
 

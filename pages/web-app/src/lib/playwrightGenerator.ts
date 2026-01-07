@@ -43,7 +43,13 @@ export function generatePlaywrightCode(steps: NavigatorStep[], testName: string,
         break;
 
       case 'click_element':
-        if (step.params.xpath) {
+        const clickSelector = generatePlaywrightSelector(step.elementMetadata);
+        if (clickSelector) {
+          lines.push(`  ${comment}`);
+          lines.push(`  await ${clickSelector}.click();`);
+          lines.push(`  await page.waitForTimeout(500);`);
+          lines.push('');
+        } else if (step.params.xpath) {
           lines.push(`  ${comment}`);
           lines.push(`  await page.locator('xpath=${step.params.xpath}').click();`);
           lines.push(`  await page.waitForTimeout(500); // Wait for action to complete`);
@@ -58,11 +64,23 @@ export function generatePlaywrightCode(steps: NavigatorStep[], testName: string,
         break;
 
       case 'input_text':
-        if (step.params.xpath && step.params.text) {
+        const text = step.params.text || '';
+        const safeText = text.replace(/'/g, "\\'");
+        const inputSelector = generatePlaywrightSelector(step.elementMetadata);
+
+        if (inputSelector) {
           lines.push(`  ${comment}`);
-          lines.push(
-            `  await page.locator('xpath=${step.params.xpath}').fill('${step.params.text.replace(/'/g, "\\'")}');`,
-          );
+          lines.push(`  await ${inputSelector}.fill('${safeText}');`);
+          lines.push(`  await page.waitForTimeout(300);`);
+          lines.push('');
+        } else if (step.params.xpath && step.params.text) {
+          lines.push(`  ${comment}`);
+          lines.push(`  await page.locator('xpath=${step.params.xpath}').fill('${safeText}');`);
+          lines.push(`  await page.waitForTimeout(300);`);
+          lines.push('');
+        } else if (step.params.index !== undefined && step.params.text) {
+          lines.push(`  ${comment}`);
+          lines.push(`  await page.locator('xpath=${step.params.xpath}').fill('${safeText}');`);
           lines.push(`  await page.waitForTimeout(300);`);
           lines.push('');
         } else if (step.params.index !== undefined && step.params.text) {
@@ -102,25 +120,6 @@ export function generatePlaywrightCode(steps: NavigatorStep[], testName: string,
 /**
  * Navigator Step interface
  */
-export interface NavigatorStep {
-  action: string;
-  params: Record<string, any>;
-  timestamp: number;
-  success: boolean;
-  error?: string;
-  elementMetadata?: {
-    tagName?: string;
-    attributes?: Record<string, string>;
-    text?: string;
-    name?: string;
-    id?: string;
-    type?: string;
-    role?: string;
-    ariaLabel?: string;
-    placeholder?: string;
-    xpath?: string;
-  };
-}
 
 /**
  * Generate the best Playwright selector based on element metadata

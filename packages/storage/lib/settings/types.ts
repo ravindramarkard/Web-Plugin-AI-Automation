@@ -19,6 +19,7 @@ export enum ProviderTypeEnum {
   Groq = 'groq',
   Cerebras = 'cerebras',
   Llama = 'llama',
+  GLM = 'glm',
   CustomOpenAI = 'custom_openai',
 }
 
@@ -48,6 +49,15 @@ export const llmProviderModelNames = {
     'Llama-3.3-8B-Instruct',
     'Llama-4-Maverick-17B-128E-Instruct-FP8',
     'Llama-4-Scout-17B-16E-Instruct-FP8',
+  ],
+  [ProviderTypeEnum.GLM]: [
+    'glm-4-plus',
+    'glm-4-0520',
+    'glm-4',
+    'glm-4-air',
+    'glm-4-flash',
+    'glm-4-long',
+    'glm-4-flashx',
   ],
   // Custom OpenAI providers don't have predefined models as they are user-defined
 };
@@ -145,6 +155,16 @@ export const llmProviderParameters = {
     },
   },
   [ProviderTypeEnum.Llama]: {
+    [AgentNameEnum.Planner]: {
+      temperature: 0.7,
+      topP: 0.9,
+    },
+    [AgentNameEnum.Navigator]: {
+      temperature: 0.3,
+      topP: 0.85,
+    },
+  },
+  [ProviderTypeEnum.GLM]: {
     [AgentNameEnum.Planner]: {
       temperature: 0.7,
       topP: 0.9,

@@ -353,7 +353,8 @@ class WebService {
                         // Extension sent structured action data
                         const actionName = eventData.action;
                         const actionParams = eventData.params || eventData.input || {};
-                        actionTracker.addStep(actionName, actionParams, true);
+                        const elementMetadata = eventData.elementMetadata;
+                        actionTracker.addStep(actionName, actionParams, true, undefined, elementMetadata);
                         console.log('[WebService] Tracked action from structured data:', actionName, actionParams);
                       } else {
                         // Fallback: Parse action from details string

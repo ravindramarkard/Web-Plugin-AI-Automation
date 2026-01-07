@@ -371,8 +371,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
                   className={`w-full rounded-lg border px-3 py-2 ${
                     isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                   } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="e.g., Development, Staging, Production"
                 />
@@ -390,8 +390,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                   onChange={e => setFormData({ ...formData, key: e.target.value })}
                   className={`w-full rounded-lg border px-3 py-2 ${
                     isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                   } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="e.g., dev, staging, prod"
                 />
@@ -411,8 +411,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                   rows={2}
                   className={`w-full rounded-lg border px-3 py-2 ${
                     isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                   } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   placeholder="Describe this environment"
                 />
@@ -436,8 +436,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                     onChange={e => setFormData({ ...formData, baseUrl: e.target.value })}
                     className={`w-full rounded-lg border px-3 py-2 text-sm ${
                       isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                        : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                        : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                     } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="http://localhost:5050"
                   />
@@ -454,8 +454,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                     onChange={e => setFormData({ ...formData, apiUrl: e.target.value })}
                     className={`w-full rounded-lg border px-3 py-2 text-sm ${
                       isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                        : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                        : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                     } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="https://api.example.com"
                   />
@@ -472,8 +472,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                     onChange={e => setFormData({ ...formData, username: e.target.value })}
                     className={`w-full rounded-lg border px-3 py-2 text-sm ${
                       isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                        : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                        : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                     } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="testuser"
                   />
@@ -490,8 +490,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                     onChange={e => setFormData({ ...formData, password: e.target.value })}
                     className={`w-full rounded-lg border px-3 py-2 text-sm ${
                       isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                        : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                        : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                     } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="password"
                   />
@@ -516,8 +516,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                     onChange={e => setFormData({ ...formData, timeout: parseInt(e.target.value) || 30000 })}
                     className={`w-full rounded-lg border px-3 py-2 text-sm ${
                       isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                        : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                        : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                     } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                     placeholder="30000"
                   />
@@ -587,8 +587,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, jiraUrl: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="https://company.atlassian.net"
                       />
@@ -604,8 +604,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, jiraUsername: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="username@company.com"
                       />
@@ -621,8 +621,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, jiraPassword: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="API token or password"
                       />
@@ -638,8 +638,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, jiraProjectKey: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="PROJ"
                       />
@@ -696,8 +696,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, llmModel: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="gpt-4, claude-3, etc."
                       />
@@ -713,8 +713,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, llmApiKey: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="Your API key"
                       />
@@ -730,8 +730,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, llmBaseUrl: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="https://api.openai.com/v1"
                       />
@@ -806,8 +806,8 @@ export default function EnvironmentSettings({ projectId, isDarkMode }: Environme
                         onChange={e => setFormData({ ...formData, authToken: e.target.value })}
                         className={`w-full rounded-lg border px-3 py-2 text-sm ${
                           isDarkMode
-                            ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                            : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                            ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                            : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                         } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                         placeholder="Enter token or use ${API_TOKEN}"
                       />

@@ -374,7 +374,7 @@ function TaskItem({ task, isDarkMode }: TaskItemProps) {
   return (
     <div
       className={`flex items-center justify-between rounded-lg border p-3 transition-colors ${
-        isDarkMode ? 'border-slate-700 bg-slate-750 hover:bg-slate-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+        isDarkMode ? 'bg-slate-750 border-slate-700 hover:bg-slate-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
       }`}>
       <div className="flex-1">
         <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{task.title}</p>
@@ -420,7 +420,7 @@ function ProjectItem({ project, isDarkMode }: ProjectItemProps) {
   return (
     <div
       className={`flex items-center gap-3 rounded-lg border p-3 transition-colors ${
-        isDarkMode ? 'border-slate-700 bg-slate-750 hover:bg-slate-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
+        isDarkMode ? 'bg-slate-750 border-slate-700 hover:bg-slate-700' : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
       }`}>
       <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100 text-xl dark:bg-blue-900">
         {getIconEmoji(project.icon)}
@@ -446,7 +446,7 @@ function QuickActionButton({ icon: Icon, label, onClick, isDarkMode }: QuickActi
       type="button"
       onClick={onClick}
       className={`flex items-center gap-3 rounded-lg border p-4 text-left transition-colors ${
-        isDarkMode ? 'border-slate-700 bg-slate-750 hover:bg-slate-700' : 'border-gray-200 bg-white hover:bg-gray-50'
+        isDarkMode ? 'bg-slate-750 border-slate-700 hover:bg-slate-700' : 'border-gray-200 bg-white hover:bg-gray-50'
       }`}>
       <div
         className={`flex size-10 items-center justify-center rounded-lg ${isDarkMode ? 'bg-blue-900/50 text-blue-400' : 'bg-blue-100 text-blue-600'}`}>

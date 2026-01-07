@@ -312,10 +312,10 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search prompts..."
-                className={`w-64 rounded-lg border pl-10 pr-4 py-2 ${
+                className={`w-64 rounded-lg border py-2 pl-10 pr-4 ${
                   isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                    ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                    : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                 } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               />
             </div>
@@ -573,7 +573,7 @@ function GeneratedCodeModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div
-        className={`w-full max-w-4xl max-h-[90vh] overflow-hidden rounded-lg border shadow-xl ${
+        className={`max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg border shadow-xl ${
           isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
         } flex flex-col`}>
         {/* Header */}
@@ -599,7 +599,7 @@ function GeneratedCodeModal({
         <div className="flex-1 overflow-y-auto p-6">
           {/* Test Case Info */}
           <div
-            className={`mb-4 rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-750' : 'border-gray-200 bg-gray-50'}`}>
+            className={`mb-4 rounded-lg border p-4 ${isDarkMode ? 'bg-slate-750 border-slate-700' : 'border-gray-200 bg-gray-50'}`}>
             <div className="mb-3">
               <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
                 Test Case Name *
@@ -610,8 +610,8 @@ function GeneratedCodeModal({
                 onChange={e => setTestCaseName(e.target.value)}
                 className={`w-full rounded-lg border px-3 py-2 ${
                   isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                    ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                    : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
                 } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 placeholder="Enter test case name"
               />
@@ -742,7 +742,7 @@ function PromptListItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onE
   return (
     <div
       className={`flex items-center gap-4 rounded-lg border p-4 transition-colors ${
-        isDarkMode ? 'border-slate-700 bg-slate-800 hover:bg-slate-750' : 'border-gray-200 bg-white hover:bg-gray-50'
+        isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
       }`}>
       <div className="flex-1">
         <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{prompt.title}</h3>
@@ -830,7 +830,7 @@ function PromptGridItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onE
   return (
     <div
       className={`rounded-lg border p-4 transition-colors ${
-        isDarkMode ? 'border-slate-700 bg-slate-800 hover:bg-slate-750' : 'border-gray-200 bg-white hover:bg-gray-50'
+        isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
       }`}>
       <div className="mb-3 flex items-start justify-between">
         <h3 className={`flex-1 font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{prompt.title}</h3>
@@ -909,7 +909,7 @@ function CreatePromptModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
       <div
-        className={`w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg border p-6 shadow-xl ${
+        className={`max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border p-6 shadow-xl ${
           isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
         }`}>
         <div className="mb-4 flex items-center justify-between">
@@ -938,8 +938,8 @@ function CreatePromptModal({
               onChange={e => setFormData({ ...formData, title: e.target.value })}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter prompt title"
             />
@@ -956,8 +956,8 @@ function CreatePromptModal({
               rows={2}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter prompt description"
             />
@@ -975,8 +975,8 @@ function CreatePromptModal({
               rows={4}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Enter your test prompt (e.g., 'Navigate to login, enter username/password, click login, validate dashboard')"
             />
@@ -1011,8 +1011,8 @@ function CreatePromptModal({
               onChange={e => setFormData({ ...formData, tags: e.target.value })}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="smoke, regression, critical"
             />
@@ -1029,8 +1029,8 @@ function CreatePromptModal({
               rows={3}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Any additional context for the test"
             />
@@ -1047,8 +1047,8 @@ function CreatePromptModal({
               onChange={e => setFormData({ ...formData, baseUrl: e.target.value })}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="https://example.com"
             />
@@ -1065,8 +1065,8 @@ function CreatePromptModal({
               rows={3}
               className={`w-full rounded-lg border px-3 py-2 ${
                 isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
+                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
               } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
               placeholder="Any additional information or requirements"
             />

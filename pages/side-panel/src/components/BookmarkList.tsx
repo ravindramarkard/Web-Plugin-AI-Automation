@@ -142,7 +142,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
                         onBookmarkSelect(bookmark.content);
                       }
                     }}
-                    className="rgb-border w-full text-left rounded-lg p-2">
+                    className="rgb-border w-full rounded-lg p-2 text-left">
                     <div
                       className={`truncate pr-10 text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
                       {bookmark.title}

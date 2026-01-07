@@ -8,6 +8,7 @@ import {
   createTestCasesTable,
   createPromptsTable,
   createEnvironmentsTable,
+  createSettingsTable,
 } from './schema.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -38,6 +39,7 @@ export function initDatabase() {
   createTestCasesTable(db);
   createPromptsTable(db);
   createEnvironmentsTable(db);
+  createSettingsTable(db);
   console.log('✅ Database initialized');
 }
 

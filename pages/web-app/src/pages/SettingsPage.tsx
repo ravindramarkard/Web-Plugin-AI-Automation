@@ -74,7 +74,7 @@ const SettingsPage = ({ projectId }: SettingsPageProps = {}) => {
             <Link
               to="/chat"
               className={`flex items-center gap-2 text-sm ${isDarkMode ? 'text-gray-400 hover:text-gray-200' : 'text-gray-600 hover:text-gray-800'}`}>
-              <FiArrowLeft className="h-4 w-4" />
+              <FiArrowLeft className="size-4" />
               Back to Chat
             </Link>
           </div>
@@ -92,7 +92,7 @@ const SettingsPage = ({ projectId }: SettingsPageProps = {}) => {
                         ? `${isDarkMode ? 'bg-slate-700/70 text-gray-300 hover:text-white' : 'bg-[#0EA5E9]/15 font-medium text-gray-700 hover:text-white'} backdrop-blur-sm`
                         : `${isDarkMode ? 'bg-sky-800/50' : ''} text-white backdrop-blur-sm`
                     }`}>
-                  <item.icon className="h-4 w-4" />
+                  <item.icon className="size-4" />
                   <span>{item.label}</span>
                 </Button>
               </li>

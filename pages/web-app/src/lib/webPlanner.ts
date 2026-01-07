@@ -74,6 +74,22 @@ export class WebPlanner {
       const messages = this.context.messageManager.getMessages();
       const plannerMessages = [new SystemMessage(PLANNER_SYSTEM_PROMPT), ...messages.slice(1)];
 
+      // Remove images from last message if vision is not enabled for planner but vision is enabled
+      if (!this.context.options.useVisionForPlanner && this.context.options.useVision) {
+        const lastStateMessage = plannerMessages[plannerMessages.length - 1];
+        let newMsg = '';
+
+        if (Array.isArray(lastStateMessage.content)) {
+          for (const msg of lastStateMessage.content) {
+            if (msg.type === 'text') {
+              newMsg += (msg as any).text;
+            }
+            // Skip image_url messages
+          }
+          plannerMessages[plannerMessages.length - 1] = new HumanMessage(newMsg);
+        }
+      }
+
       // Use structured output
       const structuredLlm = this.chatLLM.withStructuredOutput(plannerOutputSchema, {
         includeRaw: true,

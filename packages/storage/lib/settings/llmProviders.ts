@@ -67,6 +67,8 @@ export function getProviderTypeByProviderId(providerId: string): ProviderTypeEnu
     case ProviderTypeEnum.OpenRouter:
     case ProviderTypeEnum.Groq:
     case ProviderTypeEnum.Cerebras:
+    case ProviderTypeEnum.Llama:
+    case ProviderTypeEnum.GLM:
       return providerId;
     default:
       return ProviderTypeEnum.CustomOpenAI;
@@ -99,6 +101,8 @@ export function getDefaultDisplayNameFromProviderId(providerId: string): string 
       return 'Cerebras';
     case ProviderTypeEnum.Llama:
       return 'Llama';
+    case ProviderTypeEnum.GLM:
+      return 'GLM';
     default:
       return providerId; // Use the provider id as display name for custom providers by default
   }
@@ -116,6 +120,7 @@ export function getDefaultProviderConfig(providerId: string): ProviderConfig {
     case ProviderTypeEnum.Groq: // Groq uses modelNames
     case ProviderTypeEnum.Cerebras: // Cerebras uses modelNames
     case ProviderTypeEnum.Llama: // Llama uses modelNames
+    case ProviderTypeEnum.GLM: // GLM uses modelNames
       return {
         apiKey: '',
         name: getDefaultDisplayNameFromProviderId(providerId),
@@ -125,7 +130,19 @@ export function getDefaultProviderConfig(providerId: string): ProviderConfig {
             ? 'https://openrouter.ai/api/v1'
             : providerId === ProviderTypeEnum.Llama
               ? 'https://api.llama.com/v1'
-              : undefined,
+              : providerId === ProviderTypeEnum.GLM
+                ? 'https://open.bigmodel.cn/api/paas/v4/'
+                : providerId === ProviderTypeEnum.OpenAI
+                  ? 'https://api.openai.com/v1'
+                  : providerId === ProviderTypeEnum.DeepSeek
+                    ? 'https://api.deepseek.com'
+                    : providerId === ProviderTypeEnum.Grok
+                      ? 'https://api.x.ai/v1'
+                      : providerId === ProviderTypeEnum.Groq
+                        ? 'https://api.groq.com/openai/v1'
+                        : providerId === ProviderTypeEnum.Cerebras
+                          ? 'https://api.cerebras.ai/v1'
+                          : undefined,
         modelNames: [...(llmProviderModelNames[providerId] || [])],
         createdAt: Date.now(),
       };

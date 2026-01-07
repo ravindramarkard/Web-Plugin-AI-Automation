@@ -277,7 +277,7 @@ export async function setupWebExecutor(taskId: string, task: string, onEvent: Ev
     maxFailures: generalSettings.maxFailures,
     maxActionsPerStep: generalSettings.maxActionsPerStep,
     useVision: generalSettings.useVision,
-    useVisionForPlanner: true,
+    useVisionForPlanner: false,
     planningInterval: generalSettings.planningInterval,
   });
 
@@ -322,7 +322,7 @@ export async function setupWebExecutor(taskId: string, task: string, onEvent: Ev
       maxFailures: generalSettings.maxFailures,
       maxActionsPerStep: generalSettings.maxActionsPerStep,
       useVision: generalSettings.useVision,
-      useVisionForPlanner: true,
+      useVisionForPlanner: false,
       planningInterval: generalSettings.planningInterval,
     },
     generalSettings: generalSettings,
