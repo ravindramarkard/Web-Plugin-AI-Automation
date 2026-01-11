@@ -6,6 +6,8 @@
  * to ensure chrome.storage is available when storage packages load.
  */
 
+import { API_ENDPOINTS, apiGet, apiPost } from './apiConfig.js';
+
 export interface StorageChange {
   oldValue?: unknown;
   newValue?: unknown;
@@ -102,6 +104,7 @@ class WebStorageArea implements StorageArea {
 
   async set(items: { [key: string]: unknown }): Promise<void> {
     const changes: { [key: string]: StorageChange } = {};
+    const syncPromises: Promise<any>[] = [];
 
     for (const [key, value] of Object.entries(items)) {
       const storageKey = this.getKey(key);
@@ -122,6 +125,23 @@ class WebStorageArea implements StorageArea {
         oldValue,
         newValue: value,
       };
+
+      // Sync specific settings to server for backend agents
+      if (this.prefix === 'web_storage_local_') {
+        if (
+          key === 'llm_providers' ||
+          key === 'agent_models' ||
+          key.startsWith('project:') ||
+          key === 'openai_api_key'
+        ) {
+          console.log('[WebStorage] Syncing setting to server:', key);
+          syncPromises.push(
+            apiPost(API_ENDPOINTS.settings, { key, value }).catch(err => {
+              console.error('[WebStorage] Failed to sync setting to server:', key, err);
+            }),
+          );
+        }
+      }
     }
 
     if (Object.keys(changes).length > 0) {
@@ -132,6 +152,10 @@ class WebStorageArea implements StorageArea {
           console.error('Error in storage change listener:', error);
         }
       });
+    }
+
+    if (syncPromises.length > 0) {
+      await Promise.all(syncPromises);
     }
   }
 

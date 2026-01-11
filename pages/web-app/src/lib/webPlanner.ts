@@ -118,7 +118,7 @@ export class WebPlanner {
         // Add plan to message history
         this.context.messageManager.addPlan(JSON.stringify(plan), messages.length);
 
-        return { result: plan };
+        return { result: plan as PlannerOutput };
       }
 
       // If we have raw response but no parsed, try to parse it manually
@@ -281,7 +281,9 @@ Return ONLY the complete Playwright test code as a code block, starting with the
       if (typeof response.content === 'string') {
         playwrightCode = response.content;
       } else if (Array.isArray(response.content)) {
-        playwrightCode = response.content.map(c => (typeof c === 'string' ? c : c.text || '')).join('');
+        playwrightCode = response.content
+          .map(c => (typeof c === 'string' ? c : 'text' in c && typeof c.text === 'string' ? c.text : ''))
+          .join('');
       } else {
         playwrightCode = JSON.stringify(response.content);
       }
@@ -296,7 +298,15 @@ Return ONLY the complete Playwright test code as a code block, starting with the
       if (!playwrightCode || playwrightCode.length < 100) {
         console.warn('[WebPlanner] LLM did not generate valid code, falling back to generator');
         const { generateDetailedPlaywrightCode } = await import('./playwrightGenerator');
-        playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl);
+        playwrightCode = generateDetailedPlaywrightCode(
+          steps.map(s => ({
+            ...s,
+            timestamp: Date.now(),
+            success: true,
+          })),
+          testName,
+          baseUrl,
+        );
       }
 
       console.log('[WebPlanner] Generated Playwright code, length:', playwrightCode.length);
@@ -306,7 +316,15 @@ Return ONLY the complete Playwright test code as a code block, starting with the
       // Fall back to the generator function
       try {
         const { generateDetailedPlaywrightCode } = await import('./playwrightGenerator');
-        const playwrightCode = generateDetailedPlaywrightCode(steps, testName, baseUrl);
+        const playwrightCode = generateDetailedPlaywrightCode(
+          steps.map(s => ({
+            ...s,
+            timestamp: Date.now(),
+            success: true,
+          })),
+          testName,
+          baseUrl,
+        );
         return { code: playwrightCode };
       } catch (fallbackError) {
         return {

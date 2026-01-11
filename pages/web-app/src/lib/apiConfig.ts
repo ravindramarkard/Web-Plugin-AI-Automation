@@ -14,6 +14,9 @@ export const API_ENDPOINTS = {
   testCases: `${API_BASE_URL}/test-cases`,
   prompts: `${API_BASE_URL}/prompts`,
   environments: `${API_BASE_URL}/environments`,
+  execution: `${API_BASE_URL}/execution`,
+  testGen: `${API_BASE_URL}/test-gen`,
+  settings: `${API_BASE_URL}/settings`,
 } as const;
 
 /**

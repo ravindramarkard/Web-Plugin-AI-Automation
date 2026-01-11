@@ -32,18 +32,19 @@ export async function setupWebExecutorSimple(
   taskId: string,
   task: string,
   onEvent: EventCallback,
+  projectId?: string,
 ): Promise<{ execute: () => Promise<void>; cancel: () => Promise<void> }> {
   // Use web-compatible createChatModel (doesn't import from chrome-extension)
   const { createChatModel } = await import('./webCreateChatModel');
 
   // Get providers and models
-  const providers = await llmProviderStore.getAllProviders();
+  const providers = await llmProviderStore.getAllProviders(projectId);
   if (Object.keys(providers).length === 0) {
     throw new Error(t('bg_setup_noApiKeys'));
   }
 
   await agentModelStore.cleanupLegacyValidatorSettings();
-  const agentModels = await agentModelStore.getAllAgentModels();
+  const agentModels = await agentModelStore.getAllAgentModels(projectId);
 
   for (const agentModel of Object.values(agentModels)) {
     if (!providers[agentModel.provider]) {

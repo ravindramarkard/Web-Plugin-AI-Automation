@@ -4,6 +4,7 @@
 
 import { API_ENDPOINTS, apiGet, apiPost, apiPut, apiDelete } from './apiConfig.js';
 import { apiCache } from './apiCache.js';
+import { webStorage } from './webStorage';
 
 export interface Environment {
   id: string;
@@ -36,9 +37,16 @@ export interface Environment {
 }
 
 class EnvironmentStorage {
-  async getAllEnvironments(): Promise<Environment[]> {
+  private getProjectKey(projectId: string) {
+    return `environments-${projectId}`;
+  }
+
+  async getAllEnvironments(projectId?: string): Promise<Environment[]> {
     try {
-      const environments = await apiGet<Environment[]>(API_ENDPOINTS.environments);
+      const url = projectId
+        ? `${API_ENDPOINTS.environments}?projectId=${encodeURIComponent(projectId)}`
+        : API_ENDPOINTS.environments;
+      const environments = await apiGet<Environment[]>(url);
       return Array.isArray(environments) ? environments : [];
     } catch (error) {
       console.error('[EnvironmentStorage] Failed to get environments:', error);
@@ -46,7 +54,7 @@ class EnvironmentStorage {
     }
   }
 
-  async getEnvironment(id: string): Promise<Environment | null> {
+  async getEnvironment(id: string, projectId?: string): Promise<Environment | null> {
     try {
       return await apiGet<Environment>(`${API_ENDPOINTS.environments}/${id}`);
     } catch (error) {
@@ -55,7 +63,7 @@ class EnvironmentStorage {
     }
   }
 
-  async getEnvironmentByKey(key: string): Promise<Environment | null> {
+  async getEnvironmentByKey(key: string, projectId?: string): Promise<Environment | null> {
     try {
       return await apiGet<Environment>(`${API_ENDPOINTS.environments}/key/${key}`);
     } catch (error) {
@@ -66,12 +74,14 @@ class EnvironmentStorage {
 
   async createEnvironment(
     environment: Omit<Environment, 'id' | 'createdAt' | 'updatedAt' | 'status'> & { status?: Environment['status'] },
+    projectId?: string,
   ): Promise<Environment> {
     try {
       return await apiPost<Environment>(
         API_ENDPOINTS.environments,
         {
           ...environment,
+          projectId,
           status: environment.status || 'active',
         },
         API_ENDPOINTS.environments,
@@ -85,6 +95,7 @@ class EnvironmentStorage {
   async updateEnvironment(
     id: string,
     updates: Partial<Omit<Environment, 'id' | 'createdAt'>>,
+    projectId?: string,
   ): Promise<Environment | null> {
     try {
       return await apiPut<Environment>(`${API_ENDPOINTS.environments}/${id}`, updates, API_ENDPOINTS.environments);
@@ -94,7 +105,7 @@ class EnvironmentStorage {
     }
   }
 
-  async deleteEnvironment(id: string): Promise<boolean> {
+  async deleteEnvironment(id: string, projectId?: string): Promise<boolean> {
     try {
       await apiDelete<{ success: boolean }>(`${API_ENDPOINTS.environments}/${id}`, API_ENDPOINTS.environments);
       return true;
@@ -104,8 +115,8 @@ class EnvironmentStorage {
     }
   }
 
-  async testEnvironment(id: string): Promise<{ success: boolean; message: string }> {
-    const environment = await this.getEnvironment(id);
+  async testEnvironment(id: string, projectId?: string): Promise<{ success: boolean; message: string }> {
+    const environment = await this.getEnvironment(id, projectId);
     if (!environment) {
       return { success: false, message: 'Environment not found' };
     }

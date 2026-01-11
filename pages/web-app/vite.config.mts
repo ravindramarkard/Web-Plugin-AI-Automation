@@ -31,6 +31,11 @@ export default withPageConfig({
         changeOrigin: true,
         secure: false,
       },
+      '/reports': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });

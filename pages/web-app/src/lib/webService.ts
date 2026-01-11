@@ -15,6 +15,7 @@ export interface WebServiceMessage {
   tabId?: string | number;
   audio?: string;
   sessionId?: string;
+  projectId?: string;
 }
 
 export interface WebServiceResponse {
@@ -63,86 +64,86 @@ class WebService {
           try {
             // Check if LLM is configured in extension
             let llmCheckResponse = await extensionBridge.checkLLMConfigured();
-            if (!llmCheckResponse.success || !llmCheckResponse.data?.configured) {
-              console.log('[WebService] LLM not configured, attempting to sync...', llmCheckResponse.data);
 
-              // Try to sync all configs first (in case they weren't synced yet)
-              try {
-                const { llmProviderStore, agentModelStore, AgentNameEnum } = await import('@extension/storage');
-                const providers = await llmProviderStore.getAllProviders();
-                const agentModels = await agentModelStore.getAllAgentModels();
+            // Always sync settings for the current project to ensure extension has the correct context
+            // This is crucial for project independence
+            console.log('[WebService] Syncing project settings to extension for project:', message.projectId);
 
-                console.log('[WebService] Syncing providers:', Object.keys(providers));
-                console.log('[WebService] Syncing agent models:', Object.keys(agentModels));
+            try {
+              const { llmProviderStore, agentModelStore, AgentNameEnum } = await import('@extension/storage');
+              const providers = await llmProviderStore.getAllProviders(message.projectId);
+              const agentModels = await agentModelStore.getAllAgentModels(message.projectId);
 
-                // Sync all providers
-                for (const [providerId, providerConfig] of Object.entries(providers)) {
-                  try {
-                    const syncResponse = await extensionBridge.syncLLMProvider(providerId, providerConfig);
-                    if (syncResponse.success) {
-                      console.log(`[WebService] Successfully synced provider: ${providerId}`);
-                    } else {
-                      console.error(`[WebService] Failed to sync provider ${providerId}:`, syncResponse.error);
-                    }
-                  } catch (error) {
-                    console.error(`[WebService] Exception syncing provider ${providerId}:`, error);
+              console.log('[WebService] Syncing providers:', Object.keys(providers));
+              console.log('[WebService] Syncing agent models:', Object.keys(agentModels));
+
+              // Sync all providers
+              for (const [providerId, providerConfig] of Object.entries(providers)) {
+                try {
+                  const syncResponse = await extensionBridge.syncLLMProvider(providerId, providerConfig);
+                  if (syncResponse.success) {
+                    console.log(`[WebService] Successfully synced provider: ${providerId}`);
+                  } else {
+                    console.error(`[WebService] Failed to sync provider ${providerId}:`, syncResponse.error);
                   }
+                } catch (error) {
+                  console.error(`[WebService] Exception syncing provider ${providerId}:`, error);
                 }
-
-                // Sync all agent models
-                for (const [agentName, modelConfig] of Object.entries(agentModels)) {
-                  try {
-                    const syncResponse = await extensionBridge.syncAgentModel(agentName, modelConfig);
-                    if (syncResponse.success) {
-                      console.log(`[WebService] Successfully synced agent model: ${agentName}`, modelConfig);
-                    } else {
-                      console.error(`[WebService] Failed to sync agent model ${agentName}:`, syncResponse.error);
-                    }
-                  } catch (error) {
-                    console.error(`[WebService] Exception syncing agent model ${agentName}:`, error);
-                  }
-                }
-
-                // Wait a bit for storage to persist
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Check again after sync
-                llmCheckResponse = await extensionBridge.checkLLMConfigured();
-                console.log('[WebService] Recheck after sync:', llmCheckResponse.data);
-
-                if (!llmCheckResponse.success || !llmCheckResponse.data?.configured) {
-                  const errorDetails = llmCheckResponse.data || {};
-                  let errorMessage = 'LLM not configured in extension after sync attempt. ';
-
-                  if (!errorDetails.hasProviders) {
-                    errorMessage +=
-                      'No providers found. Please configure at least one LLM provider in Settings → Models. ';
-                  }
-                  if (!errorDetails.hasNavigatorModel) {
-                    errorMessage +=
-                      'Navigator model not configured. Please configure the Navigator model in Settings → Models. ';
-                  }
-
-                  errorMessage +=
-                    'After configuring, go to Settings → Extension and click "Save & Check" to sync the settings.';
-
-                  // Log detailed debug info
-                  console.error('[WebService] LLM configuration check failed:', {
-                    hasProviders: errorDetails.hasProviders,
-                    hasNavigatorModel: errorDetails.hasNavigatorModel,
-                    providerCount: errorDetails.providerCount,
-                    webAppProviders: Object.keys(providers),
-                    webAppAgentModels: Object.keys(agentModels),
-                  });
-
-                  throw new Error(errorMessage);
-                } else {
-                  console.log('[WebService] LLM configured after sync, proceeding with task');
-                }
-              } catch (syncError) {
-                console.error('[WebService] Failed to sync or recheck LLM config:', syncError);
-                throw syncError;
               }
+
+              // Sync all agent models
+              for (const [agentName, modelConfig] of Object.entries(agentModels)) {
+                try {
+                  const syncResponse = await extensionBridge.syncAgentModel(agentName, modelConfig);
+                  if (syncResponse.success) {
+                    console.log(`[WebService] Successfully synced agent model: ${agentName}`, modelConfig);
+                  } else {
+                    console.error(`[WebService] Failed to sync agent model ${agentName}:`, syncResponse.error);
+                  }
+                } catch (error) {
+                  console.error(`[WebService] Exception syncing agent model ${agentName}:`, error);
+                }
+              }
+
+              // Wait a bit for storage to persist
+              await new Promise(resolve => setTimeout(resolve, 500));
+
+              // Check again after sync
+              llmCheckResponse = await extensionBridge.checkLLMConfigured();
+              console.log('[WebService] Recheck after sync:', llmCheckResponse.data);
+
+              if (!llmCheckResponse.success || !llmCheckResponse.data?.configured) {
+                const errorDetails = llmCheckResponse.data || {};
+                let errorMessage = 'LLM not configured in extension after sync attempt. ';
+
+                if (!errorDetails.hasProviders) {
+                  errorMessage +=
+                    'No providers found. Please configure at least one LLM provider in Settings → Models. ';
+                }
+                if (!errorDetails.hasNavigatorModel) {
+                  errorMessage +=
+                    'Navigator model not configured. Please configure the Navigator model in Settings → Models. ';
+                }
+
+                errorMessage +=
+                  'After configuring, go to Settings → Extension and click "Save & Check" to sync the settings.';
+
+                // Log detailed debug info
+                console.error('[WebService] LLM configuration check failed:', {
+                  hasProviders: errorDetails.hasProviders,
+                  hasNavigatorModel: errorDetails.hasNavigatorModel,
+                  providerCount: errorDetails.providerCount,
+                  webAppProviders: Object.keys(providers),
+                  webAppAgentModels: Object.keys(agentModels),
+                });
+
+                throw new Error(errorMessage);
+              } else {
+                console.log('[WebService] LLM configured after sync, proceeding with task');
+              }
+            } catch (syncError) {
+              console.error('[WebService] Failed to sync or recheck LLM config:', syncError);
+              throw syncError;
             }
 
             // Set up event listener for extension events FIRST (before sending task)
@@ -275,23 +276,18 @@ class WebService {
                       }
 
                       if (projectId) {
-                        // Find or create test suite with UI Tests type
-                        let testSuite = (await testSuiteStorage.getTestSuitesByProject(projectId)).find(
-                          s => s.testType === 'UI Tests',
-                        );
-                        if (!testSuite) {
-                          testSuite = await testSuiteStorage.createTestSuite({
-                            projectId,
-                            name: 'UI Tests',
-                            description: 'UI test cases automatically generated from successful prompt executions',
-                            testType: 'UI Tests',
-                          });
-                          console.log('[WebService] Created new UI Tests suite:', testSuite.id);
+                        // Find existing test suite (prioritize UI Tests, then any suite)
+                        const allSuites = await testSuiteStorage.getTestSuitesByProject(projectId);
+                        let testSuite = allSuites.find(s => s.testType === 'UI Tests');
+
+                        // If no UI Tests suite, use the first available suite
+                        if (!testSuite && allSuites.length > 0) {
+                          testSuite = allSuites[0];
                         }
 
-                        // Save test case with UI Test type
+                        // Save test case (unassigned if no suite found)
                         const newTestCase = await testSuiteStorage.createTestCase({
-                          testSuiteId: testSuite.id,
+                          testSuiteId: testSuite?.id || null,
                           name: matchingPrompt?.title || testName,
                           description:
                             matchingPrompt?.description ||
@@ -311,7 +307,7 @@ class WebService {
                           new CustomEvent('testCaseCreated', {
                             detail: {
                               testCaseId: newTestCase.id,
-                              suiteId: testSuite.id,
+                              suiteId: testSuite?.id || null,
                               projectId: projectId,
                             },
                           }),
@@ -529,12 +525,17 @@ class WebService {
         // Fallback to web-only executor (only for tasks that don't require external access)
         // Setup executor with web-compatible Navigator (uses DOM APIs)
         // This will call the Planner with the user's task and Navigator with web actions
-        const executor = await setupWebExecutorSimple(this.currentTaskId, message.task, (event: AgentEvent) => {
-          // Forward events from executor to our event callbacks
-          this.emitEvent(event);
-          // Note: Task completion is handled in emitEvent() to avoid duplicate calls
-          // We don't need to handle it here - emitEvent will call handleTaskCompletion
-        });
+        const executor = await setupWebExecutorSimple(
+          this.currentTaskId!,
+          message.task,
+          (event: AgentEvent) => {
+            // Forward events from executor to our event callbacks
+            this.emitEvent(event);
+            // Note: Task completion is handled in emitEvent() to avoid duplicate calls
+            // We don't need to handle it here - emitEvent will call handleTaskCompletion
+          },
+          message.projectId,
+        );
 
         this.currentExecutor = executor;
 
@@ -901,6 +902,8 @@ class WebService {
           console.log('[WebService] Created test suite:', testSuite.id);
         }
 
+        let autoSavedTestCaseId: string | undefined;
+
         // Automatically save the test case
         console.log('[WebService] ========== Auto-saving test case ==========');
         try {
@@ -918,6 +921,7 @@ class WebService {
             status: 'pass',
             lastRunAt: Date.now(),
           });
+          autoSavedTestCaseId = newTestCase.id;
           console.log('[WebService] ✅ Test case auto-saved:', newTestCase.id);
 
           // Dispatch event to notify UI that test case was created
@@ -941,6 +945,7 @@ class WebService {
           code: playwrightCode,
           prompt: matchingPrompt,
           baseUrl: baseUrl || matchingPrompt.baseUrl,
+          autoSavedTestCaseId: autoSavedTestCaseId, // Pass the auto-saved test case ID
         };
 
         // Dispatch immediately

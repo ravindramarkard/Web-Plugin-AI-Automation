@@ -51,7 +51,7 @@ const SettingsPage = ({ projectId }: SettingsPageProps = {}) => {
       case 'general':
         return <GeneralSettings isDarkMode={isDarkMode} />;
       case 'models':
-        return <ModelSettings isDarkMode={isDarkMode} />;
+        return <ModelSettings projectId={projectId} isDarkMode={isDarkMode} />;
       case 'firewall':
         return <FirewallSettings isDarkMode={isDarkMode} />;
       case 'analytics':

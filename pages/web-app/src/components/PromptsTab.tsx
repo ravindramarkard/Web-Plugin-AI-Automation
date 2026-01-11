@@ -9,7 +9,6 @@ import {
   FiEdit2,
   FiTrash2,
   FiCopy,
-  FiRefreshCw,
   FiCode,
   FiXCircle,
   FiSave,
@@ -34,7 +33,12 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingPrompt, setEditingPrompt] = useState<Prompt | null>(null);
   const [showGeneratedCodeModal, setShowGeneratedCodeModal] = useState(false);
-  const [generatedCode, setGeneratedCode] = useState<{ code: string; prompt: Prompt; baseUrl: string } | null>(null);
+  const [generatedCode, setGeneratedCode] = useState<{
+    code: string;
+    prompt: Prompt;
+    baseUrl: string;
+    autoSavedTestCaseId?: string;
+  } | null>(null);
   const [testSuites, setTestSuites] = useState<TestSuite[]>([]);
   const [selectedTestSuiteId, setSelectedTestSuiteId] = useState<string>('');
   const [formData, setFormData] = useState({
@@ -68,7 +72,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
       console.log('[PromptsTab] Event detail keys:', customEvent.detail ? Object.keys(customEvent.detail) : 'null');
 
       const detail = customEvent.detail || {};
-      const { code, prompt, baseUrl } = detail;
+      const { code, prompt, baseUrl, autoSavedTestCaseId } = detail;
 
       console.log('[PromptsTab] Extracted values:', {
         hasCode: !!code,
@@ -78,6 +82,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
         promptType: typeof prompt,
         promptTitle: prompt?.title,
         hasBaseUrl: !!baseUrl,
+        autoSavedTestCaseId,
       });
 
       if (!code || !prompt) {
@@ -99,7 +104,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
 
       console.log('[PromptsTab] Setting generated code and showing modal...');
       try {
-        setGeneratedCode({ code, prompt, baseUrl });
+        setGeneratedCode({ code, prompt, baseUrl, autoSavedTestCaseId });
         setShowGeneratedCodeModal(true);
         console.log('[PromptsTab] ✅ Modal state set - should be visible now');
       } catch (error) {
@@ -275,6 +280,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
         type: 'new_task',
         task: promptContent,
         taskId: taskId,
+        projectId, // Pass projectId for correct LLM settings
       };
 
       await webService.sendMessage(message);
@@ -456,48 +462,41 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
               console.log('[PromptsTab] Test case name:', testCaseName);
               console.log('[PromptsTab] Playwright code length:', generatedCode.code.length);
               console.log('[PromptsTab] Base URL:', generatedCode.baseUrl);
+              console.log('[PromptsTab] Auto-saved ID:', generatedCode.autoSavedTestCaseId);
 
-              // Create test case first
-              const newTestCase = await testSuiteStorage.createTestCase({
-                testSuiteId,
-                name: testCaseName || generatedCode.prompt.title,
-                description:
-                  generatedCode.prompt.description ||
-                  `Test case generated from prompt: ${generatedCode.prompt.promptContent.substring(0, 100)}`,
-                prompt: generatedCode.prompt.promptContent,
-              });
+              let testCaseId = generatedCode.autoSavedTestCaseId;
 
-              console.log('[PromptsTab] ✅ Test case created:', newTestCase.id);
-              console.log('[PromptsTab] Test case before update:', {
-                id: newTestCase.id,
-                hasPlaywrightCode: !!newTestCase.playwrightCode,
-              });
-
-              // Update test case with Playwright code
-              console.log('[PromptsTab] Updating test case with Playwright code...');
-              const updatedTestCase = await testSuiteStorage.updateTestCase(newTestCase.id, {
-                playwrightCode: generatedCode.code,
-                baseUrl: generatedCode.baseUrl,
-                status: 'pass',
-                lastRunAt: Date.now(),
-              });
-
-              console.log('[PromptsTab] ✅ Test case updated:', {
-                id: updatedTestCase?.id,
-                hasPlaywrightCode: !!updatedTestCase?.playwrightCode,
-                playwrightCodeLength: updatedTestCase?.playwrightCode?.length,
-                baseUrl: updatedTestCase?.baseUrl,
-                status: updatedTestCase?.status,
-              });
-
-              // Verify it was saved
-              const verifyTestCase = await testSuiteStorage.getTestCase(newTestCase.id);
-              console.log('[PromptsTab] Verification - Test case from storage:', {
-                id: verifyTestCase?.id,
-                hasPlaywrightCode: !!verifyTestCase?.playwrightCode,
-                playwrightCodeLength: verifyTestCase?.playwrightCode?.length,
-                baseUrl: verifyTestCase?.baseUrl,
-              });
+              if (testCaseId) {
+                // Update existing auto-saved test case
+                console.log('[PromptsTab] Updating auto-saved test case:', testCaseId);
+                await testSuiteStorage.updateTestCase(testCaseId, {
+                  testSuiteId,
+                  name: testCaseName || generatedCode.prompt.title,
+                  // Ensure these are set if they weren't already
+                  playwrightCode: generatedCode.code,
+                  baseUrl: generatedCode.baseUrl,
+                  status: 'pass',
+                  lastRunAt: Date.now(),
+                });
+                console.log('[PromptsTab] ✅ Auto-saved test case updated');
+              } else {
+                // Create new test case (fallback)
+                console.log('[PromptsTab] Creating new test case (no auto-save found)');
+                const newTestCase = await testSuiteStorage.createTestCase({
+                  testSuiteId,
+                  name: testCaseName || generatedCode.prompt.title,
+                  description:
+                    generatedCode.prompt.description ||
+                    `Test case generated from prompt: ${generatedCode.prompt.promptContent.substring(0, 100)}`,
+                  prompt: generatedCode.prompt.promptContent,
+                  playwrightCode: generatedCode.code,
+                  baseUrl: generatedCode.baseUrl,
+                  status: 'pass',
+                  lastRunAt: Date.now(),
+                });
+                testCaseId = newTestCase.id;
+                console.log('[PromptsTab] ✅ New test case created:', testCaseId);
+              }
 
               setShowGeneratedCodeModal(false);
               setGeneratedCode(null);
@@ -506,7 +505,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
               // Notify to refresh test suites tab
               console.log('[PromptsTab] Dispatching testCaseCreated event');
               window.dispatchEvent(
-                new CustomEvent('testCaseCreated', { detail: { testCaseId: newTestCase.id, suiteId: testSuiteId } }),
+                new CustomEvent('testCaseCreated', { detail: { testCaseId: testCaseId, suiteId: testSuiteId } }),
               );
 
               console.log('[PromptsTab] ✅ Test case saved successfully!');
@@ -787,22 +786,7 @@ function PromptListItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onE
           title="Duplicate">
           <FiCopy size={18} />
         </button>
-        <button
-          type="button"
-          className={`rounded p-2 transition-colors ${
-            isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-          }`}
-          title="View Details">
-          <FiCode size={18} />
-        </button>
-        <button
-          type="button"
-          className={`rounded p-2 transition-colors ${
-            isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-          }`}
-          title="Refresh">
-          <FiRefreshCw size={18} />
-        </button>
+
         <button
           type="button"
           onClick={onDelete}
@@ -880,18 +864,20 @@ function PromptGridItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onE
   );
 }
 
+interface PromptFormData {
+  title: string;
+  description: string;
+  promptContent: string;
+  testType: Prompt['testType'];
+  tags: string;
+  additionalContext: string;
+  baseUrl: string;
+  additionalInformation: string;
+}
+
 interface CreatePromptModalProps {
-  formData: {
-    title: string;
-    description: string;
-    promptContent: string;
-    testType: Prompt['testType'];
-    tags: string;
-    additionalContext: string;
-    baseUrl: string;
-    additionalInformation: string;
-  };
-  setFormData: (data: typeof formData) => void;
+  formData: PromptFormData;
+  setFormData: (data: PromptFormData) => void;
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   editingPrompt: Prompt | null;

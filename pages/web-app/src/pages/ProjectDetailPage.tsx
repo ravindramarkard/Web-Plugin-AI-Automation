@@ -30,15 +30,24 @@ import {
   FiX,
   FiBarChart2,
   FiGlobe,
+  FiMonitor,
+  FiCpu,
+  FiTarget,
+  FiActivity,
+  FiCheckSquare,
 } from 'react-icons/fi';
+import { BiBug } from 'react-icons/bi';
 import { projectStorage, type Project } from '../lib/projectStorage';
 import { testSuiteStorage, type TestSuite, type TestCase, type TestSuiteSchedule } from '../lib/testSuiteStorage';
 import SettingsPage from './SettingsPage';
 import EnvironmentSettings from '../components/EnvironmentSettings';
 import PromptsTab from '../components/PromptsTab';
+import RunTestSuiteModal, { RunSuiteOptions } from '../components/RunTestSuiteModal';
 import ChatView from '../components/ChatView';
 import GeneratingNotification from '../components/GeneratingNotification';
 import { webService } from '../lib/webService';
+import { apiPost, API_ENDPOINTS } from '../lib/apiConfig';
+import { startCodegen } from '../lib/testGenAPI';
 import { ExecutionState } from '../types/event';
 
 type TabType = 'prompt' | 'test-suite' | 'report' | 'settings' | 'environments';
@@ -56,6 +65,8 @@ export default function ProjectDetailPage() {
   const [showSchedulerModal, setShowSchedulerModal] = useState(false);
   const [schedulingSuite, setSchedulingSuite] = useState<TestSuite | null>(null);
   const [editingSuite, setEditingSuite] = useState<TestSuite | null>(null);
+  const [showRunSuiteModal, setShowRunSuiteModal] = useState(false);
+  const [suiteToRun, setSuiteToRun] = useState<TestSuite | null>(null);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingTestCases, setIsLoadingTestCases] = useState(false);
@@ -71,6 +82,7 @@ export default function ProjectDetailPage() {
   const [viewingPrompt, setViewingPrompt] = useState<{ testCase: TestCase } | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatingMessage, setGeneratingMessage] = useState('AI Generating script for you');
+  const [sidebarWidth, setSidebarWidth] = useState(1000); // Default width for prompt sidebar
 
   // Define loadTestCases and loadTestSuites BEFORE useEffect hooks that use them
   const loadTestCases = async (suiteId?: string) => {
@@ -91,7 +103,9 @@ export default function ProjectDetailPage() {
           testSuiteStorage.getTestSuitesByProject(projectId!),
         ]);
         const suiteIds = new Set(projectSuites.map(s => s.id));
-        const projectCases = Array.isArray(allCases) ? allCases.filter(tc => suiteIds.has(tc.testSuiteId)) : [];
+        const projectCases = Array.isArray(allCases)
+          ? allCases.filter(tc => tc.testSuiteId && suiteIds.has(tc.testSuiteId as string))
+          : [];
         console.log('[ProjectDetailPage] Loaded all test cases for project:', projectCases.length);
         setTestCases(projectCases);
       }
@@ -274,6 +288,7 @@ export default function ProjectDetailPage() {
         projectId,
         name: suiteFormData.name,
         description: suiteFormData.description,
+        testType: suiteFormData.testType as any,
       });
 
       // Add selected test cases to the suite
@@ -308,8 +323,41 @@ export default function ProjectDetailPage() {
       await testSuiteStorage.updateTestSuite(editingSuite.id, {
         name: suiteFormData.name,
         description: suiteFormData.description,
+        testType: suiteFormData.testType as any,
       });
+
+      // Update test cases
+      const updatePromises = [];
+
+      // 1. Add/Ensure selected tests are in the suite
+      for (const testCaseId of Array.from(selectedTestCasesForSuite)) {
+        updatePromises.push(
+          testSuiteStorage.updateTestCase(testCaseId, {
+            testSuiteId: editingSuite.id,
+          }),
+        );
+      }
+
+      // 2. Remove tests that were moved out of the suite
+      // These are tests in availableTestCases that still have this suite's ID
+      for (const testCase of availableTestCases) {
+        if (testCase.testSuiteId === editingSuite.id) {
+          updatePromises.push(
+            testSuiteStorage.updateTestCase(testCase.id, {
+              testSuiteId: null as any,
+            }),
+          );
+        }
+      }
+
+      await Promise.all(updatePromises);
+
       await loadTestSuites();
+      // Reload cases if we are viewing this suite
+      if (selectedTestSuite === editingSuite.id) {
+        await loadTestCases(editingSuite.id);
+      }
+
       setShowCreateSuiteModal(false);
       setEditingSuite(null);
       setSuiteFormData({ name: '', description: '', testType: 'UI Tests' });
@@ -319,22 +367,12 @@ export default function ProjectDetailPage() {
   };
 
   const handleDeleteSuite = async (suiteId: string) => {
-    if (
-      !confirm('Are you sure you want to delete this test suite? All test cases in this suite will also be deleted.')
-    ) {
+    if (!confirm('Are you sure you want to delete this test suite? Test cases will be moved to "Unassigned" suite.')) {
       return;
     }
 
     try {
-      // Get test cases in this suite first
-      const cases = await testSuiteStorage.getTestCasesBySuite(suiteId);
-
-      // Delete all test cases in this suite
-      for (const testCase of cases) {
-        await testSuiteStorage.deleteTestCase(testCase.id);
-      }
-
-      // Delete the test suite
+      // Delete the test suite (server handles moving test cases to Unassigned)
       await testSuiteStorage.deleteTestSuite(suiteId);
 
       // If the deleted suite was selected, clear selection
@@ -344,6 +382,11 @@ export default function ProjectDetailPage() {
       }
 
       await loadTestSuites();
+
+      // Reload all test cases to show them in "All Tests" (they are now unassigned)
+      if (projectId) {
+        await loadTestCases();
+      }
     } catch (error) {
       console.error('Failed to delete test suite:', error);
       alert('Failed to delete test suite. Please try again.');
@@ -401,25 +444,43 @@ export default function ProjectDetailPage() {
     }
   };
 
-  const handleRunTestCase = async (testCase: TestCase) => {
+  const handleRunTestCase = async (testCase: TestCase, debug: boolean = false) => {
     // Update status to running
     await testSuiteStorage.updateTestCase(testCase.id, { status: 'running', lastRunAt: Date.now() });
     await loadTestCases(selectedTestSuite!);
 
     // Navigate to prompt tab and execute
     setActiveTab('prompt');
-    // You can trigger the chat to execute this prompt programmatically
-    // For now, we'll just show a message
-    setTimeout(async () => {
-      // Simulate execution - in real implementation, this would trigger the automation
-      const success = Math.random() > 0.3; // 70% success rate for demo
+
+    try {
+      console.log(`[ProjectDetailPage] Triggering execution for test case: ${testCase.id} (Debug: ${debug})`);
+
+      // Trigger server-side execution
+      const response = await apiPost<{ success: boolean; result: any }>(
+        `${API_ENDPOINTS.execution}/run/${testCase.id}`,
+        { debug },
+      );
+
+      console.log('[ProjectDetailPage] Execution complete:', response);
+
+      // Reload cases to reflect new status
+      await loadTestCases(selectedTestSuite!);
+
+      if (response.success && response.result.success) {
+        // Optional: show success notification
+      } else {
+        alert(`Test failed: ${response.result.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('[ProjectDetailPage] Execution failed:', error);
       await testSuiteStorage.updateTestCase(testCase.id, {
-        status: success ? 'pass' : 'fail',
-        executionTime: Math.floor(Math.random() * 5000) + 1000,
-        errorMessage: success ? undefined : 'Test execution failed',
+        status: 'fail',
+        errorMessage: error instanceof Error ? error.message : 'Execution failed to start',
+        lastRunAt: Date.now(),
       });
       await loadTestCases(selectedTestSuite!);
-    }, 2000);
+      alert('Failed to start test execution. Check console for details.');
+    }
   };
 
   const getIconEmoji = (iconValue: string) => {
@@ -442,6 +503,64 @@ export default function ProjectDetailPage() {
       book: '📚',
     };
     return icons[iconValue] || '📁';
+  };
+
+  const handleRunSuite = async (suiteId: string) => {
+    const suite = testSuites.find(s => s.id === suiteId);
+    if (suite) {
+      setSuiteToRun(suite);
+      setShowRunSuiteModal(true);
+    }
+  };
+
+  const handleExecuteSuite = async (options: RunSuiteOptions) => {
+    if (!suiteToRun) return;
+    const suiteId = suiteToRun.id;
+
+    try {
+      setShowRunSuiteModal(false);
+
+      // Ideally show a proper loading indicator
+      const btn = document.getElementById(`run-suite-${suiteId}`);
+      if (btn) (btn as HTMLButtonElement).disabled = true;
+
+      await apiPost(`${API_ENDPOINTS.execution}/run-suite/${suiteId}`, options);
+      alert('Suite execution completed! You can now view the reports.');
+
+      if (btn) (btn as HTMLButtonElement).disabled = false;
+      setSuiteToRun(null);
+    } catch (error: any) {
+      console.error('Failed to run suite:', error);
+      alert('Failed to run suite: ' + error.message);
+      const btn = document.getElementById(`run-suite-${suiteId}`);
+      if (btn) (btn as HTMLButtonElement).disabled = false;
+    }
+  };
+
+  const handleResizeMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startWidth = sidebarWidth;
+
+    const doDrag = (moveEvent: MouseEvent) => {
+      const newWidth = startWidth + (moveEvent.clientX - startX);
+      // Min width 300px, Max width 1200px
+      if (newWidth > 300 && newWidth < 1200) {
+        setSidebarWidth(newWidth);
+      }
+    };
+
+    const stopDrag = () => {
+      document.removeEventListener('mousemove', doDrag);
+      document.removeEventListener('mouseup', stopDrag);
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = 'auto';
+    };
+
+    document.addEventListener('mousemove', doDrag);
+    document.addEventListener('mouseup', stopDrag);
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
   };
 
   if (isLoading) {
@@ -532,7 +651,7 @@ export default function ProjectDetailPage() {
         {activeTab === 'prompt' && (
           <div className="flex h-full">
             {/* Prompts List - Left Side */}
-            <div className="w-1/3 overflow-y-auto border-r">
+            <div className="overflow-y-auto border-r" style={{ width: sidebarWidth, flexShrink: 0 }}>
               <PromptsTab
                 projectId={projectId!}
                 isDarkMode={isDarkMode}
@@ -542,6 +661,15 @@ export default function ProjectDetailPage() {
                 }}
               />
             </div>
+
+            {/* Resizer Handle */}
+            <div
+              className={`w-1 cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors ${
+                isDarkMode ? 'bg-slate-700 hover:bg-blue-600' : 'bg-gray-200 hover:bg-blue-400'
+              }`}
+              onMouseDown={handleResizeMouseDown}
+            />
+
             {/* Chat View - Right Side */}
             <div className="flex-1 overflow-hidden">
               <ChatView projectId={projectId!} isDarkMode={isDarkMode} />
@@ -551,6 +679,7 @@ export default function ProjectDetailPage() {
 
         {activeTab === 'test-suite' && (
           <TestSuiteTab
+            projectId={projectId || ''}
             testSuites={testSuites}
             selectedTestSuite={selectedTestSuite}
             onSelectSuite={suiteId => {
@@ -572,11 +701,7 @@ export default function ProjectDetailPage() {
               setSchedulingSuite(suite);
               setShowSchedulerModal(true);
             }}
-            onRunSuite={suite => {
-              // TODO: Implement run suite functionality
-              console.log('Run test suite:', suite);
-              alert(`Running test suite "${suite.name}" - Coming soon!`);
-            }}
+            onRunSuite={suite => handleRunSuite(suite.id)}
             onCreateCase={() => {
               setEditingTestCase(null);
               setCaseFormData({ name: '', description: '', prompt: '', playwrightCode: '' });
@@ -596,7 +721,14 @@ export default function ProjectDetailPage() {
           />
         )}
 
-        {activeTab === 'report' && <ReportTab projectId={projectId!} testSuites={testSuites} isDarkMode={isDarkMode} />}
+        {activeTab === 'report' && (
+          <ReportTab
+            projectId={projectId!}
+            testSuites={testSuites}
+            isDarkMode={isDarkMode}
+            onRunSuite={handleRunSuite}
+          />
+        )}
 
         {activeTab === 'settings' && (
           <div className="h-full overflow-y-auto">
@@ -676,6 +808,20 @@ export default function ProjectDetailPage() {
         />
       )}
 
+      {/* Run Test Suite Modal */}
+      {showRunSuiteModal && suiteToRun && projectId && (
+        <RunTestSuiteModal
+          suite={suiteToRun}
+          projectId={projectId}
+          onClose={() => {
+            setShowRunSuiteModal(false);
+            setSuiteToRun(null);
+          }}
+          onRun={handleExecuteSuite}
+          isDarkMode={isDarkMode}
+        />
+      )}
+
       {/* View Playwright Code Modal */}
       {viewingPlaywrightCode && (
         <ViewCodeModal
@@ -693,6 +839,7 @@ export default function ProjectDetailPage() {
           isDarkMode={isDarkMode}
         />
       )}
+      {/* View Steps Modal */}
     </div>
   );
 }
@@ -1149,11 +1296,12 @@ function TabButton({ icon: Icon, label, isActive, onClick, isDarkMode }: TabButt
 }
 
 interface TestSuiteTabProps {
+  projectId: string;
   testSuites: TestSuite[];
   selectedTestSuite: string | null;
   onSelectSuite: (suiteId: string | null) => void;
   testCases: TestCase[];
-  onRunCase: (testCase: TestCase) => void;
+  onRunCase: (testCase: TestCase, debug?: boolean) => void;
   onCreateSuite: () => void;
   onEditSuite: (suite: TestSuite) => void;
   onDeleteSuite: (suiteId: string) => void;
@@ -1168,6 +1316,7 @@ interface TestSuiteTabProps {
 }
 
 function TestSuiteTab({
+  projectId,
   testSuites,
   selectedTestSuite,
   onSelectSuite,
@@ -1188,6 +1337,70 @@ function TestSuiteTab({
   const [view, setView] = useState<'overview' | 'test-suites' | 'collections' | 'all-tests' | 'tags'>('all-tests');
   const [testTypeFilter, setTestTypeFilter] = useState<'all' | 'ui' | 'api'>('ui');
   const [selectedTestCases, setSelectedTestCases] = useState<Set<string>>(new Set());
+
+  // Test Gen Modal State
+  const [showTestGenModal, setShowTestGenModal] = useState(false);
+  const [testGenUrl, setTestGenUrl] = useState('');
+  const [testGenName, setTestGenName] = useState('');
+  const [isTestGenRunning, setIsTestGenRunning] = useState(false);
+
+  const handleStartCodegen = async () => {
+    if (!testGenUrl || !testGenName) {
+      alert('Please enter URL and Name');
+      return;
+    }
+
+    setIsTestGenRunning(true);
+    try {
+      await startCodegen(testGenUrl, testGenName, projectId, selectedTestSuite);
+      setShowTestGenModal(false);
+      setTestGenUrl('');
+      setTestGenName('');
+      if (onRefreshTestCases) onRefreshTestCases();
+    } catch (error: any) {
+      console.error(error);
+      alert('Failed to generate test: ' + error.message);
+    } finally {
+      setIsTestGenRunning(false);
+    }
+  };
+
+  // Sidebar resizing
+  const [sidebarWidth, setSidebarWidth] = useState(320);
+  const [isResizing, setIsResizing] = useState(false);
+  const sidebarRef = React.useRef<HTMLDivElement>(null);
+
+  const startResizing = React.useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  }, []);
+
+  const stopResizing = React.useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  const resize = React.useCallback(
+    (mouseMoveEvent: MouseEvent) => {
+      if (isResizing && sidebarRef.current) {
+        const newWidth = mouseMoveEvent.clientX - sidebarRef.current.getBoundingClientRect().left;
+        if (newWidth >= 200 && newWidth <= 800) {
+          setSidebarWidth(newWidth);
+        }
+      }
+    },
+    [isResizing],
+  );
+
+  useEffect(() => {
+    if (isResizing) {
+      window.addEventListener('mousemove', resize);
+      window.addEventListener('mouseup', stopResizing);
+    }
+    return () => {
+      window.removeEventListener('mousemove', resize);
+      window.removeEventListener('mouseup', stopResizing);
+    };
+  }, [isResizing, resize, stopResizing]);
 
   // Filter test cases by type
   const filteredTestCases = testCases.filter(testCase => {
@@ -1211,6 +1424,30 @@ function TestSuiteTab({
       tc.prompt?.toLowerCase().includes('api') || tc.description?.toLowerCase().includes('api') ? 'api' : 'ui';
     return testType === 'api';
   }).length;
+
+  // Overview Stats Calculation
+  const totalPrompts = testCases.filter(tc => tc.prompt).length;
+  const totalTestCases = testCases.length;
+  const successRate =
+    totalTestCases > 0
+      ? ((testCases.filter(tc => tc.status === 'pass').length / totalTestCases) * 100).toFixed(1)
+      : '0.0';
+  const recentExecutions = testCases.filter(tc => {
+    if (!tc.lastRunAt) return false;
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    return tc.lastRunAt > sevenDaysAgo;
+  }).length;
+
+  // Mock Recent Activity (derived from test cases)
+  const recentActivity = testCases
+    .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
+    .slice(0, 8)
+    .map(tc => ({
+      id: tc.id,
+      type: tc.status === 'pass' ? 'success' : tc.status === 'fail' ? 'error' : 'info',
+      message: `${tc.status === 'pass' ? 'Passed' : tc.status === 'fail' ? 'Failed' : 'Updated'} test case: ${tc.name}`,
+      time: new Date(tc.updatedAt || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    }));
 
   const handleSelectAll = () => {
     if (selectedTestCases.size === filteredTestCases.length && filteredTestCases.length > 0) {
@@ -1295,7 +1532,232 @@ function TestSuiteTab({
       </div>
 
       {/* Content Area */}
-      {view === 'all-tests' ? (
+      {view === 'overview' ? (
+        <div className="flex-1 overflow-auto p-6">
+          {/* Stats Cards Row */}
+          <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
+            {/* TOTAL PROMPTS */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-blue-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    TOTAL PROMPTS
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {totalPrompts}
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    AI-generated test prompts
+                  </p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-50 text-blue-500'}`}>
+                  <FiEdit2 size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* TOTAL UI & API TCS */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-green-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    TOTAL UI & API TCS
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {totalTestCases}
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    UI & API test cases
+                  </p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-50 text-green-500'}`}>
+                  <FiCheckCircle size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* TOTAL UI TCS */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-emerald-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    TOTAL UI TCS
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {uiTestCount}
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>UI test cases</p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-50 text-emerald-500'}`}>
+                  <FiMonitor size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* TOTAL API TCS */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-sky-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    TOTAL API TCS
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {apiTestCount}
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>API test cases</p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-sky-900/30 text-sky-400' : 'bg-sky-50 text-sky-500'}`}>
+                  <FiCpu size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* TEST MANAGEMENT */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-orange-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    TEST MANAGEMENT
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {testSuites.length}
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Organized test collections
+                  </p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-orange-900/30 text-orange-400' : 'bg-orange-50 text-orange-500'}`}>
+                  <FiBarChart2 size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* ENVIRONMENTS */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-purple-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    ENVIRONMENTS
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>4</h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Configured test environments
+                  </p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-50 text-purple-500'}`}>
+                  <FiSettings size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* SUCCESS RATE */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-red-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    SUCCESS RATE
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {successRate}%
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Test execution success rate
+                  </p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-50 text-red-500'}`}>
+                  <FiTarget size={16} />
+                </div>
+              </div>
+            </div>
+
+            {/* RECENT EXECUTIONS */}
+            <div
+              className={`relative overflow-hidden rounded-lg border-t-4 border-t-teal-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+              <div className="flex items-start justify-between">
+                <div>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    RECENT EXECUTIONS
+                  </p>
+                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    {recentExecutions}
+                  </h3>
+                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    Tests run in last 7 days
+                  </p>
+                </div>
+                <div
+                  className={`rounded-full p-2 ${isDarkMode ? 'bg-teal-900/30 text-teal-400' : 'bg-teal-50 text-teal-500'}`}>
+                  <FiPlay size={16} />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="mb-8">
+            <h3 className={`mb-4 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Recent Activity
+            </h3>
+            <div
+              className={`rounded-lg border ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+              {recentActivity.length > 0 ? (
+                <div className="divide-y dark:divide-slate-700">
+                  {recentActivity.map(activity => (
+                    <div key={activity.id} className="flex items-center gap-4 p-4">
+                      <div
+                        className={`rounded-full p-2 ${
+                          activity.type === 'success'
+                            ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400'
+                            : activity.type === 'error'
+                              ? 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                              : 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                        }`}>
+                        {activity.type === 'success' ? (
+                          <FiCheckCircle size={16} />
+                        ) : activity.type === 'error' ? (
+                          <FiXCircle size={16} />
+                        ) : (
+                          <FiActivity size={16} />
+                        )}
+                      </div>
+                      <div className="flex-1">
+                        <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+                          {activity.message}
+                        </p>
+                        <p className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>{activity.time}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-8 text-center text-gray-500">No recent activity</div>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : view === 'all-tests' ? (
         <div className="flex flex-1 flex-col overflow-hidden">
           {/* Header with filters and actions */}
           <div
@@ -1330,7 +1792,7 @@ function TestSuiteTab({
                 </button>
                 <button
                   type="button"
-                  onClick={onCreateCase}
+                  onClick={() => setShowTestGenModal(true)}
                   className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
                     isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
                   }`}>
@@ -1515,6 +1977,15 @@ function TestSuiteTab({
                               title="Run test">
                               <FiPlay size={16} />
                             </button>
+                            <button
+                              type="button"
+                              onClick={() => onRunCase(testCase, true)}
+                              className={`rounded p-1.5 transition-colors ${
+                                isDarkMode ? 'text-orange-400 hover:bg-slate-700' : 'text-orange-600 hover:bg-gray-100'
+                              }`}
+                              title="Debug mode">
+                              <BiBug size={16} />
+                            </button>
                             {testCase.playwrightCode && (
                               <button
                                 type="button"
@@ -1546,7 +2017,17 @@ function TestSuiteTab({
         <div className="flex h-full">
           {/* Test Suites Sidebar */}
           <div
-            className={`w-64 border-r ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} p-4`}>
+            ref={sidebarRef}
+            style={{ width: sidebarWidth, minWidth: 200 }}
+            className={`relative border-r ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} p-4`}>
+            {/* Resizer Handle */}
+            <div
+              onMouseDown={startResizing}
+              className={`absolute right-0 top-0 h-full w-1 cursor-col-resize hover:bg-blue-500 ${
+                isResizing ? 'bg-blue-500' : 'bg-transparent'
+              }`}
+              style={{ zIndex: 10, cursor: 'col-resize' }}
+            />
             <div className="mb-4 flex items-center justify-between">
               <h2 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Suites</h2>
               <button
@@ -1612,6 +2093,7 @@ function TestSuiteTab({
                     {onRunSuite && (
                       <button
                         type="button"
+                        id={`run-suite-${suite.id}`}
                         onClick={e => {
                           e.stopPropagation();
                           onRunSuite(suite);
@@ -1897,6 +2379,80 @@ function TestSuiteTab({
           <p>{view.charAt(0).toUpperCase() + view.slice(1).replace('-', ' ')} view coming soon</p>
         </div>
       )}
+
+      {/* Test Gen Modal */}
+      {showTestGenModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div
+            className={`w-full max-w-md rounded-lg p-6 shadow-xl ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'}`}>
+            <h3 className="mb-4 text-xl font-semibold">Generate Test Case</h3>
+
+            <div className="mb-4">
+              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Application URL
+              </label>
+              <input
+                type="text"
+                value={testGenUrl}
+                onChange={e => setTestGenUrl(e.target.value)}
+                placeholder="https://example.com"
+                className={`w-full rounded-lg border px-3 py-2 ${
+                  isDarkMode
+                    ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
+                    : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                }`}
+              />
+            </div>
+
+            <div className="mb-6">
+              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                Test Case Name
+              </label>
+              <input
+                type="text"
+                value={testGenName}
+                onChange={e => setTestGenName(e.target.value)}
+                placeholder="e.g. Login Flow"
+                className={`w-full rounded-lg border px-3 py-2 ${
+                  isDarkMode
+                    ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
+                    : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
+                }`}
+              />
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setShowTestGenModal(false)}
+                className={`rounded-lg px-4 py-2 font-medium ${
+                  isDarkMode
+                    ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}>
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleStartCodegen}
+                disabled={isTestGenRunning || !testGenUrl || !testGenName}
+                className={`flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50`}>
+                {isTestGenRunning ? (
+                  <>
+                    <div className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
+                    Recording...
+                  </>
+                ) : (
+                  <>
+                    <FiMonitor size={16} />
+                    Start Recording
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2057,12 +2613,11 @@ interface ReportTabProps {
   projectId: string;
   testSuites: TestSuite[];
   isDarkMode: boolean;
+  onRunSuite: (suiteId: string) => Promise<void>;
 }
 
-function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
-  const [selectedSuiteId, setSelectedSuiteId] = useState<string | null>(
-    testSuites.length > 0 ? testSuites[0].id : null,
-  );
+function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabProps) {
+  const [activeSubTab, setActiveSubTab] = useState<string>('dashboard');
   const [allTestCases, setAllTestCases] = useState<TestCase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -2098,18 +2653,6 @@ function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
     pending: allTestCases.filter(c => c.status === 'pending').length,
   };
 
-  // Stats for selected suite
-  const selectedSuite = testSuites.find(s => s.id === selectedSuiteId);
-  const selectedSuiteCases = selectedSuite ? allTestCases.filter(c => c.testSuiteId === selectedSuiteId) : [];
-  const suiteStats = selectedSuite
-    ? {
-        total: selectedSuiteCases.length,
-        passed: selectedSuiteCases.filter(c => c.status === 'pass').length,
-        failed: selectedSuiteCases.filter(c => c.status === 'fail').length,
-        pending: selectedSuiteCases.filter(c => c.status === 'pending').length,
-      }
-    : { total: 0, passed: 0, failed: 0, pending: 0 };
-
   if (isLoading) {
     return (
       <div className={`flex h-full items-center justify-center ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
@@ -2128,31 +2671,33 @@ function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
         <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Report</h2>
       </div>
 
-      {/* Overall Stats */}
-      <div
-        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
-        <h3 className={`mb-3 text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-          Overall Statistics
-        </h3>
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatBox label="Total" value={overallStats.total} color="blue" isDarkMode={isDarkMode} />
-          <StatBox label="Passed" value={overallStats.passed} color="green" isDarkMode={isDarkMode} />
-          <StatBox label="Failed" value={overallStats.failed} color="red" isDarkMode={isDarkMode} />
-          <StatBox label="Pending" value={overallStats.pending} color="gray" isDarkMode={isDarkMode} />
-        </div>
-      </div>
-
-      {/* Suite Tabs */}
+      {/* Sub Tabs */}
       <div className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6`}>
         <div className="flex gap-1 overflow-x-auto">
+          {/* Dashboard Tab */}
+          <button
+            type="button"
+            onClick={() => setActiveSubTab('dashboard')}
+            className={`relative flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+              activeSubTab === 'dashboard'
+                ? 'border-blue-500 text-blue-600'
+                : isDarkMode
+                  ? 'border-transparent text-gray-400 hover:border-gray-600 hover:text-gray-300'
+                  : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+            }`}>
+            <FiBarChart2 size={16} />
+            Dashboard
+          </button>
+
+          {/* Test Suite Tabs */}
           {testSuites.map(suite => {
             const suiteCases = allTestCases.filter(c => c.testSuiteId === suite.id);
-            const isActive = selectedSuiteId === suite.id;
+            const isActive = activeSubTab === suite.id;
             return (
               <button
                 key={suite.id}
                 type="button"
-                onClick={() => setSelectedSuiteId(suite.id)}
+                onClick={() => setActiveSubTab(suite.id)}
                 className={`relative flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                   isActive
                     ? 'border-blue-500 text-blue-600'
@@ -2177,19 +2722,105 @@ function ReportTab({ projectId, testSuites, isDarkMode }: ReportTabProps) {
         </div>
       </div>
 
-      {/* Selected Suite Report */}
+      {/* Content Area */}
       <div className="flex-1 overflow-y-auto p-6">
-        {selectedSuite ? (
-          <SuiteReport
-            suite={selectedSuite}
-            testCases={selectedSuiteCases}
-            stats={suiteStats}
-            isDarkMode={isDarkMode}
-          />
-        ) : (
-          <div className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            <p>No test suite selected</p>
+        {activeSubTab === 'dashboard' ? (
+          /* Dashboard View */
+          <div>
+            <h3 className={`mb-4 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              Overall Statistics
+            </h3>
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+              <StatBox label="Total" value={overallStats.total} color="blue" isDarkMode={isDarkMode} />
+              <StatBox label="Passed" value={overallStats.passed} color="green" isDarkMode={isDarkMode} />
+              <StatBox label="Failed" value={overallStats.failed} color="red" isDarkMode={isDarkMode} />
+              <StatBox label="Pending" value={overallStats.pending} color="gray" isDarkMode={isDarkMode} />
+            </div>
+
+            <div className="mt-8">
+              <h3 className={`mb-4 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Test Suites Summary
+              </h3>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {testSuites.map(suite => {
+                  const suiteCases = allTestCases.filter(c => c.testSuiteId === suite.id);
+                  const passed = suiteCases.filter(c => c.status === 'pass').length;
+                  const failed = suiteCases.filter(c => c.status === 'fail').length;
+                  const pending = suiteCases.filter(c => c.status === 'pending').length;
+                  const total = suiteCases.length;
+                  const passRate = total > 0 ? Math.round((passed / total) * 100) : 0;
+
+                  return (
+                    <div
+                      key={suite.id}
+                      onClick={() => setActiveSubTab(suite.id)}
+                      className={`cursor-pointer rounded-lg border p-4 transition-all hover:shadow-md ${
+                        isDarkMode
+                          ? 'border-slate-700 bg-slate-800 hover:bg-slate-750'
+                          : 'border-gray-200 bg-white hover:bg-gray-50'
+                      }`}>
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h4>
+                        <span
+                          className={`text-xs font-bold px-2 py-1 rounded ${
+                            passRate === 100
+                              ? 'bg-green-100 text-green-700'
+                              : passRate >= 80
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-yellow-100 text-yellow-700'
+                          }`}>
+                          {passRate}% Pass
+                        </span>
+                      </div>
+                      <div className="text-sm space-y-1">
+                        <div className="flex justify-between">
+                          <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Passed:</span>
+                          <span className="text-green-600 font-medium">{passed}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Failed:</span>
+                          <span className="text-red-600 font-medium">{failed}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Pending:</span>
+                          <span className="text-gray-500 font-medium">{pending}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
+        ) : (
+          /* Suite Report View */
+          (() => {
+            const selectedSuite = testSuites.find(s => s.id === activeSubTab);
+            const selectedSuiteCases = selectedSuite ? allTestCases.filter(c => c.testSuiteId === activeSubTab) : [];
+            const suiteStats = selectedSuite
+              ? {
+                  total: selectedSuiteCases.length,
+                  passed: selectedSuiteCases.filter(c => c.status === 'pass').length,
+                  failed: selectedSuiteCases.filter(c => c.status === 'fail').length,
+                  pending: selectedSuiteCases.filter(c => c.status === 'pending').length,
+                }
+              : { total: 0, passed: 0, failed: 0, pending: 0 };
+
+            return selectedSuite ? (
+              <SuiteReport
+                suite={selectedSuite}
+                testCases={selectedSuiteCases}
+                stats={suiteStats}
+                isDarkMode={isDarkMode}
+                onRunSuite={() => onRunSuite(selectedSuite.id)}
+              />
+            ) : (
+              <div
+                className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                <p>Suite not found</p>
+              </div>
+            );
+          })()
         )}
       </div>
     </div>
@@ -2224,10 +2855,13 @@ interface SuiteReportProps {
   testCases: TestCase[];
   stats: { total: number; passed: number; failed: number; pending: number };
   isDarkMode: boolean;
+  onRunSuite: () => void;
 }
 
-function SuiteReport({ suite, testCases, stats, isDarkMode }: SuiteReportProps) {
+function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteReportProps) {
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
+  const [activeReport, setActiveReport] = useState<'playwright' | 'allure' | null>(null);
+  const [viewingSteps, setViewingSteps] = useState<string | null>(null); // prompt content
 
   const toggleCase = (caseId: string) => {
     const newExpanded = new Set(expandedCases);
@@ -2260,14 +2894,84 @@ function SuiteReport({ suite, testCases, stats, isDarkMode }: SuiteReportProps) 
   const failedPercentage = stats.total > 0 ? ((stats.failed / stats.total) * 100).toFixed(1) : '0';
   const pendingPercentage = stats.total > 0 ? ((stats.pending / stats.total) * 100).toFixed(1) : '0';
 
+  if (activeReport) {
+    const reportUrl =
+      activeReport === 'playwright'
+        ? `/reports/playwright/${suite.id}/index.html`
+        : `/reports/allure/${suite.id}/index.html`;
+
+    return (
+      <div className="flex h-full flex-col">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+            {activeReport === 'playwright' ? 'Playwright Report' : 'Allure Report'} - {suite.name}
+          </h3>
+          <button
+            type="button"
+            onClick={() => setActiveReport(null)}
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+              isDarkMode
+                ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            }`}>
+            <FiArrowLeft size={16} />
+            Back to Summary
+          </button>
+        </div>
+        <div className="flex-1 overflow-hidden rounded-lg border bg-white">
+          <iframe src={reportUrl} className="size-full border-0" title={`${activeReport} Report`} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Suite KPIs */}
+      {/* Suite Header & KPIs */}
       <div>
-        <h3 className={`mb-3 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h3>
-        {suite.description && (
-          <p className={`mb-4 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{suite.description}</p>
-        )}
+        <div className="flex items-start justify-between mb-4">
+          <div>
+            <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h3>
+            {suite.description && (
+              <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{suite.description}</p>
+            )}
+          </div>
+          <div className="flex gap-2">
+            <button
+              id={`run-suite-${suite.id}`}
+              type="button"
+              onClick={onRunSuite}
+              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}>
+              <FiPlay size={16} />
+              Run Suite
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveReport('playwright')}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                isDarkMode
+                  ? 'border-slate-600 bg-slate-800 text-gray-300 hover:bg-slate-700'
+                  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+              }`}>
+              <FiFileText size={16} />
+              Playwright Report
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveReport('allure')}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
+                isDarkMode
+                  ? 'border-slate-600 bg-slate-800 text-orange-400 hover:bg-slate-700'
+                  : 'border-gray-300 bg-white text-orange-600 hover:bg-gray-50'
+              }`}>
+              <FiBarChart2 size={16} />
+              Allure Report
+            </button>
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <div
             className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
@@ -2314,119 +3018,185 @@ function SuiteReport({ suite, testCases, stats, isDarkMode }: SuiteReportProps) 
             <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>No test cases in this suite</p>
           </div>
         ) : (
-          testCases.map(testCase => {
-            const isExpanded = expandedCases.has(testCase.id);
-            const statusColors = {
-              pass: isDarkMode ? 'text-green-400 bg-green-900/20' : 'text-green-600 bg-green-50',
-              fail: isDarkMode ? 'text-red-400 bg-red-900/20' : 'text-red-600 bg-red-50',
-              pending: isDarkMode ? 'text-gray-400 bg-gray-900/20' : 'text-gray-600 bg-gray-50',
-              running: isDarkMode ? 'text-blue-400 bg-blue-900/20' : 'text-blue-600 bg-blue-50',
-            };
-
-            return (
-              <div
-                key={testCase.id}
-                className={`rounded-lg border ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
-                <div className="p-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <h5 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                          {testCase.name}
-                        </h5>
-                        <span
-                          className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${statusColors[testCase.status]}`}>
-                          {testCase.status === 'pass' && <FiCheckCircle size={12} />}
-                          {testCase.status === 'fail' && <FiXCircle size={12} />}
-                          {testCase.status === 'pending' && <FiClock size={12} />}
-                          {testCase.status === 'running' && <FiClock size={12} />}
-                          {testCase.status}
-                        </span>
-                      </div>
-                      {testCase.description && (
-                        <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                          {testCase.description}
-                        </p>
-                      )}
-                      {testCase.plannerDescription && (
-                        <p className={`mt-2 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                          {testCase.plannerDescription}
-                        </p>
-                      )}
-                    </div>
-                    {testCase.playwrightCode && (
-                      <button
-                        type="button"
-                        onClick={() => toggleCase(testCase.id)}
-                        className={`ml-4 rounded p-1.5 transition-colors ${
-                          isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-                        }`}>
-                        {isExpanded ? <FiChevronUp size={20} /> : <FiChevronDown size={20} />}
-                      </button>
-                    )}
-                  </div>
-                  {testCase.errorMessage && (
-                    <div
-                      className={`mt-2 rounded bg-red-50 p-2 text-xs text-red-600 ${
-                        isDarkMode ? 'bg-red-900/20 text-red-400' : ''
-                      }`}>
-                      {testCase.errorMessage}
-                    </div>
-                  )}
-                </div>
-
-                {/* Expanded Playwright Code */}
-                {isExpanded && testCase.playwrightCode && (
-                  <div
-                    className={`border-t ${isDarkMode ? 'border-slate-700 bg-slate-900' : 'border-gray-200 bg-gray-50'} p-4`}>
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                        Playwright Code
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => handleCopyCode(testCase.playwrightCode!)}
-                          className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                            isDarkMode
-                              ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}>
-                          <FiCopy size={12} />
-                          Copy
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDownloadCode(testCase.playwrightCode!, testCase.name)}
-                          className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                            isDarkMode
-                              ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                              : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                          }`}>
-                          <FiDownload size={12} />
-                          Download
-                        </button>
-                      </div>
-                    </div>
-                    <div className="relative">
-                      <textarea
-                        readOnly
-                        value={testCase.playwrightCode}
-                        rows={15}
-                        className={`w-full rounded-lg border px-3 py-2 font-mono text-xs ${
-                          isDarkMode
-                            ? 'border-slate-600 bg-slate-950 text-white'
-                            : 'border-gray-300 bg-white text-gray-900'
-                        } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })
+          <div className={`overflow-hidden rounded-lg border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+            <div className="overflow-x-auto">
+              <table className={`w-full text-left text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <thead
+                  className={`text-xs uppercase ${isDarkMode ? 'bg-slate-700 text-gray-200' : 'bg-gray-50 text-gray-700'}`}>
+                  <tr>
+                    <th className="px-6 py-3 font-semibold">Name</th>
+                    <th className="px-6 py-3 font-semibold">Description</th>
+                    <th className="px-6 py-3 font-semibold">Code</th>
+                    <th className="px-6 py-3 font-semibold">Automation Prompt</th>
+                    <th className="px-6 py-3 font-semibold">Environment</th>
+                    <th className="px-6 py-3 font-semibold">Tag</th>
+                  </tr>
+                </thead>
+                <tbody className={`divide-y ${isDarkMode ? 'divide-slate-700' : 'divide-gray-200'}`}>
+                  {testCases.map(testCase => {
+                    const isExpanded = expandedCases.has(testCase.id);
+                    return (
+                      <React.Fragment key={testCase.id}>
+                        <tr
+                          className={`${isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-gray-50'}`}>
+                          <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
+                            <div className="flex flex-col gap-1">
+                              <div className="flex items-center gap-2">
+                                <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>{testCase.name}</span>
+                                {testCase.status && (
+                                  <span
+                                    className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
+                                      testCase.status === 'pass'
+                                        ? isDarkMode
+                                          ? 'text-green-400 bg-green-900/20'
+                                          : 'text-green-600 bg-green-50'
+                                        : testCase.status === 'fail'
+                                          ? isDarkMode
+                                            ? 'text-red-400 bg-red-900/20'
+                                            : 'text-red-600 bg-red-50'
+                                          : testCase.status === 'running'
+                                            ? isDarkMode
+                                              ? 'text-blue-400 bg-blue-900/20'
+                                              : 'text-blue-600 bg-blue-50'
+                                            : isDarkMode
+                                              ? 'text-gray-400 bg-gray-900/20'
+                                              : 'text-gray-600 bg-gray-50'
+                                    }`}>
+                                    {testCase.status}
+                                  </span>
+                                )}
+                              </div>
+                              {testCase.errorMessage && (
+                                <span className="text-xs text-red-500">{testCase.errorMessage}</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 max-w-xs truncate" title={testCase.description}>
+                            {testCase.description || '-'}
+                          </td>
+                          <td className="px-6 py-4">
+                            {testCase.playwrightCode ? (
+                              <button
+                                type="button"
+                                onClick={() => toggleCase(testCase.id)}
+                                className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
+                                  isDarkMode
+                                    ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50'
+                                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                                }`}>
+                                {isExpanded ? 'Hide' : 'View'}
+                              </button>
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">
+                            {testCase.prompt ? (
+                              <button
+                                type="button"
+                                onClick={() => setViewingSteps(testCase.prompt)}
+                                className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
+                                  isDarkMode
+                                    ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50'
+                                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
+                                }`}>
+                                View Steps <FiEye size={12} />
+                              </button>
+                            ) : (
+                              <span className="text-gray-400">-</span>
+                            )}
+                          </td>
+                          <td className="px-6 py-4">{testCase.baseUrl || '-'}</td>
+                          <td className="px-6 py-4">
+                            {testCase.testType ? (
+                              <span
+                                className={`rounded px-2 py-0.5 text-xs ${isDarkMode ? 'bg-slate-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
+                                {testCase.testType}
+                              </span>
+                            ) : (
+                              '-'
+                            )}
+                          </td>
+                        </tr>
+                        {isExpanded && testCase.playwrightCode && (
+                          <tr className={isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}>
+                            <td colSpan={6} className="p-4">
+                              <div className="mb-2 flex items-center justify-between">
+                                <span
+                                  className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                  Playwright Code
+                                </span>
+                                <div className="flex gap-2">
+                                  <button
+                                    onClick={() => handleCopyCode(testCase.playwrightCode!)}
+                                    className="text-xs hover:underline text-blue-500">
+                                    Copy
+                                  </button>
+                                  <button
+                                    onClick={() => handleDownloadCode(testCase.playwrightCode!, testCase.name)}
+                                    className="text-xs hover:underline text-blue-500">
+                                    Download
+                                  </button>
+                                </div>
+                              </div>
+                              <div
+                                className={`rounded border p-3 font-mono text-xs ${isDarkMode ? 'border-slate-700 bg-slate-950 text-gray-300' : 'border-gray-200 bg-white text-gray-700'}`}>
+                                <pre className="whitespace-pre-wrap">{testCase.playwrightCode}</pre>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
         )}
       </div>
+
+      {viewingSteps && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div
+            className={`w-full max-w-2xl rounded-lg border shadow-xl ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+            <div
+              className={`flex items-center justify-between border-b px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                Automation Steps
+              </h3>
+              <button
+                type="button"
+                onClick={() => setViewingSteps(null)}
+                className={`rounded p-1.5 transition-colors ${isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'}`}>
+                <FiX size={20} />
+              </button>
+            </div>
+            <div className="p-6">
+              <div
+                className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-900' : 'border-gray-100 bg-gray-50'}`}>
+                <pre
+                  className={`whitespace-pre-wrap font-sans text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  {viewingSteps}
+                </pre>
+              </div>
+            </div>
+            <div
+              className={`flex justify-end border-t px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+              <button
+                type="button"
+                onClick={() => setViewingSteps(null)}
+                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                  isDarkMode
+                    ? 'bg-slate-700 text-white hover:bg-slate-600'
+                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                }`}>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2474,7 +3244,7 @@ function CreateSuiteModal({
       ]);
       const suiteIds = new Set(projectSuites.map(s => s.id));
       const projectCases = Array.isArray(allCases)
-        ? allCases.filter(tc => suiteIds.has(tc.testSuiteId) || !tc.testSuiteId)
+        ? allCases.filter(tc => (tc.testSuiteId && suiteIds.has(tc.testSuiteId as string)) || !tc.testSuiteId)
         : [];
 
       if (editingSuite) {

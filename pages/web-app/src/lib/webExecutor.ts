@@ -283,7 +283,17 @@ export async function setupWebExecutor(taskId: string, task: string, onEvent: Ev
 
   // Create web-compatible action builder (uses DOM APIs instead of Chrome extension)
   const webActionBuilder = new WebActionBuilder(context);
-  const navigatorActionRegistry = new NavigatorActionRegistry(webActionBuilder.buildDefaultActions());
+  // Build web-compatible actions and convert to NavigatorActionRegistry-compatible format
+  const webActions = await webActionBuilder.buildDefaultActions();
+  // Convert web actions to the format expected by NavigatorActionRegistry
+  const navigatorActions = webActions.map(action => ({
+    ...action,
+    prompt: (action as any).prompt || '',
+    // @ts-ignore - getIndexArg is not part of the Action type but needed by NavigatorActionRegistry
+    getIndexArg: (action as any).getIndexArg || (() => -1),
+    setIndexArg: (action as any).setIndexArg || ((index: number) => {}),
+  }));
+  const navigatorActionRegistry = new NavigatorActionRegistry(navigatorActions as any);
 
   // Create Navigator prompt
   const navigatorPrompt = new NavigatorPrompt(context.options.maxActionsPerStep);
@@ -337,7 +347,9 @@ export async function setupWebExecutor(taskId: string, task: string, onEvent: Ev
   executor.context = context;
 
   // Subscribe to execution events
-  executor.subscribeExecutionEvents(onEvent);
+  executor.subscribeExecutionEvents(async event => {
+    await onEvent(event);
+  });
 
   return executor;
 }

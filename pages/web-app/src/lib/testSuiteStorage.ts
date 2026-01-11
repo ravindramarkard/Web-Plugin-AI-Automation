@@ -7,7 +7,7 @@ import { apiCache } from './apiCache.js';
 
 export interface TestCase {
   id: string;
-  testSuiteId: string;
+  testSuiteId: string | null;
   name: string;
   description: string;
   prompt: string; // The original automation prompt for this test case
@@ -51,11 +51,21 @@ class TestSuiteStorage {
     try {
       const suites = await apiGet<any[]>(`${API_ENDPOINTS.testSuites}/project/${projectId}`);
       // Parse schedule JSON and compute testCases array
-      return suites.map(suite => ({
-        ...suite,
-        schedule: suite.schedule ? JSON.parse(suite.schedule) : undefined,
-        testCases: [], // Will be populated by getTestCasesBySuite
-      }));
+      const suitesWithCounts = await Promise.all(
+        suites.map(async suite => {
+          // Fetch count or ids of test cases for this suite
+          // We can use getTestCasesBySuite but it might be heavy if we just need count
+          // For now let's just fetch them to be safe and accurate
+          const cases = await this.getTestCasesBySuite(suite.id);
+          return {
+            ...suite,
+            schedule: suite.schedule ? JSON.parse(suite.schedule) : undefined,
+            testCases: cases.map(c => c.id), // Populate with actual IDs
+          };
+        }),
+      );
+
+      return suitesWithCounts;
     } catch (error) {
       console.error('[TestSuiteStorage] Failed to get test suites:', error);
       return [];

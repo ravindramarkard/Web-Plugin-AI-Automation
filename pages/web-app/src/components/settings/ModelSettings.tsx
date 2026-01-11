@@ -54,10 +54,11 @@ function isAnthropicModel(modelName: string): boolean {
 }
 
 interface ModelSettingsProps {
+  projectId?: string;
   isDarkMode?: boolean; // Controls dark/light theme styling
 }
 
-export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
+export const ModelSettings = ({ projectId, isDarkMode = false }: ModelSettingsProps) => {
   const [providers, setProviders] = useState<Record<string, ProviderConfig>>({});
   const [modifiedProviders, setModifiedProviders] = useState<Set<string>>(new Set());
   const [providersFromStorage, setProvidersFromStorage] = useState<Set<string>>(new Set());
@@ -96,10 +97,38 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
     Record<string, { loading: boolean; success: boolean; error: string | null }>
   >({});
 
+  const syncSettingsToServer = async (key: string, value: any) => {
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          key,
+          value,
+        }),
+      });
+      console.log(`[ModelSettings] Synced ${key} to server`);
+    } catch (error) {
+      console.error(`[ModelSettings] Failed to sync ${key} to server:`, error);
+    }
+  };
+
+  const syncAgentModelsToServer = async () => {
+    try {
+      const models = await agentModelStore.getAllAgentModels(projectId);
+      const storageKey = projectId ? `project:${projectId}:agent_models` : 'agent_models';
+      await syncSettingsToServer(storageKey, models);
+    } catch (error) {
+      console.error('Error syncing agent models to server:', error);
+    }
+  };
+
   useEffect(() => {
     const loadProviders = async () => {
       try {
-        const allProviders = await llmProviderStore.getAllProviders();
+        const allProviders = await llmProviderStore.getAllProviders(projectId);
         console.log('allProviders', allProviders);
 
         // Track which providers are from storage
@@ -130,7 +159,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
         };
 
         for (const agent of Object.values(AgentNameEnum)) {
-          const config = await agentModelStore.getAgentModel(agent);
+          const config = await agentModelStore.getAgentModel(agent, projectId);
           if (config) {
             // Store in provider>model format
             models[agent] = `${config.provider}>${config.modelName}`;
@@ -164,7 +193,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
   useEffect(() => {
     const loadSpeechToTextModel = async () => {
       try {
-        const config = await speechToTextModelStore.getSpeechToTextModel();
+        const config = await speechToTextModelStore.getSpeechToTextModel(projectId);
         if (config) {
           setSelectedSpeechToTextModel(`${config.provider}>${config.modelName}`);
         }
@@ -223,7 +252,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
 
     try {
       // Load providers directly from storage
-      const storedProviders = await llmProviderStore.getAllProviders();
+      const storedProviders = await llmProviderStore.getAllProviders(projectId);
 
       // Only use providers that are actually in storage
       for (const [provider, config] of Object.entries(storedProviders)) {
@@ -486,7 +515,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
 
       // Pass the cleaned config to setProvider
       // Cast to ProviderConfig as we've ensured necessary fields based on type
-      await llmProviderStore.setProvider(provider, configToSave as ProviderConfig);
+      await llmProviderStore.setProvider(provider, configToSave as ProviderConfig, projectId);
 
       // Sync to extension if available
       try {
@@ -500,6 +529,9 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
         console.warn('[ModelSettings] Failed to sync provider to extension:', error);
         // Don't fail the save if extension sync fails
       }
+
+      // Sync to server
+      await syncSettingsToServer('llm_providers', { providers: { ...providers, [provider]: configToSave } });
 
       // Clear any name errors on successful save
       setNameErrors(prev => {
@@ -528,7 +560,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
   const handleDelete = async (provider: string) => {
     try {
       // Delete the provider from storage regardless of its API key value
-      await llmProviderStore.removeProvider(provider);
+      await llmProviderStore.removeProvider(provider, projectId);
 
       // Remove from providersFromStorage
       setProvidersFromStorage(prev => {
@@ -536,6 +568,12 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
         next.delete(provider);
         return next;
       });
+
+      // Sync to server (with deleted provider removed)
+      const nextProviders = { ...providers };
+      delete nextProviders[provider];
+      const storageKey = projectId ? `project:${projectId}:llm_providers` : 'llm_providers';
+      await syncSettingsToServer(storageKey, { providers: nextProviders });
 
       // Remove from providers state
       setProviders(prev => {
@@ -651,6 +689,8 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
       } else {
         // Reset storage if no model is selected
         await agentModelStore.resetAgentModel(agentName);
+        // Sync to server
+        await syncAgentModelsToServer();
       }
     } catch (error) {
       console.error('Error saving agent model:', error);
@@ -680,6 +720,9 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
             reasoningEffort: value,
           };
           await agentModelStore.setAgentModel(agentName, modelConfig);
+
+          // Sync to server
+          await syncAgentModelsToServer();
 
           // Sync to extension if available
           try {
@@ -728,6 +771,9 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
             parameters: parametersToSave,
           };
           await agentModelStore.setAgentModel(agentName, modelConfig);
+
+          // Sync to server
+          await syncAgentModelsToServer();
 
           // Sync to extension if available
           try {
