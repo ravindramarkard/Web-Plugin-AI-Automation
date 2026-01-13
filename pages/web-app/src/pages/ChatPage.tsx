@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiSettings } from 'react-icons/fi';
+import { FiSettings, FiChevronLeft } from 'react-icons/fi';
 import { PiPlusBold } from 'react-icons/pi';
 import { GrHistory } from 'react-icons/gr';
 import { type Message, Actors, chatHistoryStore, agentModelStore, generalSettingsStore } from '@extension/storage';
@@ -31,7 +31,6 @@ const ChatPage = ({ projectId }: ChatPageProps = {}) => {
   const [chatSessions, setChatSessions] = useState<Array<{ id: string; title: string; createdAt: number }>>([]);
   const [isFollowUpMode, setIsFollowUpMode] = useState(false);
   const [isHistoricalSession, setIsHistoricalSession] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [favoritePrompts, setFavoritePrompts] = useState<FavoritePrompt[]>([]);
   const [hasConfiguredModels, setHasConfiguredModels] = useState<boolean | null>(null);
   const [isRecording, setIsRecording] = useState(false);
@@ -45,19 +44,6 @@ const ChatPage = ({ projectId }: ChatPageProps = {}) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
   const recordingTimerRef = useRef<number | null>(null);
-
-  // Check for dark mode preference
-  useEffect(() => {
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(darkModeMediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-
-    darkModeMediaQuery.addEventListener('change', handleChange);
-    return () => darkModeMediaQuery.removeEventListener('change', handleChange);
-  }, []);
 
   // Check if models are configured
   const checkModelConfiguration = useCallback(async () => {
@@ -524,35 +510,38 @@ const ChatPage = ({ projectId }: ChatPageProps = {}) => {
   }, [messages]);
 
   return (
-    <div>
-      <div
-        className={`flex h-screen flex-col ${
-          isDarkMode ? 'bg-slate-900' : "bg-[url('/bg.jpg')] bg-cover bg-no-repeat"
-        } overflow-hidden border ${isDarkMode ? 'border-sky-800' : 'border-[rgb(186,230,253)]'} rounded-2xl`}>
-        <header className="header relative">
-          <div className="header-logo">
+    <div className="h-full p-4">
+      <div className="glass-panel flex h-full flex-col overflow-hidden rounded-2xl">
+        <header className="glass relative z-10 flex items-center justify-between border-b border-white/10 px-4 py-3">
+          <div className="flex items-center gap-2">
             {showHistory ? (
               <button
                 type="button"
                 onClick={() => handleBackToChat(false)}
-                className={`${isDarkMode ? 'text-sky-400 hover:text-sky-300' : 'text-sky-400 hover:text-sky-500'} cursor-pointer`}>
-                {t('nav_back')}
+                className="glass-button flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium">
+                <FiChevronLeft /> {t('nav_back')}
               </button>
-            ) : null}
+            ) : (
+              <span className="text-lg font-semibold text-gray-800 dark:text-white">
+                {messages.length > 0 ? 'Chat Session' : 'New Chat'}
+              </span>
+            )}
           </div>
-          <div className="header-icons">
+          <div className="flex items-center gap-2">
             {!showHistory && (
               <>
                 <button
                   type="button"
                   onClick={handleNewChat}
-                  className={`header-icon rgb-border ${isDarkMode ? 'text-sky-400 hover:text-sky-300' : 'text-sky-400 hover:text-sky-500'} cursor-pointer px-2 py-1`}>
+                  className="glass-button rounded-lg p-2 text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                  title="New Chat">
                   <PiPlusBold size={20} />
                 </button>
                 <button
                   type="button"
                   onClick={handleLoadHistory}
-                  className={`header-icon rgb-border ${isDarkMode ? 'text-sky-400 hover:text-sky-300' : 'text-sky-400 hover:text-sky-500'} cursor-pointer px-2 py-1`}>
+                  className="glass-button rounded-lg p-2 text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+                  title="History">
                   <GrHistory size={20} />
                 </button>
               </>
@@ -560,47 +549,41 @@ const ChatPage = ({ projectId }: ChatPageProps = {}) => {
             <button
               type="button"
               onClick={() => navigate('/settings')}
-              className={`header-icon rgb-border ${isDarkMode ? 'text-sky-400 hover:text-sky-300' : 'text-sky-400 hover:text-sky-500'} cursor-pointer px-2 py-1`}>
+              className="glass-button rounded-lg p-2 text-gray-600 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400"
+              title="Settings">
               <FiSettings size={20} />
             </button>
           </div>
         </header>
         {showHistory ? (
-          <div className="flex-1 overflow-hidden">
+          <div className="flex-1 overflow-hidden bg-white/30 dark:bg-black/20">
             <ChatHistoryList
               sessions={chatSessions}
               onSessionSelect={handleSessionSelect}
               onSessionDelete={handleSessionDelete}
               onSessionBookmark={handleSessionBookmark}
               visible={true}
-              isDarkMode={isDarkMode}
             />
           </div>
         ) : (
           <>
             {hasConfiguredModels === null && (
-              <div
-                className={`flex flex-1 items-center justify-center p-8 ${isDarkMode ? 'text-sky-300' : 'text-sky-600'}`}>
-                <div className="text-center">
-                  <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-sky-400 border-t-transparent"></div>
-                  <p>{t('status_checkingConfig')}</p>
+              <div className="flex flex-1 items-center justify-center p-8">
+                <div className="glass-card rounded-xl p-8 text-center">
+                  <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
+                  <p className="text-gray-600 dark:text-gray-300">{t('status_checkingConfig')}</p>
                 </div>
               </div>
             )}
 
             {hasConfiguredModels === false && (
-              <div
-                className={`flex flex-1 items-center justify-center p-8 ${isDarkMode ? 'text-sky-300' : 'text-sky-600'}`}>
-                <div className="max-w-md text-center">
-                  <h3 className={`mb-2 text-lg font-semibold ${isDarkMode ? 'text-sky-200' : 'text-sky-700'}`}>
-                    {t('welcome_title')}
-                  </h3>
-                  <p className="mb-4">{t('welcome_instruction')}</p>
+              <div className="flex flex-1 items-center justify-center p-8">
+                <div className="glass-card max-w-md rounded-xl p-8 text-center">
+                  <h3 className="mb-2 text-lg font-semibold text-gray-900 dark:text-white">{t('welcome_title')}</h3>
+                  <p className="mb-6 text-gray-600 dark:text-gray-300">{t('welcome_instruction')}</p>
                   <button
                     onClick={() => navigate('/settings')}
-                    className={`rgb-border my-4 rounded-lg px-4 py-2 font-medium transition-colors ${
-                      isDarkMode ? 'text-white hover:bg-sky-700' : 'text-white hover:bg-sky-600'
-                    }`}>
+                    className="glass-button w-full rounded-lg px-4 py-2 font-medium">
                     {t('welcome_openSettings')}
                   </button>
                 </div>
@@ -611,8 +594,7 @@ const ChatPage = ({ projectId }: ChatPageProps = {}) => {
               <>
                 {messages.length === 0 && (
                   <>
-                    <div
-                      className={`border-t ${isDarkMode ? 'border-sky-900' : 'border-sky-100'} mb-2 p-2 shadow-sm backdrop-blur-sm`}>
+                    <div className="glass border-b border-white/10 p-4">
                       <ChatInput
                         onSendMessage={handleSendMessage}
                         onStopTask={handleStopTask}
@@ -624,43 +606,41 @@ const ChatPage = ({ projectId }: ChatPageProps = {}) => {
                         setContent={setter => {
                           setInputTextRef.current = setter;
                         }}
-                        isDarkMode={isDarkMode}
                       />
                     </div>
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto p-4">
                       <BookmarkList
                         bookmarks={favoritePrompts}
                         onBookmarkSelect={handleBookmarkSelect}
                         onBookmarkUpdateTitle={handleBookmarkUpdateTitle}
                         onBookmarkDelete={handleBookmarkDelete}
                         onBookmarkReorder={handleBookmarkReorder}
-                        isDarkMode={isDarkMode}
                       />
                     </div>
                   </>
                 )}
                 {messages.length > 0 && (
-                  <div
-                    className={`scrollbar-gutter-stable flex-1 overflow-x-hidden overflow-y-scroll scroll-smooth p-2 ${isDarkMode ? 'bg-slate-900/80' : ''}`}>
-                    <MessageList messages={messages} isDarkMode={isDarkMode} />
+                  <div className="scrollbar-gutter-stable flex-1 overflow-x-hidden overflow-y-auto scroll-smooth p-4">
+                    <MessageList messages={messages} />
                     <div ref={messagesEndRef} />
                   </div>
                 )}
                 {messages.length > 0 && (
-                  <div
-                    className={`border-t ${isDarkMode ? 'border-sky-900' : 'border-sky-100'} p-2 shadow-sm backdrop-blur-sm`}>
+                  <div className="glass border-t border-white/10 p-4 shadow-lg">
                     <ChatInput
                       onSendMessage={handleSendMessage}
                       onStopTask={handleStopTask}
                       onMicClick={handleMicClick}
                       isRecording={isRecording}
                       isProcessingSpeech={isProcessingSpeech}
-                      disabled={!inputEnabled || isHistoricalSession}
+                      disabled={!inputEnabled && !isFollowUpMode}
                       showStopButton={showStopButton}
-                      setContent={setter => {
-                        setInputTextRef.current = setter;
+                      setContent={setter => (setInputTextRef.current = setter)}
+                      historicalSessionId={isHistoricalSession ? currentSessionId : null}
+                      onReplay={sessionId => {
+                        // Handle replay logic here if needed, or pass it up
+                        console.log('Replay requested for session:', sessionId);
                       }}
-                      isDarkMode={isDarkMode}
                     />
                   </div>
                 )}

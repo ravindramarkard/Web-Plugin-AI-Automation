@@ -4,10 +4,9 @@ import { memo } from 'react';
 
 interface MessageListProps {
   messages: Message[];
-  isDarkMode?: boolean;
 }
 
-export default memo(function MessageList({ messages, isDarkMode = false }: MessageListProps) {
+export default memo(function MessageList({ messages }: MessageListProps) {
   return (
     <div className="max-w-full space-y-4">
       {messages.map((message, index) => (
@@ -15,7 +14,6 @@ export default memo(function MessageList({ messages, isDarkMode = false }: Messa
           key={`${message.actor}-${message.timestamp}-${index}`}
           message={message}
           isSameActor={index > 0 ? messages[index - 1].actor === message.actor : false}
-          isDarkMode={isDarkMode}
         />
       ))}
     </div>
@@ -25,10 +23,9 @@ export default memo(function MessageList({ messages, isDarkMode = false }: Messa
 interface MessageBlockProps {
   message: Message;
   isSameActor: boolean;
-  isDarkMode?: boolean;
 }
 
-function MessageBlock({ message, isSameActor, isDarkMode = false }: MessageBlockProps) {
+function MessageBlock({ message, isSameActor }: MessageBlockProps) {
   if (!message.actor) {
     console.error('No actor found');
     return <div />;
@@ -47,26 +44,22 @@ function MessageBlock({ message, isSameActor, isDarkMode = false }: MessageBlock
     const fallbackActor = ACTOR_PROFILES.system;
     return (
       <div
-        className={`flex max-w-full gap-3 ${
-          !isSameActor
-            ? `mt-4 border-t ${isDarkMode ? 'border-sky-800/50' : 'border-sky-200/50'} pt-4 first:mt-0 first:border-t-0 first:pt-0`
-            : ''
+        className={`flex max-w-full gap-3 rounded-xl p-3 transition-colors glass-card ${
+          !isSameActor ? 'mt-4' : 'mt-1'
         }`}>
         {!isSameActor && (
           <div
-            className="flex size-8 shrink-0 items-center justify-center rounded-full"
+            className="flex size-8 shrink-0 items-center justify-center rounded-full shadow-lg ring-2 ring-white/10"
             style={{ backgroundColor: fallbackActor.iconBackground }}>
-            <img src={fallbackActor.icon} alt={fallbackActor.name} className="size-6" />
+            <img src={fallbackActor.icon} alt={fallbackActor.name} className="size-6 drop-shadow-sm" />
           </div>
         )}
         {isSameActor && <div className="w-8" />}
         <div className="min-w-0 flex-1">
           {!isSameActor && (
-            <div className={`mb-1 text-sm font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-              {String(message.actor)}
-            </div>
+            <div className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">{String(message.actor)}</div>
           )}
-          <div className={`whitespace-pre-wrap break-words text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className="whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
             {message.content}
           </div>
         </div>
@@ -78,31 +71,23 @@ function MessageBlock({ message, isSameActor, isDarkMode = false }: MessageBlock
 
   return (
     <div
-      className={`flex max-w-full gap-3 ${
-        !isSameActor
-          ? `mt-4 border-t ${isDarkMode ? 'border-sky-800/50' : 'border-sky-200/50'} pt-4 first:mt-0 first:border-t-0 first:pt-0`
-          : ''
-      }`}>
+      className={`flex max-w-full gap-3 rounded-xl p-3 transition-colors glass-card ${!isSameActor ? 'mt-4' : 'mt-1'}`}>
       {!isSameActor && (
         <div
-          className="flex size-8 shrink-0 items-center justify-center rounded-full"
+          className="flex size-8 shrink-0 items-center justify-center rounded-full shadow-lg ring-2 ring-white/10"
           style={{ backgroundColor: actor.iconBackground }}>
-          <img src={actor.icon} alt={actor.name} className="size-6" />
+          <img src={actor.icon} alt={actor.name} className="size-6 drop-shadow-sm" />
         </div>
       )}
       {isSameActor && <div className="w-8" />}
 
       <div className="min-w-0 flex-1">
-        {!isSameActor && (
-          <div className={`mb-1 text-sm font-semibold ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-            {actor.name}
-          </div>
-        )}
+        {!isSameActor && <div className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">{actor.name}</div>}
 
         <div className="space-y-0.5">
-          <div className={`whitespace-pre-wrap break-words text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className="whitespace-pre-wrap break-words text-sm text-gray-700 dark:text-gray-300">
             {isProgress ? (
-              <div className={`h-1 overflow-hidden rounded ${isDarkMode ? 'bg-gray-700' : 'bg-gray-200'}`}>
+              <div className="h-1 overflow-hidden rounded bg-gray-200 dark:bg-gray-700">
                 <div className="animate-progress h-full bg-blue-500" />
               </div>
             ) : (
@@ -110,7 +95,7 @@ function MessageBlock({ message, isSameActor, isDarkMode = false }: MessageBlock
             )}
           </div>
           {!isProgress && (
-            <div className={`text-right text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-300'}`}>
+            <div className="text-right text-xs text-gray-500 dark:text-gray-400">
               {formatTimestamp(message.timestamp)}
             </div>
           )}

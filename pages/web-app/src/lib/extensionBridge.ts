@@ -450,7 +450,7 @@ export class ExtensionBridge {
         const aitestgenExtension = extensions.find(
           ext =>
             ext.name === 'AITestGen' ||
-            ext.name === 'AITestGen: AI Web Agent & Automation' ||
+            ext.name === 'AITestGen: AI Automation Agent' ||
             ext.name?.toLowerCase().includes('aitestgen') ||
             ext.shortName === 'AITestGen',
         );

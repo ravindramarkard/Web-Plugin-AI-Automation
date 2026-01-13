@@ -1,8 +1,4 @@
 /* Add this at the top of the file */
-body {
-  border-color: rgb(159, 6, 11) !important; /* sky-200 color */
-}
-
 code {
   background: rgba(186, 230, 253, 0.4);
   border-radius: 0.25rem;

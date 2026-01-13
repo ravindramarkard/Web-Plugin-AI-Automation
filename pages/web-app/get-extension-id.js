@@ -19,7 +19,7 @@ function getAITestGenExtensionId() {
     const name = nameElement?.textContent?.trim();
 
     // Check if it's AITestGen
-    if (name && (name.includes('AITestGen') || name.includes('AI Web Agent'))) {
+    if (name && (name.includes('AITestGen') || name.includes('AI Automation Agent'))) {
       // Try to get the ID from the card
       const idElement = card.shadowRoot?.querySelector('#extension-id');
       if (idElement) {

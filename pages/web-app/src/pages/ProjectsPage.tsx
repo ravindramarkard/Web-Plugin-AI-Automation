@@ -36,20 +36,6 @@ export default function ProjectsPage() {
     team: '',
     icon: 'folder',
   });
-  const [isDarkMode, setIsDarkMode] = useState(false);
-
-  // Check for dark mode preference
-  useEffect(() => {
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(darkModeMediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-
-    darkModeMediaQuery.addEventListener('change', handleChange);
-    return () => darkModeMediaQuery.removeEventListener('change', handleChange);
-  }, []);
 
   const loadProjects = useCallback(async () => {
     try {
@@ -109,30 +95,24 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+    <div className="flex h-full flex-col bg-transparent">
       {/* Header */}
-      <div
-        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+      <div className="glass sticky top-0 z-10 border-b border-white/10 px-6 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Projects</h1>
-            <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              Manage your projects and teams
-            </p>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Projects</h1>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">Manage your projects and teams</p>
           </div>
           <div className="flex items-center gap-3">
             {/* View Mode Toggle */}
-            <div
-              className={`flex rounded-lg border ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} p-1`}>
+            <div className="glass-panel flex rounded-lg p-1">
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
                 className={`rounded px-3 py-1.5 transition-colors ${
                   viewMode === 'grid'
-                    ? 'bg-blue-500 text-white'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:bg-slate-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-blue-500/80 text-white shadow-sm backdrop-blur-sm'
+                    : 'text-gray-600 hover:bg-white/10 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                 }`}>
                 <FiGrid size={18} />
               </button>
@@ -141,10 +121,8 @@ export default function ProjectsPage() {
                 onClick={() => setViewMode('list')}
                 className={`rounded px-3 py-1.5 transition-colors ${
                   viewMode === 'list'
-                    ? 'bg-blue-500 text-white'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:bg-slate-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-blue-500/80 text-white shadow-sm backdrop-blur-sm'
+                    : 'text-gray-600 hover:bg-white/10 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                 }`}>
                 <FiList size={18} />
               </button>
@@ -153,10 +131,8 @@ export default function ProjectsPage() {
                 onClick={() => setViewMode('card')}
                 className={`rounded px-3 py-1.5 transition-colors ${
                   viewMode === 'card'
-                    ? 'bg-blue-500 text-white'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:bg-slate-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-blue-500/80 text-white shadow-sm backdrop-blur-sm'
+                    : 'text-gray-600 hover:bg-white/10 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
                 }`}>
                 <FiFolder size={18} />
               </button>
@@ -169,9 +145,7 @@ export default function ProjectsPage() {
                 setFormData({ name: '', team: '', icon: 'folder' });
                 setShowCreateModal(true);
               }}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}>
+              className="glass-button flex items-center gap-2 rounded-lg bg-blue-600/90 px-4 py-2 font-medium text-white hover:bg-blue-600">
               <FiPlus size={18} />
               Create Project
             </button>
@@ -182,8 +156,8 @@ export default function ProjectsPage() {
       {/* Projects Content */}
       <div className="flex-1 overflow-y-auto p-6">
         {projects.length === 0 ? (
-          <div className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            <div className="text-center">
+          <div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
+            <div className="glass-card rounded-xl p-8 text-center">
               <FiFolder size={48} className="mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium">No projects yet</p>
               <p className="mt-2 text-sm">Create your first project to get started</p>
@@ -203,7 +177,6 @@ export default function ProjectsPage() {
                 key={project.id}
                 project={project}
                 viewMode={viewMode}
-                isDarkMode={isDarkMode}
                 onEdit={() => handleEditProject(project)}
                 onDelete={() => handleDeleteProject(project.id)}
                 onClick={() => navigate(`/projects/${project.id}`)}
@@ -226,7 +199,6 @@ export default function ProjectsPage() {
             setFormData({ name: '', team: '', icon: 'folder' });
           }}
           editingProject={editingProject}
-          isDarkMode={isDarkMode}
         />
       )}
     </div>
@@ -236,14 +208,13 @@ export default function ProjectsPage() {
 interface ProjectCardProps {
   project: Project;
   viewMode: ViewMode;
-  isDarkMode: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onClick: () => void;
   getIconEmoji: (icon: string) => string;
 }
 
-function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick, getIconEmoji }: ProjectCardProps) {
+function ProjectCard({ project, viewMode, onEdit, onDelete, onClick, getIconEmoji }: ProjectCardProps) {
   const handleCardClick = (e: React.MouseEvent) => {
     // Don't navigate if clicking on edit/delete buttons
     if ((e.target as HTMLElement).closest('button')) return;
@@ -254,31 +225,25 @@ function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick,
     return (
       <div
         onClick={handleCardClick}
-        className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors ${
-          isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
-        }`}>
-        <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900">
+        className="glass-card flex cursor-pointer items-center gap-4 rounded-lg p-4 transition-colors hover:bg-white/10 dark:hover:bg-white/5">
+        <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100/50 text-2xl dark:bg-blue-900/50">
           {getIconEmoji(project.icon)}
         </div>
         <div className="flex-1">
-          <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{project.name}</h3>
-          <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{project.team || 'No team'}</p>
+          <h3 className="font-semibold text-gray-900 dark:text-white">{project.name}</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{project.team || 'No team'}</p>
         </div>
         <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={onEdit}
-            className={`rounded p-2 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded p-2 text-gray-600 transition-colors hover:bg-white/20 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
             <FiEdit2 size={18} />
           </button>
           <button
             type="button"
             onClick={onDelete}
-            className={`rounded p-2 transition-colors ${
-              isDarkMode ? 'text-red-400 hover:bg-slate-700' : 'text-red-600 hover:bg-gray-100'
-            }`}>
+            className="rounded p-2 text-red-600 transition-colors hover:bg-red-100/20 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
             <FiTrash2 size={18} />
           </button>
         </div>
@@ -290,37 +255,29 @@ function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick,
     return (
       <div
         onClick={handleCardClick}
-        className={`cursor-pointer rounded-lg border p-6 transition-colors ${
-          isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
-        }`}>
+        className="glass-card cursor-pointer rounded-lg p-6 transition-colors hover:bg-white/10 dark:hover:bg-white/5">
         <div className="mb-4 flex items-center justify-between">
-          <div className="flex size-16 items-center justify-center rounded-xl bg-blue-100 text-4xl dark:bg-blue-900">
+          <div className="flex size-16 items-center justify-center rounded-xl bg-blue-100/50 text-4xl dark:bg-blue-900/50">
             {getIconEmoji(project.icon)}
           </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={onEdit}
-              className={`rounded p-2 transition-colors ${
-                isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-              }`}>
+              className="rounded p-2 text-gray-600 transition-colors hover:bg-white/20 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
               <FiEdit2 size={18} />
             </button>
             <button
               type="button"
               onClick={onDelete}
-              className={`rounded p-2 transition-colors ${
-                isDarkMode ? 'text-red-400 hover:bg-slate-700' : 'text-red-600 hover:bg-gray-100'
-              }`}>
+              className="rounded p-2 text-red-600 transition-colors hover:bg-red-100/20 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
               <FiTrash2 size={18} />
             </button>
           </div>
         </div>
-        <h3 className={`mb-2 text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{project.name}</h3>
-        <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          {project.team || 'No team assigned'}
-        </p>
-        <p className={`mt-4 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+        <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">{project.name}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-400">{project.team || 'No team assigned'}</p>
+        <p className="mt-4 text-xs text-gray-500 dark:text-gray-500">
           Created {new Date(project.createdAt).toLocaleDateString()}
         </p>
       </div>
@@ -331,34 +288,28 @@ function ProjectCard({ project, viewMode, isDarkMode, onEdit, onDelete, onClick,
   return (
     <div
       onClick={handleCardClick}
-      className={`cursor-pointer rounded-lg border p-4 transition-colors ${
-        isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
-      }`}>
+      className="glass-card cursor-pointer rounded-lg p-4 transition-colors hover:bg-white/10 dark:hover:bg-white/5">
       <div className="mb-3 flex items-center justify-between">
-        <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900">
+        <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100/50 text-2xl dark:bg-blue-900/50">
           {getIconEmoji(project.icon)}
         </div>
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={onEdit}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded p-1.5 text-gray-600 transition-colors hover:bg-white/20 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400">
             <FiEdit2 size={16} />
           </button>
           <button
             type="button"
             onClick={onDelete}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-red-400 hover:bg-slate-700' : 'text-red-600 hover:bg-gray-100'
-            }`}>
+            className="rounded p-1.5 text-red-600 transition-colors hover:bg-red-100/20 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
             <FiTrash2 size={16} />
           </button>
         </div>
       </div>
-      <h3 className={`mb-1 font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{project.name}</h3>
-      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{project.team || 'No team'}</p>
+      <h3 className="mb-1 font-semibold text-gray-900 dark:text-white">{project.name}</h3>
+      <p className="text-sm text-gray-600 dark:text-gray-400">{project.team || 'No team'}</p>
     </div>
   );
 }
@@ -369,81 +320,52 @@ interface CreateProjectModalProps {
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   editingProject: Project | null;
-  isDarkMode: boolean;
 }
 
-function CreateProjectModal({
-  formData,
-  setFormData,
-  onSubmit,
-  onClose,
-  editingProject,
-  isDarkMode,
-}: CreateProjectModalProps) {
+function CreateProjectModal({ formData, setFormData, onSubmit, onClose, editingProject }: CreateProjectModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-md rounded-lg border p-6 shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
-        <h2 className={`mb-4 text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-all duration-300">
+      <div className="glass-panel w-full max-w-md scale-100 transform rounded-2xl p-6 shadow-2xl transition-all">
+        <h2 className="mb-6 text-xl font-bold text-gray-900 dark:text-white">
           {editingProject ? 'Edit Project' : 'Create New Project'}
         </h2>
         <form onSubmit={onSubmit}>
           {/* Project Name */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Project Name *
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Project Name *</label>
             <input
               type="text"
               required
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               placeholder="Enter project name"
             />
           </div>
 
           {/* Team */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Team
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Team</label>
             <input
               type="text"
               value={formData.team}
               onChange={e => setFormData({ ...formData, team: e.target.value })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
               placeholder="Enter team name"
             />
           </div>
 
           {/* Icon Selection */}
           <div className="mb-6">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Project Icon
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Project Icon</label>
             <div className="grid grid-cols-8 gap-2">
               {PROJECT_ICONS.map(icon => (
                 <button
                   key={icon.value}
                   type="button"
                   onClick={() => setFormData({ ...formData, icon: icon.value })}
-                  className={`flex size-12 items-center justify-center rounded-lg border text-2xl transition-colors ${
-                    formData.icon === icon.value
-                      ? 'border-blue-500 bg-blue-100 ring-2 ring-blue-500 dark:bg-blue-900'
-                      : isDarkMode
-                        ? 'border-slate-600 bg-slate-700 hover:bg-slate-600'
-                        : 'border-gray-300 bg-white hover:bg-gray-50'
+                  className={`glass flex size-12 items-center justify-center rounded-lg text-2xl transition-colors hover:bg-white/20 dark:hover:bg-white/10 ${
+                    formData.icon === icon.value ? 'bg-blue-100/50 ring-2 ring-blue-500 dark:bg-blue-900/50' : ''
                   }`}>
                   {icon.icon}
                 </button>
@@ -456,16 +378,12 @@ function CreateProjectModal({
             <button
               type="button"
               onClick={onClose}
-              className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-                isDarkMode
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
+              className="glass-button rounded-lg px-4 py-2 font-medium text-gray-700 dark:text-gray-300">
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
+              className="glass-button rounded-lg bg-blue-600/90 px-4 py-2 font-medium text-white hover:bg-blue-600">
               {editingProject ? 'Update' : 'Create'} Project
             </button>
           </div>

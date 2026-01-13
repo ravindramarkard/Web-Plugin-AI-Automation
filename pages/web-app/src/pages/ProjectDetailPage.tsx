@@ -49,8 +49,19 @@ import { webService } from '../lib/webService';
 import { apiPost, API_ENDPOINTS } from '../lib/apiConfig';
 import { startCodegen } from '../lib/testGenAPI';
 import { ExecutionState } from '../types/event';
+import ApiTestGeneratorPage from './ApiTestGeneratorPage';
 
-type TabType = 'prompt' | 'test-suite' | 'report' | 'settings' | 'environments';
+type TabType = 'prompt' | 'test-suite' | 'report' | 'settings' | 'environments' | 'api-test-gen';
+
+// Helper to determine test type
+const getTestType = (tc: TestCase): 'ui' | 'api' => {
+  if (tc.testType) {
+    if (tc.testType.toLowerCase().includes('api')) return 'api';
+    if (tc.testType.toLowerCase().includes('ui')) return 'ui';
+  }
+  // Fallback to prompt/description
+  return tc.prompt?.toLowerCase().includes('api') || tc.description?.toLowerCase().includes('api') ? 'api' : 'ui';
+};
 
 export default function ProjectDetailPage() {
   const { projectId } = useParams<{ projectId: string }>();
@@ -67,7 +78,6 @@ export default function ProjectDetailPage() {
   const [editingSuite, setEditingSuite] = useState<TestSuite | null>(null);
   const [showRunSuiteModal, setShowRunSuiteModal] = useState(false);
   const [suiteToRun, setSuiteToRun] = useState<TestSuite | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingTestCases, setIsLoadingTestCases] = useState(false);
   const [isLoadingTestSuites, setIsLoadingTestSuites] = useState(false);
@@ -168,17 +178,6 @@ export default function ProjectDetailPage() {
   };
 
   // Check for dark mode preference
-  useEffect(() => {
-    const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    setIsDarkMode(darkModeMediaQuery.matches);
-
-    const handleChange = (e: MediaQueryListEvent) => {
-      setIsDarkMode(e.matches);
-    };
-
-    darkModeMediaQuery.addEventListener('change', handleChange);
-    return () => darkModeMediaQuery.removeEventListener('change', handleChange);
-  }, []);
 
   useEffect(() => {
     if (projectId) {
@@ -565,10 +564,10 @@ export default function ProjectDetailPage() {
 
   if (isLoading) {
     return (
-      <div className={`flex h-full items-center justify-center ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
-        <div className="text-center">
+      <div className="flex h-full items-center justify-center bg-transparent">
+        <div className="text-center glass-panel p-8 rounded-2xl">
           <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-          <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Loading project...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading project...</p>
         </div>
       </div>
     );
@@ -579,69 +578,67 @@ export default function ProjectDetailPage() {
   }
 
   return (
-    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+    <div className="flex h-full flex-col bg-transparent">
       {/* Generating Notification */}
       <GeneratingNotification isVisible={isGenerating} message={generatingMessage} />
 
       {/* Header */}
-      <div
-        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+      <div className="glass-panel border-b border-white/10 px-6 py-4 dark:border-white/5">
         <div className="flex items-center gap-4">
           <button
             type="button"
             onClick={() => navigate('/projects')}
-            className={`rounded p-2 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded p-2 transition-colors text-gray-600 hover:bg-white/10 dark:text-gray-400 dark:hover:bg-white/10">
             <FiArrowLeft size={20} />
           </button>
           <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900">
+            <div className="flex size-10 items-center justify-center rounded-lg bg-blue-100 text-2xl dark:bg-blue-900/50">
               {getIconEmoji(project.icon)}
             </div>
             <div>
-              <h1 className={`text-xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{project.name}</h1>
-              <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{project.team || 'No team'}</p>
+              <h1 className="text-xl font-bold text-gray-900 dark:text-white">{project.name}</h1>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{project.team || 'No team'}</p>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="mt-4 flex gap-1 border-b border-gray-200 dark:border-slate-700">
+        <div className="mt-4 flex gap-1 border-b border-white/10 dark:border-white/5">
           <TabButton
             icon={FiMessageSquare}
             label="Prompt"
             isActive={activeTab === 'prompt'}
             onClick={() => setActiveTab('prompt')}
-            isDarkMode={isDarkMode}
           />
           <TabButton
             icon={FiList}
             label="Test Suite"
             isActive={activeTab === 'test-suite'}
             onClick={() => setActiveTab('test-suite')}
-            isDarkMode={isDarkMode}
           />
           <TabButton
             icon={FiFileText}
             label="Report"
             isActive={activeTab === 'report'}
             onClick={() => setActiveTab('report')}
-            isDarkMode={isDarkMode}
           />
           <TabButton
             icon={FiSettings}
             label="LLM Settings"
             isActive={activeTab === 'settings'}
             onClick={() => setActiveTab('settings')}
-            isDarkMode={isDarkMode}
           />
           <TabButton
             icon={FiGlobe}
             label="Environment Settings"
             isActive={activeTab === 'environments'}
             onClick={() => setActiveTab('environments')}
-            isDarkMode={isDarkMode}
+          />
+          <TabButton
+            icon={FiGlobe}
+            label="API Test Gen"
+            isActive={activeTab === 'api-test-gen'}
+            onClick={() => setActiveTab('api-test-gen')}
           />
         </div>
       </div>
@@ -654,7 +651,6 @@ export default function ProjectDetailPage() {
             <div className="overflow-y-auto border-r" style={{ width: sidebarWidth, flexShrink: 0 }}>
               <PromptsTab
                 projectId={projectId!}
-                isDarkMode={isDarkMode}
                 onExecutePrompt={promptContent => {
                   // Execute prompt - events will be shown in chat view
                   console.log('Execute prompt:', promptContent);
@@ -664,16 +660,20 @@ export default function ProjectDetailPage() {
 
             {/* Resizer Handle */}
             <div
-              className={`w-1 cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors ${
-                isDarkMode ? 'bg-slate-700 hover:bg-blue-600' : 'bg-gray-200 hover:bg-blue-400'
-              }`}
+              className="w-1 cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors bg-gray-200 hover:bg-blue-400 dark:bg-slate-700 dark:hover:bg-blue-600"
               onMouseDown={handleResizeMouseDown}
             />
 
             {/* Chat View - Right Side */}
             <div className="flex-1 overflow-hidden">
-              <ChatView projectId={projectId!} isDarkMode={isDarkMode} />
+              <ChatView />
             </div>
+          </div>
+        )}
+
+        {activeTab === 'api-test-gen' && (
+          <div className="h-full overflow-y-auto">
+            <ApiTestGeneratorPage projectId={projectId} />
           </div>
         )}
 
@@ -686,6 +686,8 @@ export default function ProjectDetailPage() {
               setSelectedTestSuite(suiteId);
               if (suiteId) {
                 loadTestCases(suiteId);
+              } else {
+                loadTestCases();
               }
             }}
             testCases={testCases}
@@ -710,24 +712,20 @@ export default function ProjectDetailPage() {
             onEditCase={handleEditCase}
             onViewPlaywrightCode={testCase => setViewingPlaywrightCode({ testCase })}
             onViewPrompt={testCase => setViewingPrompt({ testCase })}
-            onRefreshTestCases={async () => {
-              if (selectedTestSuite) {
+            onRefreshTestCases={async view => {
+              if (view === 'all-tests') {
+                await loadTestCases();
+              } else if (selectedTestSuite) {
                 await loadTestCases(selectedTestSuite);
               } else if (projectId) {
                 await loadTestCases();
               }
             }}
-            isDarkMode={isDarkMode}
           />
         )}
 
         {activeTab === 'report' && (
-          <ReportTab
-            projectId={projectId!}
-            testSuites={testSuites}
-            isDarkMode={isDarkMode}
-            onRunSuite={handleRunSuite}
-          />
+          <ReportTab projectId={projectId!} testSuites={testSuites} onRunSuite={handleRunSuite} />
         )}
 
         {activeTab === 'settings' && (
@@ -738,7 +736,7 @@ export default function ProjectDetailPage() {
 
         {activeTab === 'environments' && (
           <div className="h-full overflow-y-auto">
-            <EnvironmentSettings projectId={projectId} isDarkMode={isDarkMode} />
+            <EnvironmentSettings projectId={projectId} />
           </div>
         )}
       </div>
@@ -757,7 +755,6 @@ export default function ProjectDetailPage() {
             setTestsInSuite([]);
           }}
           editingSuite={editingSuite}
-          isDarkMode={isDarkMode}
           projectId={projectId}
           availableTestCases={availableTestCases}
           testsInSuite={testsInSuite}
@@ -780,7 +777,6 @@ export default function ProjectDetailPage() {
             setEditingTestCase(null);
           }}
           editingTestCase={editingTestCase}
-          isDarkMode={isDarkMode}
         />
       )}
 
@@ -804,7 +800,6 @@ export default function ProjectDetailPage() {
             setShowSchedulerModal(false);
             setSchedulingSuite(null);
           }}
-          isDarkMode={isDarkMode}
         />
       )}
 
@@ -818,28 +813,16 @@ export default function ProjectDetailPage() {
             setSuiteToRun(null);
           }}
           onRun={handleExecuteSuite}
-          isDarkMode={isDarkMode}
         />
       )}
 
       {/* View Playwright Code Modal */}
       {viewingPlaywrightCode && (
-        <ViewCodeModal
-          testCase={viewingPlaywrightCode.testCase}
-          onClose={() => setViewingPlaywrightCode(null)}
-          isDarkMode={isDarkMode}
-        />
+        <ViewCodeModal testCase={viewingPlaywrightCode.testCase} onClose={() => setViewingPlaywrightCode(null)} />
       )}
 
       {/* View Prompt Modal */}
-      {viewingPrompt && (
-        <ViewPromptModal
-          testCase={viewingPrompt.testCase}
-          onClose={() => setViewingPrompt(null)}
-          isDarkMode={isDarkMode}
-        />
-      )}
-      {/* View Steps Modal */}
+      {viewingPrompt && <ViewPromptModal testCase={viewingPrompt.testCase} onClose={() => setViewingPrompt(null)} />}
     </div>
   );
 }
@@ -847,10 +830,9 @@ export default function ProjectDetailPage() {
 interface ViewCodeModalProps {
   testCase: TestCase;
   onClose: () => void;
-  isDarkMode: boolean;
 }
 
-function ViewCodeModal({ testCase, onClose, isDarkMode }: ViewCodeModalProps) {
+function ViewCodeModal({ testCase, onClose }: ViewCodeModalProps) {
   const [codeLineNumbers, setCodeLineNumbers] = useState<string[]>([]);
   const codeTextareaRef = React.useRef<HTMLTextAreaElement>(null);
   const lineNumbersRef = React.useRef<HTMLDivElement>(null);
@@ -892,58 +874,43 @@ function ViewCodeModal({ testCase, onClose, isDarkMode }: ViewCodeModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-4xl rounded-lg border p-6 shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel w-full max-w-4xl rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Playwright Code</h2>
-            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testCase.name}</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Playwright Code</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{testCase.name}</p>
           </div>
           <div className="flex items-center gap-2">
             <button
               type="button"
               onClick={handleCopyCode}
-              className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                isDarkMode
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}>
+              className="glass-button flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-white/10 dark:text-gray-200">
               <FiCopy size={14} />
               Copy
             </button>
             <button
               type="button"
               onClick={handleDownloadCode}
-              className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                isDarkMode
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}>
+              className="glass-button flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-white/10 dark:text-gray-200">
               <FiDownload size={14} />
               Download
             </button>
             <button
               type="button"
               onClick={onClose}
-              className={`rounded p-1.5 transition-colors ${
-                isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-              }`}>
+              className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
               <FiX size={20} />
             </button>
           </div>
         </div>
 
-        <div className="relative">
+        <div className="relative glass-input overflow-hidden rounded-xl">
           {/* Line Numbers */}
           {testCase.playwrightCode && (
             <div
               ref={lineNumbersRef}
-              className={`absolute left-0 top-0 h-full overflow-hidden border-r pr-2 text-right font-mono text-xs ${
-                isDarkMode ? 'border-slate-600 text-gray-500' : 'border-gray-300 text-gray-400'
-              }`}
+              className="absolute left-0 top-0 h-full overflow-hidden border-r border-white/10 bg-black/5 pr-2 text-right font-mono text-xs text-gray-500 dark:bg-white/5 dark:text-gray-400"
               style={{ width: '40px', paddingTop: '12px', paddingBottom: '12px' }}>
               {codeLineNumbers.map((line, idx) => (
                 <div key={idx} className="leading-6">
@@ -959,10 +926,11 @@ function ViewCodeModal({ testCase, onClose, isDarkMode }: ViewCodeModalProps) {
             value={testCase.playwrightCode || 'No Playwright code available'}
             onScroll={handleCodeScroll}
             rows={20}
-            className={`w-full rounded-lg border px-3 py-2 font-mono text-sm ${
-              isDarkMode ? 'border-slate-600 bg-slate-900 text-white' : 'border-gray-300 bg-gray-50 text-gray-900'
-            } ${testCase.playwrightCode ? 'pl-12' : ''} focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            style={{ resize: 'vertical' }}
+            className="w-full bg-transparent px-3 py-2 font-mono text-sm text-gray-800 dark:text-gray-200 focus:outline-none"
+            style={{
+              resize: 'vertical',
+              paddingLeft: testCase.playwrightCode ? '48px' : '12px',
+            }}
           />
         </div>
       </div>
@@ -973,60 +941,43 @@ function ViewCodeModal({ testCase, onClose, isDarkMode }: ViewCodeModalProps) {
 interface ViewPromptModalProps {
   testCase: TestCase;
   onClose: () => void;
-  isDarkMode: boolean;
 }
 
-function ViewPromptModal({ testCase, onClose, isDarkMode }: ViewPromptModalProps) {
+function ViewPromptModal({ testCase, onClose }: ViewPromptModalProps) {
   const promptText = testCase.plannerDescription || testCase.prompt || 'No automation prompt available';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-3xl rounded-lg border p-6 shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel w-full max-w-3xl rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Automation Prompt
-            </h2>
-            <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testCase.name}</p>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Automation Prompt</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{testCase.name}</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiX size={20} />
           </button>
         </div>
 
         <div className="mb-4">
-          <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-            Prompt Details
-          </label>
+          <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Prompt Details</label>
           <textarea
             readOnly
             value={promptText}
             rows={12}
-            className={`w-full rounded-lg border px-3 py-2 text-sm ${
-              isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-gray-50 text-gray-900'
-            } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className="glass-input w-full rounded-xl p-4 text-sm font-mono text-gray-800 dark:text-gray-200 outline-none"
           />
         </div>
 
         {testCase.description && (
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Description
-            </label>
-            <p
-              className={`rounded-lg border px-3 py-2 text-sm ${
-                isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-300' : 'border-gray-300 bg-gray-50 text-gray-700'
-              }`}>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+            <div className="glass-input rounded-xl p-4 text-sm text-gray-700 dark:text-gray-300">
               {testCase.description}
-            </p>
+            </div>
           </div>
         )}
 
@@ -1034,11 +985,7 @@ function ViewPromptModal({ testCase, onClose, isDarkMode }: ViewPromptModalProps
           <button
             type="button"
             onClick={onClose}
-            className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-              isDarkMode
-                ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}>
+            className="glass-button rounded-xl bg-white/10 px-6 py-2.5 font-medium text-gray-700 hover:bg-white/20 dark:text-white transition-all">
             Close
           </button>
         </div>
@@ -1052,10 +999,9 @@ interface SchedulerModalProps {
   onClose: () => void;
   onSave: (schedule: TestSuiteSchedule) => Promise<void>;
   onDelete: () => Promise<void>;
-  isDarkMode: boolean;
 }
 
-function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: SchedulerModalProps) {
+function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProps) {
   const [cronExpression, setCronExpression] = useState(suite.schedule?.cronExpression || '0 9 * * 1-5');
   const [environment, setEnvironment] = useState(suite.schedule?.environment || '');
   const [enabled, setEnabled] = useState(suite.schedule?.enabled ?? true);
@@ -1095,140 +1041,130 @@ function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: Schedu
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-2xl rounded-lg border p-6 shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
-        <div className="mb-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <FiClock size={20} className={isDarkMode ? 'text-gray-300' : 'text-gray-700'} />
-            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Edit Schedule</h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel w-full max-w-2xl rounded-2xl p-6">
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+              <FiClock size={20} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Schedule</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiX size={20} />
           </button>
         </div>
 
         <form onSubmit={handleSubmit}>
           {/* Cron Expression */}
-          <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Cron Expression *
-            </label>
+          <div className="mb-6">
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Cron Expression *</label>
             <input
               type="text"
               required
               value={cronExpression}
               onChange={e => setCronExpression(e.target.value)}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="0 9 * * 1-5"
             />
-            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
               Schedule when to run the test suite (minute hour day month weekday)
             </p>
-            <div className={`mt-2 space-y-1 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            <div className="mt-3 flex flex-wrap gap-2">
               {cronExamples.map((example, idx) => (
-                <div key={idx} className="text-xs">
-                  <code className={`rounded px-1 py-0.5 ${isDarkMode ? 'bg-slate-700' : 'bg-gray-100'}`}>
-                    {example.expression}
-                  </code>{' '}
-                  - {example.description}
+                <div
+                  key={idx}
+                  className="glass-card flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-200/50 dark:text-gray-400 dark:hover:bg-white/10 transition-colors"
+                  onClick={() => setCronExpression(example.expression)}>
+                  <code className="font-mono font-semibold text-blue-600 dark:text-blue-400">{example.expression}</code>
+                  <span>{example.description}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Environment */}
-          <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Environment *
-            </label>
-            <select
-              required
-              value={environment}
-              onChange={e => setEnvironment(e.target.value)}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-white text-gray-900'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
-              <option value="">Select environment</option>
-              {environments.map(env => (
-                <option key={env} value={env}>
-                  {env}
+          <div className="mb-6">
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Environment *</label>
+            <div className="relative">
+              <select
+                required
+                value={environment}
+                onChange={e => setEnvironment(e.target.value)}
+                className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                <option value="" className="dark:bg-slate-800">
+                  Select environment
                 </option>
-              ))}
-            </select>
+                {environments.map(env => (
+                  <option key={env} value={env} className="dark:bg-slate-800">
+                    {env}
+                  </option>
+                ))}
+              </select>
+              <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                <FiChevronDown size={16} />
+              </div>
+            </div>
           </div>
 
-          {/* Enable Schedule */}
-          <div className="mb-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={enabled}
-                onChange={e => setEnabled(e.target.checked)}
-                className="rounded border-gray-300"
-              />
-              <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Enable Schedule
-              </span>
-            </label>
-            <p className={`ml-6 mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Uncheck to disable the schedule without deleting it
-            </p>
-          </div>
+          <div className="mb-6 grid grid-cols-2 gap-4">
+            {/* Enable Schedule */}
+            <div className="glass-card rounded-xl p-4">
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={enabled}
+                  onChange={e => setEnabled(e.target.checked)}
+                  className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
+                />
+                <div>
+                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Enable Schedule</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Active</span>
+                </div>
+              </label>
+            </div>
 
-          {/* Headless Mode */}
-          <div className="mb-4">
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={headless}
-                onChange={e => setHeadless(e.target.checked)}
-                className="rounded border-gray-300"
-              />
-              <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Run in Headless Mode
-              </span>
-            </label>
-            <p className={`ml-6 mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Run tests without opening browser windows
-            </p>
+            {/* Headless Mode */}
+            <div className="glass-card rounded-xl p-4">
+              <label className="flex cursor-pointer items-center gap-3">
+                <input
+                  type="checkbox"
+                  checked={headless}
+                  onChange={e => setHeadless(e.target.checked)}
+                  className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
+                />
+                <div>
+                  <span className="block text-sm font-medium text-gray-900 dark:text-white">Headless Mode</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Run without UI</span>
+                </div>
+              </label>
+            </div>
           </div>
 
           {/* Number of Workers */}
-          <div className="mb-6">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Number of Workers
-            </label>
-            <input
-              type="number"
-              min="1"
-              max="10"
-              value={workers}
-              onChange={e => setWorkers(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-            />
-            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Number of parallel test workers (1-10)
-            </p>
+          <div className="mb-8">
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Number of Workers</label>
+            <div className="flex items-center gap-4">
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={workers}
+                onChange={e => setWorkers(parseInt(e.target.value))}
+                className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700 accent-blue-500"
+              />
+              <div className="glass-input flex h-10 w-16 items-center justify-center rounded-lg font-mono font-medium">
+                {workers}
+              </div>
+            </div>
+            <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">Parallel test workers (1-10)</p>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between border-t border-gray-200/50 pt-6 dark:border-white/10">
             <div>
               {suite.schedule && (
                 <button
@@ -1238,10 +1174,8 @@ function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: Schedu
                       await onDelete();
                     }
                   }}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                    isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-600 text-white hover:bg-red-700'
-                  }`}>
-                  <FiX size={16} />
+                  className="glass-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20 transition-colors">
+                  <FiTrash2 size={16} />
                   Delete Schedule
                 </button>
               )}
@@ -1250,17 +1184,13 @@ function SchedulerModal({ suite, onClose, onSave, onDelete, isDarkMode }: Schedu
               <button
                 type="button"
                 onClick={onClose}
-                className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-                  isDarkMode
-                    ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}>
+                className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
-                <FiCheckCircle size={16} />
+                className="glass-button flex items-center gap-2 rounded-xl px-6 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30">
+                <FiCheckCircle size={18} />
                 Update Schedule
               </button>
             </div>
@@ -1276,10 +1206,9 @@ interface TabButtonProps {
   label: string;
   isActive: boolean;
   onClick: () => void;
-  isDarkMode: boolean;
 }
 
-function TabButton({ icon: Icon, label, isActive, onClick, isDarkMode }: TabButtonProps) {
+function TabButton({ icon: Icon, label, isActive, onClick }: TabButtonProps) {
   return (
     <button
       type="button"
@@ -1287,7 +1216,7 @@ function TabButton({ icon: Icon, label, isActive, onClick, isDarkMode }: TabButt
       className={`flex items-center gap-2 border-b-2 px-4 py-3 font-medium transition-colors ${
         isActive
           ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-          : `border-transparent ${isDarkMode ? 'text-gray-400 hover:text-gray-300' : 'text-gray-600 hover:text-gray-900'}`
+          : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300'
       }`}>
       <Icon size={18} />
       {label}
@@ -1311,8 +1240,7 @@ interface TestSuiteTabProps {
   onEditCase?: (testCase: TestCase) => void;
   onViewPlaywrightCode?: (testCase: TestCase) => void;
   onViewPrompt?: (testCase: TestCase) => void;
-  onRefreshTestCases?: () => Promise<void>;
-  isDarkMode: boolean;
+  onRefreshTestCases?: (view?: string) => Promise<void>;
 }
 
 function TestSuiteTab({
@@ -1332,7 +1260,6 @@ function TestSuiteTab({
   onViewPlaywrightCode,
   onViewPrompt,
   onRefreshTestCases,
-  isDarkMode,
 }: TestSuiteTabProps) {
   const [view, setView] = useState<'overview' | 'test-suites' | 'collections' | 'all-tests' | 'tags'>('all-tests');
   const [testTypeFilter, setTestTypeFilter] = useState<'all' | 'ui' | 'api'>('ui');
@@ -1356,7 +1283,7 @@ function TestSuiteTab({
       setShowTestGenModal(false);
       setTestGenUrl('');
       setTestGenName('');
-      if (onRefreshTestCases) onRefreshTestCases();
+      if (onRefreshTestCases) onRefreshTestCases(view);
     } catch (error: any) {
       console.error(error);
       alert('Failed to generate test: ' + error.message);
@@ -1405,25 +1332,12 @@ function TestSuiteTab({
   // Filter test cases by type
   const filteredTestCases = testCases.filter(testCase => {
     if (testTypeFilter === 'all') return true;
-    // Determine type based on prompt content or description
-    const testType =
-      testCase.prompt?.toLowerCase().includes('api') || testCase.description?.toLowerCase().includes('api')
-        ? 'api'
-        : 'ui';
+    const testType = getTestType(testCase);
     return testType === testTypeFilter;
   });
 
-  const uiTestCount = testCases.filter(tc => {
-    const testType =
-      tc.prompt?.toLowerCase().includes('api') || tc.description?.toLowerCase().includes('api') ? 'api' : 'ui';
-    return testType === 'ui';
-  }).length;
-
-  const apiTestCount = testCases.filter(tc => {
-    const testType =
-      tc.prompt?.toLowerCase().includes('api') || tc.description?.toLowerCase().includes('api') ? 'api' : 'ui';
-    return testType === 'api';
-  }).length;
+  const uiTestCount = testCases.filter(tc => getTestType(tc) === 'ui').length;
+  const apiTestCount = testCases.filter(tc => getTestType(tc) === 'api').length;
 
   // Overview Stats Calculation
   const totalPrompts = testCases.filter(tc => tc.prompt).length;
@@ -1479,7 +1393,7 @@ function TestSuiteTab({
       setSelectedTestCases(new Set());
       // Trigger refresh via callback if available, otherwise reload
       if (onRefreshTestCases) {
-        await onRefreshTestCases();
+        await onRefreshTestCases(view);
       } else {
         window.location.reload();
       }
@@ -1492,42 +1406,29 @@ function TestSuiteTab({
   const handleRefresh = async () => {
     // Trigger reload of test cases via callback if available
     if (onRefreshTestCases) {
-      await onRefreshTestCases();
+      await onRefreshTestCases(view);
     } else {
       window.location.reload();
     }
   };
 
   return (
-    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+    <div className="flex h-full flex-col bg-transparent">
       {/* Navigation Tabs */}
-      <div className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6`}>
+      <div className="glass-panel sticky top-0 z-10 border-b border-white/10 px-6 backdrop-blur-md">
         <div className="flex space-x-8">
-          <NavTab
-            label="OVERVIEW"
-            isActive={view === 'overview'}
-            onClick={() => setView('overview')}
-            isDarkMode={isDarkMode}
-          />
-          <NavTab
-            label="TEST SUITES"
-            isActive={view === 'test-suites'}
-            onClick={() => setView('test-suites')}
-            isDarkMode={isDarkMode}
-          />
-          <NavTab
-            label="COLLECTIONS"
-            isActive={view === 'collections'}
-            onClick={() => setView('collections')}
-            isDarkMode={isDarkMode}
-          />
+          <NavTab label="OVERVIEW" isActive={view === 'overview'} onClick={() => setView('overview')} />
+          <NavTab label="TEST SUITES" isActive={view === 'test-suites'} onClick={() => setView('test-suites')} />
+          <NavTab label="COLLECTIONS" isActive={view === 'collections'} onClick={() => setView('collections')} />
           <NavTab
             label="ALL TESTS"
             isActive={view === 'all-tests'}
-            onClick={() => setView('all-tests')}
-            isDarkMode={isDarkMode}
+            onClick={() => {
+              setView('all-tests');
+              onSelectSuite(null);
+            }}
           />
-          <NavTab label="TAGS" isActive={view === 'tags'} onClick={() => setView('tags')} isDarkMode={isDarkMode} />
+          <NavTab label="TAGS" isActive={view === 'tags'} onClick={() => setView('tags')} />
         </div>
       </div>
 
@@ -1537,178 +1438,128 @@ function TestSuiteTab({
           {/* Stats Cards Row */}
           <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
             {/* TOTAL PROMPTS */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-blue-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-blue-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     TOTAL PROMPTS
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {totalPrompts}
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    AI-generated test prompts
-                  </p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{totalPrompts}</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">AI-generated test prompts</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-blue-900/30 text-blue-400' : 'bg-blue-50 text-blue-500'}`}>
+                <div className="rounded-full bg-blue-50 p-2 text-blue-500 dark:bg-blue-900/30 dark:text-blue-400">
                   <FiEdit2 size={16} />
                 </div>
               </div>
             </div>
 
             {/* TOTAL UI & API TCS */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-green-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-green-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     TOTAL UI & API TCS
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {totalTestCases}
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    UI & API test cases
-                  </p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{totalTestCases}</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">UI & API test cases</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-green-900/30 text-green-400' : 'bg-green-50 text-green-500'}`}>
+                <div className="rounded-full bg-green-50 p-2 text-green-500 dark:bg-green-900/30 dark:text-green-400">
                   <FiCheckCircle size={16} />
                 </div>
               </div>
             </div>
 
             {/* TOTAL UI TCS */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-emerald-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-emerald-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     TOTAL UI TCS
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {uiTestCount}
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>UI test cases</p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{uiTestCount}</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">UI test cases</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-emerald-900/30 text-emerald-400' : 'bg-emerald-50 text-emerald-500'}`}>
+                <div className="rounded-full bg-emerald-50 p-2 text-emerald-500 dark:bg-emerald-900/30 dark:text-emerald-400">
                   <FiMonitor size={16} />
                 </div>
               </div>
             </div>
 
             {/* TOTAL API TCS */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-sky-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-sky-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     TOTAL API TCS
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {apiTestCount}
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>API test cases</p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{apiTestCount}</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">API test cases</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-sky-900/30 text-sky-400' : 'bg-sky-50 text-sky-500'}`}>
+                <div className="rounded-full bg-sky-50 p-2 text-sky-500 dark:bg-sky-900/30 dark:text-sky-400">
                   <FiCpu size={16} />
                 </div>
               </div>
             </div>
 
             {/* TEST MANAGEMENT */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-orange-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-orange-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     TEST MANAGEMENT
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {testSuites.length}
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Organized test collections
-                  </p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{testSuites.length}</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Organized test collections</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-orange-900/30 text-orange-400' : 'bg-orange-50 text-orange-500'}`}>
+                <div className="rounded-full bg-orange-50 p-2 text-orange-500 dark:bg-orange-900/30 dark:text-orange-400">
                   <FiBarChart2 size={16} />
                 </div>
               </div>
             </div>
 
             {/* ENVIRONMENTS */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-purple-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-purple-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     ENVIRONMENTS
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>4</h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Configured test environments
-                  </p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">4</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Configured test environments</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-purple-900/30 text-purple-400' : 'bg-purple-50 text-purple-500'}`}>
+                <div className="rounded-full bg-purple-50 p-2 text-purple-500 dark:bg-purple-900/30 dark:text-purple-400">
                   <FiSettings size={16} />
                 </div>
               </div>
             </div>
 
             {/* SUCCESS RATE */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-red-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-red-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     SUCCESS RATE
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {successRate}%
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Test execution success rate
-                  </p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{successRate}%</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Test execution success rate</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-red-900/30 text-red-400' : 'bg-red-50 text-red-500'}`}>
+                <div className="rounded-full bg-red-50 p-2 text-red-500 dark:bg-red-900/30 dark:text-red-400">
                   <FiTarget size={16} />
                 </div>
               </div>
             </div>
 
             {/* RECENT EXECUTIONS */}
-            <div
-              className={`relative overflow-hidden rounded-lg border-t-4 border-t-teal-500 bg-white p-4 shadow-sm ${isDarkMode ? 'bg-slate-800' : ''}`}>
+            <div className="glass-card relative overflow-hidden rounded-xl border-t-4 border-t-teal-500 p-4 transition-transform hover:scale-105">
               <div className="flex items-start justify-between">
                 <div>
-                  <p
-                    className={`text-xs font-semibold uppercase tracking-wider ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                     RECENT EXECUTIONS
                   </p>
-                  <h3 className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                    {recentExecutions}
-                  </h3>
-                  <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                    Tests run in last 7 days
-                  </p>
+                  <h3 className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{recentExecutions}</h3>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Tests run in last 7 days</p>
                 </div>
-                <div
-                  className={`rounded-full p-2 ${isDarkMode ? 'bg-teal-900/30 text-teal-400' : 'bg-teal-50 text-teal-500'}`}>
+                <div className="rounded-full bg-teal-50 p-2 text-teal-500 dark:bg-teal-900/30 dark:text-teal-400">
                   <FiPlay size={16} />
                 </div>
               </div>
@@ -1717,15 +1568,14 @@ function TestSuiteTab({
 
           {/* Recent Activity */}
           <div className="mb-8">
-            <h3 className={`mb-4 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Recent Activity
-            </h3>
-            <div
-              className={`rounded-lg border ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Recent Activity</h3>
+            <div className="glass-panel rounded-xl">
               {recentActivity.length > 0 ? (
-                <div className="divide-y dark:divide-slate-700">
+                <div className="divide-y divide-gray-200 dark:divide-white/10">
                   {recentActivity.map(activity => (
-                    <div key={activity.id} className="flex items-center gap-4 p-4">
+                    <div
+                      key={activity.id}
+                      className="flex items-center gap-4 p-4 transition-colors hover:bg-black/5 dark:hover:bg-white/5">
                       <div
                         className={`rounded-full p-2 ${
                           activity.type === 'success'
@@ -1743,10 +1593,8 @@ function TestSuiteTab({
                         )}
                       </div>
                       <div className="flex-1">
-                        <p className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
-                          {activity.message}
-                        </p>
-                        <p className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>{activity.time}</p>
+                        <p className="text-sm font-medium text-gray-900 dark:text-gray-200">{activity.message}</p>
+                        <p className="text-xs text-gray-500">{activity.time}</p>
                       </div>
                     </div>
                   ))}
@@ -1758,12 +1606,11 @@ function TestSuiteTab({
           </div>
         </div>
       ) : view === 'all-tests' ? (
-        <div className="flex flex-1 flex-col overflow-hidden">
+        <div className="glass-panel mx-6 my-6 flex flex-1 flex-col overflow-hidden rounded-xl border border-white/10 shadow-xl">
           {/* Header with filters and actions */}
-          <div
-            className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+          <div className="glass-panel border-b border-white/10 px-6 py-4">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
                 Test Cases{' '}
                 {testCases.length > 0 && (
                   <span className="text-base font-normal text-gray-500">({testCases.length})</span>
@@ -1773,29 +1620,21 @@ function TestSuiteTab({
                 <button
                   type="button"
                   onClick={onCreateCase}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                    isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}>
+                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
                   <FiPlus size={18} />
                   Add Test Case
                 </button>
                 <button
                   type="button"
                   onClick={handleRefresh}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                    isDarkMode
-                      ? 'bg-gray-700 text-gray-300 hover:bg-gray-600'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}>
+                  className="glass-button flex items-center gap-2 rounded-lg bg-gray-500/10 px-4 py-2 font-medium text-gray-700 hover:bg-gray-500/20 dark:text-gray-200 dark:hover:bg-gray-500/30 transition-all">
                   <FiRefreshCw size={16} />
                   REFRESH
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowTestGenModal(true)}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                    isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
-                  }`}>
+                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
                   <FiCode size={16} />
                   TEST GEN
                 </button>
@@ -1803,10 +1642,10 @@ function TestSuiteTab({
                   type="button"
                   onClick={handleDeleteSelected}
                   disabled={selectedTestCases.size === 0}
-                  className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                    selectedTestCases.size === 0 ? 'cursor-not-allowed opacity-50' : ''
-                  } ${
-                    isDarkMode ? 'bg-red-600 text-white hover:bg-red-700' : 'bg-red-600 text-white hover:bg-red-700'
+                  className={`glass-button flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white shadow-lg transition-all ${
+                    selectedTestCases.size === 0
+                      ? 'bg-red-600/50 cursor-not-allowed opacity-50 shadow-none'
+                      : 'bg-red-600 shadow-red-500/20 hover:shadow-red-500/30'
                   }`}>
                   <FiTrash2 size={16} />
                   DELETE ALL TESTS
@@ -1821,10 +1660,8 @@ function TestSuiteTab({
                 onClick={() => setTestTypeFilter('ui')}
                 className={`pb-2 font-medium transition-colors ${
                   testTypeFilter === 'ui'
-                    ? 'border-b-2 border-blue-500 text-blue-600'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:text-gray-300'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
                 }`}>
                 UI TESTS ({uiTestCount})
               </button>
@@ -1833,54 +1670,38 @@ function TestSuiteTab({
                 onClick={() => setTestTypeFilter('api')}
                 className={`pb-2 font-medium transition-colors ${
                   testTypeFilter === 'api'
-                    ? 'border-b-2 border-blue-500 text-blue-600'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:text-gray-300'
-                      : 'text-gray-600 hover:text-gray-900'
+                    ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200'
                 }`}>
                 API TESTS ({apiTestCount})
               </button>
-              <div className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                Total: {testCases.length} tests
-              </div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">Total: {testCases.length} tests</div>
             </div>
           </div>
 
           {/* Test Cases Table */}
           <div className="flex-1 overflow-auto">
-            <table className={`w-full ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
-              <thead className={`sticky top-0 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
+            <table className="w-full">
+              <thead className="glass-panel sticky top-0 z-10 border-b border-white/10">
                 <tr>
-                  <th className={`px-4 py-3 text-left ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <th className="px-4 py-3 text-left">
                     <input
                       type="checkbox"
                       checked={selectedTestCases.size === filteredTestCases.length && filteredTestCases.length > 0}
                       onChange={handleSelectAll}
-                      className="rounded border-gray-300"
+                      className="rounded border-gray-300 accent-blue-600"
                     />
                   </th>
-                  <th
-                    className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    NAME
-                  </th>
-                  <th
-                    className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">NAME</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                     DESCRIPTION
                   </th>
-                  <th
-                    className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    CODE
-                  </th>
-                  <th
-                    className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">CODE</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                     ENVIRONMENT
                   </th>
-                  <th
-                    className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    TAG
-                  </th>
-                  <th
-                    className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">TAG</th>
+                  <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                     ACTIONS
                   </th>
                 </tr>
@@ -1888,69 +1709,51 @@ function TestSuiteTab({
               <tbody>
                 {filteredTestCases.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan={7}
-                      className={`px-4 py-12 text-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                    <td colSpan={7} className="px-4 py-12 text-center text-gray-500 dark:text-gray-400">
                       No test cases found
                     </td>
                   </tr>
                 ) : (
                   filteredTestCases.map(testCase => {
-                    const testType =
-                      testCase.prompt?.toLowerCase().includes('api') ||
-                      testCase.description?.toLowerCase().includes('api')
-                        ? 'api'
-                        : 'ui';
+                    const testType = getTestType(testCase);
                     return (
                       <tr
                         key={testCase.id}
-                        className={`border-b ${isDarkMode ? 'border-slate-700 hover:bg-slate-800' : 'border-gray-200 hover:bg-gray-50'}`}>
+                        className="border-b border-gray-200 transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5">
                         <td className="px-4 py-3">
                           <input
                             type="checkbox"
                             checked={selectedTestCases.has(testCase.id)}
                             onChange={() => handleSelectTestCase(testCase.id)}
-                            className="rounded border-gray-300"
+                            className="rounded border-gray-300 accent-blue-600"
                           />
                         </td>
                         <td className="px-4 py-3">
-                          <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                            {testCase.name}
-                          </div>
+                          <div className="font-medium text-gray-900 dark:text-white">{testCase.name}</div>
                         </td>
-                        <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                           {testCase.description || '-'}
                         </td>
                         <td className="px-4 py-3">
                           {testCase.playwrightCode ? (
-                            <span
-                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                                isDarkMode ? 'bg-green-900/50 text-green-400' : 'bg-green-100 text-green-700'
-                              }`}>
+                            <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400">
                               Available
                             </span>
                           ) : (
-                            <span
-                              className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                                isDarkMode ? 'bg-gray-900/50 text-gray-400' : 'bg-gray-100 text-gray-700'
-                              }`}>
+                            <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-900/50 dark:text-gray-400">
                               -
                             </span>
                           )}
                         </td>
-                        <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                        <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                           {testCase.baseUrl || '-'}
                         </td>
                         <td className="px-4 py-3">
                           <span
                             className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
                               testType === 'ui'
-                                ? isDarkMode
-                                  ? 'bg-red-900/50 text-red-400'
-                                  : 'bg-red-100 text-red-800'
-                                : isDarkMode
-                                  ? 'bg-blue-900/50 text-blue-400'
-                                  : 'bg-blue-100 text-blue-800'
+                                ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400'
+                                : 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400'
                             }`}>
                             {testType.toUpperCase()}
                           </span>
@@ -1961,9 +1764,7 @@ function TestSuiteTab({
                               <button
                                 type="button"
                                 onClick={() => onEditCase(testCase)}
-                                className={`rounded p-1.5 transition-colors ${
-                                  isDarkMode ? 'text-blue-400 hover:bg-slate-700' : 'text-blue-600 hover:bg-gray-100'
-                                }`}
+                                className="rounded p-1.5 transition-colors text-blue-600 hover:bg-black/5 dark:text-blue-400 dark:hover:bg-white/10"
                                 title="Edit test case">
                                 <FiEdit2 size={16} />
                               </button>
@@ -1971,18 +1772,14 @@ function TestSuiteTab({
                             <button
                               type="button"
                               onClick={() => onRunCase(testCase)}
-                              className={`rounded p-1.5 transition-colors ${
-                                isDarkMode ? 'text-green-400 hover:bg-slate-700' : 'text-green-600 hover:bg-gray-100'
-                              }`}
+                              className="rounded p-1.5 transition-colors text-green-600 hover:bg-black/5 dark:text-green-400 dark:hover:bg-white/10"
                               title="Run test">
                               <FiPlay size={16} />
                             </button>
                             <button
                               type="button"
                               onClick={() => onRunCase(testCase, true)}
-                              className={`rounded p-1.5 transition-colors ${
-                                isDarkMode ? 'text-orange-400 hover:bg-slate-700' : 'text-orange-600 hover:bg-gray-100'
-                              }`}
+                              className="rounded p-1.5 transition-colors text-orange-600 hover:bg-black/5 dark:text-orange-400 dark:hover:bg-white/10"
                               title="Debug mode">
                               <BiBug size={16} />
                             </button>
@@ -1994,11 +1791,7 @@ function TestSuiteTab({
                                     onViewPlaywrightCode(testCase);
                                   }
                                 }}
-                                className={`rounded p-1.5 transition-colors ${
-                                  isDarkMode
-                                    ? 'text-purple-400 hover:bg-slate-700'
-                                    : 'text-purple-600 hover:bg-gray-100'
-                                }`}
+                                className="rounded p-1.5 transition-colors text-purple-600 hover:bg-black/5 dark:text-purple-400 dark:hover:bg-white/10"
                                 title="View Playwright code">
                                 <FiCode size={16} />
                               </button>
@@ -2019,7 +1812,7 @@ function TestSuiteTab({
           <div
             ref={sidebarRef}
             style={{ width: sidebarWidth, minWidth: 200 }}
-            className={`relative border-r ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} p-4`}>
+            className="glass-panel relative z-20 border-r border-white/10 p-4 shadow-xl">
             {/* Resizer Handle */}
             <div
               onMouseDown={startResizing}
@@ -2029,13 +1822,11 @@ function TestSuiteTab({
               style={{ zIndex: 10, cursor: 'col-resize' }}
             />
             <div className="mb-4 flex items-center justify-between">
-              <h2 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Suites</h2>
+              <h2 className="font-semibold text-gray-900 dark:text-white">Test Suites</h2>
               <button
                 type="button"
                 onClick={onCreateSuite}
-                className={`rounded p-1.5 transition-colors ${
-                  isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-                }`}>
+                className="glass-button rounded p-1.5 transition-colors hover:bg-gray-100 dark:hover:bg-slate-700">
                 <FiPlus size={18} />
               </button>
             </div>
@@ -2043,29 +1834,20 @@ function TestSuiteTab({
               {testSuites.map(suite => (
                 <div
                   key={suite.id}
-                  className={`group relative rounded-lg transition-colors ${
+                  className={`glass-card group relative rounded-xl transition-all ${
                     selectedTestSuite === suite.id
-                      ? isDarkMode
-                        ? 'bg-blue-900/50'
-                        : 'bg-blue-100'
-                      : isDarkMode
-                        ? 'hover:bg-slate-700'
-                        : 'hover:bg-gray-100'
+                      ? 'bg-blue-500/10 border-blue-500/30 shadow-md'
+                      : 'hover:bg-white/5 dark:hover:bg-white/5 hover:border-white/20'
                   }`}>
                   <button
                     type="button"
                     onClick={() => onSelectSuite(suite.id)}
-                    className={`w-full rounded-lg px-3 py-2 text-left transition-colors ${
-                      selectedTestSuite === suite.id
-                        ? isDarkMode
-                          ? 'text-blue-400'
-                          : 'text-blue-700'
-                        : isDarkMode
-                          ? 'text-gray-400'
-                          : 'text-gray-700'
-                    }`}>
-                    <div className="font-medium">{suite.name}</div>
-                    <div className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+                    className="w-full rounded-xl px-4 py-3 text-left transition-colors">
+                    <div
+                      className={`font-medium ${selectedTestSuite === suite.id ? 'text-blue-600 dark:text-blue-400' : 'text-gray-900 dark:text-gray-100'}`}>
+                      {suite.name}
+                    </div>
+                    <div className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                       {suite.testCases.length} test cases
                     </div>
                   </button>
@@ -2081,11 +1863,7 @@ function TestSuiteTab({
                           e.stopPropagation();
                           onSchedulerSuite(suite);
                         }}
-                        className={`rounded p-1.5 transition-colors ${
-                          isDarkMode
-                            ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
-                            : 'bg-white text-gray-600 hover:bg-gray-50'
-                        } shadow-sm`}
+                        className="glass-button rounded-lg p-1.5 text-gray-500 transition-colors hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
                         title="Schedule test suite">
                         <FiClock size={14} />
                       </button>
@@ -2098,14 +1876,10 @@ function TestSuiteTab({
                           e.stopPropagation();
                           onRunSuite(suite);
                         }}
-                        className={`rounded px-2 py-1 transition-colors ${
-                          isDarkMode
-                            ? 'bg-green-600 text-white hover:bg-green-700'
-                            : 'bg-green-600 text-white hover:bg-green-700'
-                        } flex items-center gap-1 shadow-sm`}
+                        className="glass-button flex items-center gap-1 rounded-lg bg-green-600/90 px-2 py-1 text-white shadow-sm transition-colors hover:bg-green-600"
                         title="Run test suite">
-                        <FiBarChart2 size={14} />
-                        <span className="text-xs font-medium">RUN</span>
+                        <FiPlay size={12} />
+                        <span className="text-xs font-bold">RUN</span>
                       </button>
                     )}
                     <button
@@ -2114,11 +1888,7 @@ function TestSuiteTab({
                         e.stopPropagation();
                         onEditSuite(suite);
                       }}
-                      className={`rounded p-1.5 transition-colors ${
-                        isDarkMode
-                          ? 'bg-slate-700 text-blue-400 hover:bg-slate-600'
-                          : 'bg-white text-blue-600 hover:bg-blue-50'
-                      } shadow-sm`}
+                      className="glass-button rounded-lg p-1.5 text-blue-500 transition-colors hover:text-blue-600 dark:text-blue-400 dark:hover:text-blue-300"
                       title="Edit test suite">
                       <FiEdit2 size={14} />
                     </button>
@@ -2128,11 +1898,7 @@ function TestSuiteTab({
                         e.stopPropagation();
                         onDeleteSuite(suite.id);
                       }}
-                      className={`rounded p-1.5 transition-colors ${
-                        isDarkMode
-                          ? 'bg-slate-700 text-red-400 hover:bg-slate-600'
-                          : 'bg-white text-red-600 hover:bg-red-50'
-                      } shadow-sm`}
+                      className="glass-button rounded-lg p-1.5 text-red-500 transition-colors hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
                       title="Delete test suite">
                       <FiTrash2 size={14} />
                     </button>
@@ -2143,14 +1909,13 @@ function TestSuiteTab({
           </div>
 
           {/* Test Cases Content */}
-          <div className={`flex flex-1 flex-col overflow-hidden ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+          <div className="flex flex-1 flex-col overflow-hidden bg-transparent">
             {selectedTestSuite ? (
               <>
                 {/* Test Cases Header */}
-                <div
-                  className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+                <div className="glass-panel sticky top-0 z-10 border-b border-white/10 px-6 py-4 backdrop-blur-md">
                   <div className="flex items-center justify-between">
-                    <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+                    <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                       Test Cases{' '}
                       {testCases.length > 0 && (
                         <span className="text-base font-normal text-gray-500">({testCases.length})</span>
@@ -2159,11 +1924,7 @@ function TestSuiteTab({
                     <button
                       type="button"
                       onClick={onCreateCase}
-                      className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                        isDarkMode
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                      }`}>
+                      className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 shadow-lg shadow-blue-500/20">
                       <FiPlus size={18} />
                       Add Test Case
                     </button>
@@ -2172,49 +1933,41 @@ function TestSuiteTab({
 
                 {/* Test Cases Table */}
                 {testCases.length === 0 ? (
-                  <div
-                    className={`flex flex-1 items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                  <div className="flex flex-1 items-center justify-center text-gray-500 dark:text-gray-400">
                     <div className="text-center">
                       <p>No test cases yet</p>
                       <button
                         type="button"
                         onClick={onCreateCase}
-                        className={`mt-2 text-sm font-medium ${isDarkMode ? 'text-blue-400' : 'text-blue-600'}`}>
+                        className="mt-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
                         Create your first test case
                       </button>
                     </div>
                   </div>
                 ) : (
                   <div className="flex-1 overflow-auto">
-                    <table className={`w-full ${isDarkMode ? 'bg-slate-900' : 'bg-white'}`}>
-                      <thead className={`sticky top-0 ${isDarkMode ? 'bg-slate-800' : 'bg-gray-50'}`}>
+                    <table className="w-full">
+                      <thead className="glass-panel sticky top-0 z-10 border-b border-white/10">
                         <tr>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             NAME
                           </th>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             DESCRIPTION
                           </th>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             CODE
                           </th>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             AUTOMATION PROMPT
                           </th>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             ENVIRONMENT
                           </th>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             TAG
                           </th>
-                          <th
-                            className={`px-4 py-3 text-left text-sm font-semibold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                          <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 dark:text-gray-300">
                             ACTIONS
                           </th>
                         </tr>
@@ -2229,13 +1982,11 @@ function TestSuiteTab({
                           return (
                             <tr
                               key={testCase.id}
-                              className={`border-b ${isDarkMode ? 'border-slate-700 hover:bg-slate-800' : 'border-gray-200 hover:bg-gray-50'}`}>
+                              className="border-b border-gray-200 transition-colors hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5">
                               <td className="px-4 py-3">
-                                <div className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                                  {testCase.name}
-                                </div>
+                                <div className="font-medium text-gray-900 dark:text-white">{testCase.name}</div>
                               </td>
-                              <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                              <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {testCase.description || '-'}
                               </td>
                               <td className="px-4 py-3">
@@ -2243,19 +1994,12 @@ function TestSuiteTab({
                                   <button
                                     type="button"
                                     onClick={() => onViewPlaywrightCode?.(testCase)}
-                                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
-                                      isDarkMode
-                                        ? 'bg-green-900/50 text-green-400 hover:bg-green-900/70'
-                                        : 'bg-green-100 text-green-700 hover:bg-green-200'
-                                    }`}>
+                                    className="glass-button inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
                                     Available
                                     <FiEye size={12} />
                                   </button>
                                 ) : (
-                                  <span
-                                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                                      isDarkMode ? 'bg-gray-900/50 text-gray-400' : 'bg-gray-100 text-gray-700'
-                                    }`}>
+                                  <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                                     -
                                   </span>
                                 )}
@@ -2265,36 +2009,25 @@ function TestSuiteTab({
                                   <button
                                     type="button"
                                     onClick={() => onViewPrompt?.(testCase)}
-                                    className={`inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
-                                      isDarkMode
-                                        ? 'bg-blue-900/50 text-blue-400 hover:bg-blue-900/70'
-                                        : 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-                                    }`}>
+                                    className="glass-button inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
                                     View Steps
                                     <FiEye size={12} />
                                   </button>
                                 ) : (
-                                  <span
-                                    className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
-                                      isDarkMode ? 'bg-gray-900/50 text-gray-400' : 'bg-gray-100 text-gray-700'
-                                    }`}>
+                                  <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400">
                                     -
                                   </span>
                                 )}
                               </td>
-                              <td className={`px-4 py-3 text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+                              <td className="px-4 py-3 text-sm text-gray-700 dark:text-gray-300">
                                 {testCase.baseUrl || '-'}
                               </td>
                               <td className="px-4 py-3">
                                 <span
                                   className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${
                                     testType === 'ui'
-                                      ? isDarkMode
-                                        ? 'bg-red-900/50 text-red-400'
-                                        : 'bg-red-100 text-red-800'
-                                      : isDarkMode
-                                        ? 'bg-blue-900/50 text-blue-400'
-                                        : 'bg-blue-100 text-blue-800'
+                                      ? 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-400'
+                                      : 'bg-blue-100 text-blue-800 dark:bg-blue-900/50 dark:text-blue-400'
                                   }`}>
                                   {testType.toUpperCase()}
                                 </span>
@@ -2305,11 +2038,7 @@ function TestSuiteTab({
                                     <button
                                       type="button"
                                       onClick={() => onEditCase(testCase)}
-                                      className={`rounded p-1.5 transition-colors ${
-                                        isDarkMode
-                                          ? 'text-blue-400 hover:bg-slate-700'
-                                          : 'text-blue-600 hover:bg-gray-100'
-                                      }`}
+                                      className="rounded p-1.5 transition-colors text-blue-600 hover:bg-gray-100 dark:text-blue-400 dark:hover:bg-slate-700"
                                       title="Edit test case">
                                       <FiEdit2 size={16} />
                                     </button>
@@ -2317,11 +2046,7 @@ function TestSuiteTab({
                                   <button
                                     type="button"
                                     onClick={() => onRunCase(testCase)}
-                                    className={`rounded p-1.5 transition-colors ${
-                                      isDarkMode
-                                        ? 'text-green-400 hover:bg-slate-700'
-                                        : 'text-green-600 hover:bg-gray-100'
-                                    }`}
+                                    className="rounded p-1.5 transition-colors text-green-600 hover:bg-gray-100 dark:text-green-400 dark:hover:bg-slate-700"
                                     title="Run test">
                                     <FiPlay size={16} />
                                   </button>
@@ -2333,11 +2058,7 @@ function TestSuiteTab({
                                           onViewPlaywrightCode(testCase);
                                         }
                                       }}
-                                      className={`rounded p-1.5 transition-colors ${
-                                        isDarkMode
-                                          ? 'text-purple-400 hover:bg-slate-700'
-                                          : 'text-purple-600 hover:bg-gray-100'
-                                      }`}
+                                      className="rounded p-1.5 transition-colors text-purple-600 hover:bg-gray-100 dark:text-purple-400 dark:hover:bg-slate-700"
                                       title="View Playwright code">
                                       <FiCode size={16} />
                                     </button>
@@ -2353,19 +2074,14 @@ function TestSuiteTab({
                 )}
               </>
             ) : (
-              <div
-                className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              <div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
                 <div className="text-center">
                   <p>Select a test suite to view test cases</p>
                   {testSuites.length === 0 && (
                     <button
                       type="button"
                       onClick={onCreateSuite}
-                      className={`mt-4 rounded-lg px-4 py-2 font-medium ${
-                        isDarkMode
-                          ? 'bg-blue-600 text-white hover:bg-blue-700'
-                          : 'bg-blue-600 text-white hover:bg-blue-700'
-                      }`}>
+                      className="mt-4 rounded-lg px-4 py-2 font-medium bg-blue-600 text-white hover:bg-blue-700">
                       Create Test Suite
                     </button>
                   )}
@@ -2375,49 +2091,36 @@ function TestSuiteTab({
           </div>
         </div>
       ) : (
-        <div className={`flex flex-1 items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+        <div className="flex flex-1 items-center justify-center text-gray-500 dark:text-gray-400">
           <p>{view.charAt(0).toUpperCase() + view.slice(1).replace('-', ' ')} view coming soon</p>
         </div>
       )}
 
       {/* Test Gen Modal */}
       {showTestGenModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div
-            className={`w-full max-w-md rounded-lg p-6 shadow-xl ${isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'}`}>
-            <h3 className="mb-4 text-xl font-semibold">Generate Test Case</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="glass-panel w-full max-w-md rounded-xl p-6 shadow-2xl">
+            <h3 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Generate Test Case</h3>
 
             <div className="mb-4">
-              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Application URL
-              </label>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Application URL</label>
               <input
                 type="text"
                 value={testGenUrl}
                 onChange={e => setTestGenUrl(e.target.value)}
                 placeholder="https://example.com"
-                className={`w-full rounded-lg border px-3 py-2 ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
-                }`}
+                className="glass-input w-full rounded-xl px-4 py-2.5 text-sm outline-none placeholder:text-gray-400"
               />
             </div>
 
             <div className="mb-6">
-              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Test Case Name
-              </label>
+              <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">Test Case Name</label>
               <input
                 type="text"
                 value={testGenName}
                 onChange={e => setTestGenName(e.target.value)}
                 placeholder="e.g. Login Flow"
-                className={`w-full rounded-lg border px-3 py-2 ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder-gray-400'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder-gray-500'
-                }`}
+                className="glass-input w-full rounded-xl px-4 py-2.5 text-sm outline-none placeholder:text-gray-400"
               />
             </div>
 
@@ -2425,18 +2128,14 @@ function TestSuiteTab({
               <button
                 type="button"
                 onClick={() => setShowTestGenModal(false)}
-                className={`rounded-lg px-4 py-2 font-medium ${
-                  isDarkMode
-                    ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}>
+                className="rounded-xl px-4 py-2 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
                 Cancel
               </button>
               <button
                 type="button"
                 onClick={handleStartCodegen}
                 disabled={isTestGenRunning || !testGenUrl || !testGenName}
-                className={`flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700 disabled:opacity-50`}>
+                className="glass-button flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-bold text-white shadow-lg shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/30 disabled:opacity-50 disabled:shadow-none">
                 {isTestGenRunning ? (
                   <>
                     <div className="size-4 animate-spin rounded-full border-2 border-white border-t-transparent"></div>
@@ -2461,20 +2160,17 @@ interface NavTabProps {
   label: string;
   isActive: boolean;
   onClick: () => void;
-  isDarkMode: boolean;
 }
 
-function NavTab({ label, isActive, onClick, isDarkMode }: NavTabProps) {
+function NavTab({ label, isActive, onClick }: NavTabProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={`relative pb-3 pt-4 font-medium transition-colors ${
         isActive
-          ? 'text-blue-600'
-          : isDarkMode
-            ? 'text-gray-400 hover:text-gray-300'
-            : 'text-gray-600 hover:text-gray-900'
+          ? 'text-blue-600 dark:text-blue-400'
+          : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300'
       }`}>
       {label}
       {isActive && <div className="absolute inset-x-0 bottom-0 h-0.5 bg-blue-500"></div>}
@@ -2485,17 +2181,16 @@ function NavTab({ label, isActive, onClick, isDarkMode }: NavTabProps) {
 interface TestCaseCardProps {
   testCase: TestCase;
   onRun: () => void;
-  isDarkMode: boolean;
 }
 
-function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
+function TestCaseCard({ testCase, onRun }: TestCaseCardProps) {
   const [showPlaywrightCode, setShowPlaywrightCode] = useState(false);
 
   const statusColors = {
-    pass: isDarkMode ? 'text-green-400 bg-green-900/20' : 'text-green-600 bg-green-50',
-    fail: isDarkMode ? 'text-red-400 bg-red-900/20' : 'text-red-600 bg-red-50',
-    pending: isDarkMode ? 'text-gray-400 bg-gray-900/20' : 'text-gray-600 bg-gray-50',
-    running: isDarkMode ? 'text-blue-400 bg-blue-900/20' : 'text-blue-600 bg-blue-50',
+    pass: 'text-green-600 bg-green-50 dark:text-green-400 dark:bg-green-900/20',
+    fail: 'text-red-600 bg-red-50 dark:text-red-400 dark:bg-red-900/20',
+    pending: 'text-gray-600 bg-gray-50 dark:text-gray-400 dark:bg-gray-900/20',
+    running: 'text-blue-600 bg-blue-50 dark:text-blue-400 dark:bg-blue-900/20',
   };
 
   const StatusIcon = {
@@ -2513,13 +2208,12 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
   };
 
   return (
-    <div
-      className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
+    <div className="glass-card mb-4 rounded-xl p-4">
       <div className="mb-3 flex items-start justify-between">
         <div className="flex-1">
-          <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{testCase.name}</h3>
+          <h3 className="font-semibold text-gray-900 dark:text-white">{testCase.name}</h3>
           {testCase.description && (
-            <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{testCase.description}</p>
+            <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{testCase.description}</p>
           )}
         </div>
         <span
@@ -2528,10 +2222,9 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
           {testCase.status}
         </span>
       </div>
-      <div
-        className={`mb-3 rounded bg-gray-100 p-2 text-sm ${isDarkMode ? 'bg-slate-700 text-gray-300' : 'text-gray-700'}`}>
-        <div className="font-medium">Prompt:</div>
-        <div className="mt-1 truncate">{testCase.prompt}</div>
+      <div className="mb-3 rounded-lg bg-white/40 p-3 text-sm backdrop-blur-sm dark:bg-black/20">
+        <div className="font-medium text-gray-700 dark:text-gray-300">Prompt:</div>
+        <div className="mt-1 truncate text-gray-600 dark:text-gray-400">{testCase.prompt}</div>
       </div>
 
       {/* Playwright Code Section */}
@@ -2540,11 +2233,7 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
           <button
             type="button"
             onClick={() => setShowPlaywrightCode(!showPlaywrightCode)}
-            className={`flex w-full items-center justify-between rounded-lg border p-2 text-sm transition-colors ${
-              isDarkMode
-                ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
-                : 'border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100'
-            }`}>
+            className="glass-button flex w-full items-center justify-between rounded-lg p-2 text-sm">
             <div className="flex items-center gap-2">
               <FiCode size={16} />
               <span className="font-medium">Playwright Code</span>
@@ -2552,27 +2241,21 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
             <FiEye size={16} />
           </button>
           {showPlaywrightCode && (
-            <div
-              className={`mt-2 rounded-lg border ${isDarkMode ? 'border-slate-600 bg-slate-900' : 'border-gray-300 bg-gray-50'} p-3`}>
+            <div className="glass-panel mt-2 p-3">
               <div className="mb-2 flex items-center justify-between">
-                <span className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                <span className="text-xs font-medium text-gray-600 dark:text-gray-400">
                   Generated Playwright Test Script
                 </span>
                 <button
                   type="button"
                   onClick={handleCopyCode}
-                  className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}>
+                  className="flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors hover:bg-white/20 dark:hover:bg-white/10">
                   <FiCopy size={12} />
                   Copy
                 </button>
               </div>
-              <pre
-                className={`max-h-64 overflow-auto rounded p-2 text-xs ${isDarkMode ? 'bg-slate-950 text-gray-300' : 'bg-white text-gray-800'}`}>
-                <code>{testCase.playwrightCode}</code>
+              <pre className="max-h-64 overflow-auto rounded bg-gray-50/50 p-2 text-xs backdrop-blur-sm dark:bg-black/30">
+                <code className="text-gray-800 dark:text-gray-300">{testCase.playwrightCode}</code>
               </pre>
             </div>
           )}
@@ -2580,7 +2263,7 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
       )}
 
       <div className="flex items-center justify-between">
-        <div className={`text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+        <div className="text-xs text-gray-500 dark:text-gray-400">
           {testCase.lastRunAt ? `Last run: ${new Date(testCase.lastRunAt).toLocaleString()}` : 'Not run yet'}
           {testCase.executionTime && ` (${(testCase.executionTime / 1000).toFixed(1)}s)`}
         </div>
@@ -2588,20 +2271,15 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
           type="button"
           onClick={onRun}
           disabled={testCase.status === 'running'}
-          className={`flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-            testCase.status === 'running'
-              ? 'cursor-not-allowed opacity-50'
-              : isDarkMode
-                ? 'bg-blue-600 text-white hover:bg-blue-700'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+          className={`flex items-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition-all ${
+            testCase.status === 'running' ? 'cursor-not-allowed opacity-50' : 'glass-button'
           }`}>
           <FiPlay size={14} />
           Run
         </button>
       </div>
       {testCase.errorMessage && (
-        <div
-          className={`mt-2 rounded bg-red-50 p-2 text-xs text-red-600 ${isDarkMode ? 'bg-red-900/20 text-red-400' : ''}`}>
+        <div className="mt-2 rounded bg-red-50/80 p-2 text-xs text-red-600 backdrop-blur-sm dark:bg-red-900/30 dark:text-red-400">
           {testCase.errorMessage}
         </div>
       )}
@@ -2612,11 +2290,10 @@ function TestCaseCard({ testCase, onRun, isDarkMode }: TestCaseCardProps) {
 interface ReportTabProps {
   projectId: string;
   testSuites: TestSuite[];
-  isDarkMode: boolean;
   onRunSuite: (suiteId: string) => Promise<void>;
 }
 
-function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabProps) {
+function ReportTab({ projectId, testSuites, onRunSuite }: ReportTabProps) {
   const [activeSubTab, setActiveSubTab] = useState<string>('dashboard');
   const [allTestCases, setAllTestCases] = useState<TestCase[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -2655,24 +2332,23 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
 
   if (isLoading) {
     return (
-      <div className={`flex h-full items-center justify-center ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+      <div className="flex h-full items-center justify-center">
         <div className="text-center">
           <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
-          <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Loading report...</p>
+          <p className="text-gray-600 dark:text-gray-400">Loading report...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
-      <div
-        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
-        <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Report</h2>
+    <div className="glass-panel flex h-full flex-col overflow-hidden rounded-xl">
+      <div className="border-b border-white/10 px-6 py-4">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Test Report</h2>
       </div>
 
       {/* Sub Tabs */}
-      <div className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6`}>
+      <div className="border-b border-white/10 px-6">
         <div className="flex gap-1 overflow-x-auto">
           {/* Dashboard Tab */}
           <button
@@ -2681,9 +2357,7 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
             className={`relative flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
               activeSubTab === 'dashboard'
                 ? 'border-blue-500 text-blue-600'
-                : isDarkMode
-                  ? 'border-transparent text-gray-400 hover:border-gray-600 hover:text-gray-300'
-                  : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300'
             }`}>
             <FiBarChart2 size={16} />
             Dashboard
@@ -2701,18 +2375,14 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
                 className={`relative flex items-center gap-2 whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
                   isActive
                     ? 'border-blue-500 text-blue-600'
-                    : isDarkMode
-                      ? 'border-transparent text-gray-400 hover:border-gray-600 hover:text-gray-300'
-                      : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900'
+                    : 'border-transparent text-gray-600 hover:border-gray-300 hover:text-gray-900 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-300'
                 }`}>
                 {suite.name}
                 <span
                   className={`rounded-full px-2 py-0.5 text-xs ${
                     isActive
                       ? 'bg-blue-100 text-blue-600'
-                      : isDarkMode
-                        ? 'bg-slate-700 text-gray-400'
-                        : 'bg-gray-100 text-gray-600'
+                      : 'bg-gray-100 text-gray-600 dark:bg-slate-700 dark:text-gray-400'
                   }`}>
                   {suiteCases.length}
                 </span>
@@ -2727,20 +2397,16 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
         {activeSubTab === 'dashboard' ? (
           /* Dashboard View */
           <div>
-            <h3 className={`mb-4 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Overall Statistics
-            </h3>
+            <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Overall Statistics</h3>
             <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-              <StatBox label="Total" value={overallStats.total} color="blue" isDarkMode={isDarkMode} />
-              <StatBox label="Passed" value={overallStats.passed} color="green" isDarkMode={isDarkMode} />
-              <StatBox label="Failed" value={overallStats.failed} color="red" isDarkMode={isDarkMode} />
-              <StatBox label="Pending" value={overallStats.pending} color="gray" isDarkMode={isDarkMode} />
+              <StatBox label="Total" value={overallStats.total} color="blue" />
+              <StatBox label="Passed" value={overallStats.passed} color="green" />
+              <StatBox label="Failed" value={overallStats.failed} color="red" />
+              <StatBox label="Pending" value={overallStats.pending} color="gray" />
             </div>
 
             <div className="mt-8">
-              <h3 className={`mb-4 text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                Test Suites Summary
-              </h3>
+              <h3 className="mb-4 text-lg font-semibold text-gray-900 dark:text-white">Test Suites Summary</h3>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {testSuites.map(suite => {
                   const suiteCases = allTestCases.filter(c => c.testSuiteId === suite.id);
@@ -2754,13 +2420,9 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
                     <div
                       key={suite.id}
                       onClick={() => setActiveSubTab(suite.id)}
-                      className={`cursor-pointer rounded-lg border p-4 transition-all hover:shadow-md ${
-                        isDarkMode
-                          ? 'border-slate-700 bg-slate-800 hover:bg-slate-750'
-                          : 'border-gray-200 bg-white hover:bg-gray-50'
-                      }`}>
+                      className="glass-card cursor-pointer rounded-lg p-4 transition-all hover:scale-[1.02]">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h4>
+                        <h4 className="font-semibold text-gray-900 dark:text-white">{suite.name}</h4>
                         <span
                           className={`text-xs font-bold px-2 py-1 rounded ${
                             passRate === 100
@@ -2774,15 +2436,15 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
                       </div>
                       <div className="text-sm space-y-1">
                         <div className="flex justify-between">
-                          <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Passed:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Passed:</span>
                           <span className="text-green-600 font-medium">{passed}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Failed:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Failed:</span>
                           <span className="text-red-600 font-medium">{failed}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>Pending:</span>
+                          <span className="text-gray-600 dark:text-gray-400">Pending:</span>
                           <span className="text-gray-500 font-medium">{pending}</span>
                         </div>
                       </div>
@@ -2811,12 +2473,10 @@ function ReportTab({ projectId, testSuites, isDarkMode, onRunSuite }: ReportTabP
                 suite={selectedSuite}
                 testCases={selectedSuiteCases}
                 stats={suiteStats}
-                isDarkMode={isDarkMode}
                 onRunSuite={() => onRunSuite(selectedSuite.id)}
               />
             ) : (
-              <div
-                className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+              <div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
                 <p>Suite not found</p>
               </div>
             );
@@ -2831,21 +2491,20 @@ interface StatBoxProps {
   label: string;
   value: number;
   color: 'blue' | 'green' | 'red' | 'gray';
-  isDarkMode: boolean;
 }
 
-function StatBox({ label, value, color, isDarkMode }: StatBoxProps) {
+function StatBox({ label, value, color }: StatBoxProps) {
   const colorClasses = {
-    blue: isDarkMode ? 'bg-blue-900/50 border-blue-700' : 'bg-blue-50 border-blue-200',
-    green: isDarkMode ? 'bg-green-900/50 border-green-700' : 'bg-green-50 border-green-200',
-    red: isDarkMode ? 'bg-red-900/50 border-red-700' : 'bg-red-50 border-red-200',
-    gray: isDarkMode ? 'bg-gray-900/50 border-gray-700' : 'bg-gray-50 border-gray-200',
+    blue: 'glass-card bg-blue-500/10 border-blue-200/30 dark:border-blue-700/30',
+    green: 'glass-card bg-green-500/10 border-green-200/30 dark:border-green-700/30',
+    red: 'glass-card bg-red-500/10 border-red-200/30 dark:border-red-700/30',
+    gray: 'glass-card bg-gray-500/10 border-gray-200/30 dark:border-gray-700/30',
   };
 
   return (
-    <div className={`rounded-lg border p-4 ${colorClasses[color]}`}>
-      <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{label}</div>
-      <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{value}</div>
+    <div className={`rounded-xl p-4 ${colorClasses[color]}`}>
+      <div className="text-sm font-medium text-gray-600 dark:text-gray-400">{label}</div>
+      <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{value}</div>
     </div>
   );
 }
@@ -2854,11 +2513,10 @@ interface SuiteReportProps {
   suite: TestSuite;
   testCases: TestCase[];
   stats: { total: number; passed: number; failed: number; pending: number };
-  isDarkMode: boolean;
   onRunSuite: () => void;
 }
 
-function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteReportProps) {
+function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) {
   const [expandedCases, setExpandedCases] = useState<Set<string>>(new Set());
   const [activeReport, setActiveReport] = useState<'playwright' | 'allure' | null>(null);
   const [viewingSteps, setViewingSteps] = useState<string | null>(null); // prompt content
@@ -2903,17 +2561,13 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
     return (
       <div className="flex h-full flex-col">
         <div className="mb-4 flex items-center justify-between">
-          <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             {activeReport === 'playwright' ? 'Playwright Report' : 'Allure Report'} - {suite.name}
           </h3>
           <button
             type="button"
             onClick={() => setActiveReport(null)}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-              isDarkMode
-                ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}>
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600">
             <FiArrowLeft size={16} />
             Back to Summary
           </button>
@@ -2931,41 +2585,29 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
       <div>
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{suite.name}</h3>
-            {suite.description && (
-              <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{suite.description}</p>
-            )}
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{suite.name}</h3>
+            {suite.description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{suite.description}</p>}
           </div>
           <div className="flex gap-2">
             <button
               id={`run-suite-${suite.id}`}
               type="button"
               onClick={onRunSuite}
-              className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}>
+              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700">
               <FiPlay size={16} />
               Run Suite
             </button>
             <button
               type="button"
               onClick={() => setActiveReport('playwright')}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-800 text-gray-300 hover:bg-slate-700'
-                  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
-              }`}>
+              className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700">
               <FiFileText size={16} />
               Playwright Report
             </button>
             <button
               type="button"
               onClick={() => setActiveReport('allure')}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-800 text-orange-400 hover:bg-slate-700'
-                  : 'border-gray-300 bg-white text-orange-600 hover:bg-gray-50'
-              }`}>
+              className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors border-gray-300 bg-white text-orange-600 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-orange-400 dark:hover:bg-slate-700">
               <FiBarChart2 size={16} />
               Allure Report
             </button>
@@ -2973,56 +2615,40 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          <div
-            className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
-            <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Total</div>
-            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              {stats.total}
-            </div>
+          <div className="glass-card rounded-xl p-4">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total</div>
+            <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</div>
           </div>
-          <div
-            className={`rounded-lg border p-4 ${isDarkMode ? 'border-green-700 bg-green-900/20' : 'border-green-200 bg-green-50'}`}>
-            <div className={`text-sm font-medium ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>Passed</div>
-            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
-              {stats.passed}
-            </div>
-            <div className={`mt-1 text-xs ${isDarkMode ? 'text-green-400' : 'text-green-600'}`}>
-              {passedPercentage}%
-            </div>
+          <div className="glass-card rounded-xl p-4 bg-green-500/10 border-green-200/30 dark:border-green-700/30">
+            <div className="text-sm font-medium text-green-600 dark:text-green-400">Passed</div>
+            <div className="mt-1 text-2xl font-bold text-green-600 dark:text-green-400">{stats.passed}</div>
+            <div className="mt-1 text-xs text-green-600 dark:text-green-400">{passedPercentage}%</div>
           </div>
-          <div
-            className={`rounded-lg border p-4 ${isDarkMode ? 'border-red-700 bg-red-900/20' : 'border-red-200 bg-red-50'}`}>
-            <div className={`text-sm font-medium ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>Failed</div>
-            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>
-              {stats.failed}
-            </div>
-            <div className={`mt-1 text-xs ${isDarkMode ? 'text-red-400' : 'text-red-600'}`}>{failedPercentage}%</div>
+          <div className="glass-card rounded-xl p-4 bg-red-500/10 border-red-200/30 dark:border-red-700/30">
+            <div className="text-sm font-medium text-red-600 dark:text-red-400">Failed</div>
+            <div className="mt-1 text-2xl font-bold text-red-600 dark:text-red-400">{stats.failed}</div>
+            <div className="mt-1 text-xs text-red-600 dark:text-red-400">{failedPercentage}%</div>
           </div>
-          <div
-            className={`rounded-lg border p-4 ${isDarkMode ? 'border-gray-700 bg-gray-900/20' : 'border-gray-200 bg-gray-50'}`}>
-            <div className={`text-sm font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>Pending</div>
-            <div className={`mt-1 text-2xl font-bold ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-              {stats.pending}
-            </div>
-            <div className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>{pendingPercentage}%</div>
+          <div className="glass-card rounded-xl p-4 bg-gray-500/10 border-gray-200/30 dark:border-gray-700/30">
+            <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</div>
+            <div className="mt-1 text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.pending}</div>
+            <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">{pendingPercentage}%</div>
           </div>
         </div>
       </div>
 
       {/* Test Cases List */}
       <div className="space-y-3">
-        <h4 className={`text-md font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Test Cases</h4>
+        <h4 className="text-md font-semibold text-gray-900 dark:text-white">Test Cases</h4>
         {testCases.length === 0 ? (
-          <div
-            className={`rounded-lg border p-4 text-center ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
-            <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>No test cases in this suite</p>
+          <div className="glass-card rounded-xl border border-gray-200/30 p-8 text-center dark:border-white/10">
+            <p className="text-gray-500 dark:text-gray-400">No test cases in this suite</p>
           </div>
         ) : (
-          <div className={`overflow-hidden rounded-lg border ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+          <div className="glass-card overflow-hidden rounded-xl border border-gray-200/30 dark:border-white/10">
             <div className="overflow-x-auto">
-              <table className={`w-full text-left text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-                <thead
-                  className={`text-xs uppercase ${isDarkMode ? 'bg-slate-700 text-gray-200' : 'bg-gray-50 text-gray-700'}`}>
+              <table className="w-full text-left text-sm text-gray-600 dark:text-gray-400">
+                <thead className="bg-gray-50/50 text-xs uppercase text-gray-700 dark:bg-white/5 dark:text-gray-200">
                   <tr>
                     <th className="px-6 py-3 font-semibold">Name</th>
                     <th className="px-6 py-3 font-semibold">Description</th>
@@ -3032,35 +2658,26 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
                     <th className="px-6 py-3 font-semibold">Tag</th>
                   </tr>
                 </thead>
-                <tbody className={`divide-y ${isDarkMode ? 'divide-slate-700' : 'divide-gray-200'}`}>
+                <tbody className="divide-y divide-gray-200/30 dark:divide-white/10">
                   {testCases.map(testCase => {
                     const isExpanded = expandedCases.has(testCase.id);
                     return (
                       <React.Fragment key={testCase.id}>
-                        <tr
-                          className={`${isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-gray-50'}`}>
+                        <tr className="bg-transparent hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
                           <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                             <div className="flex flex-col gap-1">
                               <div className="flex items-center gap-2">
-                                <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>{testCase.name}</span>
+                                <span className="text-gray-900 dark:text-white">{testCase.name}</span>
                                 {testCase.status && (
                                   <span
                                     className={`flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium ${
                                       testCase.status === 'pass'
-                                        ? isDarkMode
-                                          ? 'text-green-400 bg-green-900/20'
-                                          : 'text-green-600 bg-green-50'
+                                        ? 'bg-green-500/10 text-green-600 dark:text-green-400'
                                         : testCase.status === 'fail'
-                                          ? isDarkMode
-                                            ? 'text-red-400 bg-red-900/20'
-                                            : 'text-red-600 bg-red-50'
+                                          ? 'bg-red-500/10 text-red-600 dark:text-red-400'
                                           : testCase.status === 'running'
-                                            ? isDarkMode
-                                              ? 'text-blue-400 bg-blue-900/20'
-                                              : 'text-blue-600 bg-blue-50'
-                                            : isDarkMode
-                                              ? 'text-gray-400 bg-gray-900/20'
-                                              : 'text-gray-600 bg-gray-50'
+                                            ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400'
+                                            : 'bg-gray-500/10 text-gray-600 dark:text-gray-400'
                                     }`}>
                                     {testCase.status}
                                   </span>
@@ -3079,11 +2696,7 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
                               <button
                                 type="button"
                                 onClick={() => toggleCase(testCase.id)}
-                                className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
-                                  isDarkMode
-                                    ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50'
-                                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                                }`}>
+                                className="glass-button flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 transition-colors hover:bg-blue-500/10">
                                 {isExpanded ? 'Hide' : 'View'}
                               </button>
                             ) : (
@@ -3095,11 +2708,7 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
                               <button
                                 type="button"
                                 onClick={() => setViewingSteps(testCase.prompt)}
-                                className={`flex items-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors ${
-                                  isDarkMode
-                                    ? 'bg-blue-900/30 text-blue-400 hover:bg-blue-900/50'
-                                    : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
-                                }`}>
+                                className="glass-button flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 transition-colors hover:bg-blue-500/10">
                                 View Steps <FiEye size={12} />
                               </button>
                             ) : (
@@ -3109,8 +2718,7 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
                           <td className="px-6 py-4">{testCase.baseUrl || '-'}</td>
                           <td className="px-6 py-4">
                             {testCase.testType ? (
-                              <span
-                                className={`rounded px-2 py-0.5 text-xs ${isDarkMode ? 'bg-slate-700 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
+                              <span className="rounded px-2 py-0.5 text-xs bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300">
                                 {testCase.testType}
                               </span>
                             ) : (
@@ -3119,11 +2727,10 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
                           </td>
                         </tr>
                         {isExpanded && testCase.playwrightCode && (
-                          <tr className={isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}>
+                          <tr className="bg-gray-50/50 dark:bg-white/5">
                             <td colSpan={6} className="p-4">
                               <div className="mb-2 flex items-center justify-between">
-                                <span
-                                  className={`text-xs font-medium ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                                <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
                                   Playwright Code
                                 </span>
                                 <div className="flex gap-2">
@@ -3139,8 +2746,7 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
                                   </button>
                                 </div>
                               </div>
-                              <div
-                                className={`rounded border p-3 font-mono text-xs ${isDarkMode ? 'border-slate-700 bg-slate-950 text-gray-300' : 'border-gray-200 bg-white text-gray-700'}`}>
+                              <div className="rounded border border-gray-200 bg-white p-3 font-mono text-xs text-gray-700 dark:border-white/10 dark:bg-black/20 dark:text-gray-300">
                                 <pre className="whitespace-pre-wrap">{testCase.playwrightCode}</pre>
                               </div>
                             </td>
@@ -3157,40 +2763,29 @@ function SuiteReport({ suite, testCases, stats, isDarkMode, onRunSuite }: SuiteR
       </div>
 
       {viewingSteps && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div
-            className={`w-full max-w-2xl rounded-lg border shadow-xl ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
-            <div
-              className={`flex items-center justify-between border-b px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
-              <h3 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-                Automation Steps
-              </h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="glass-panel w-full max-w-2xl rounded-2xl shadow-xl">
+            <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Automation Steps</h3>
               <button
                 type="button"
                 onClick={() => setViewingSteps(null)}
-                className={`rounded p-1.5 transition-colors ${isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'}`}>
+                className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
                 <FiX size={20} />
               </button>
             </div>
             <div className="p-6">
-              <div
-                className={`rounded-lg border p-4 ${isDarkMode ? 'border-slate-700 bg-slate-900' : 'border-gray-100 bg-gray-50'}`}>
-                <pre
-                  className={`whitespace-pre-wrap font-sans text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <div className="rounded-xl border border-gray-200/50 bg-gray-50/50 p-4 dark:border-white/5 dark:bg-white/5">
+                <pre className="whitespace-pre-wrap font-sans text-sm text-gray-700 dark:text-gray-300">
                   {viewingSteps}
                 </pre>
               </div>
             </div>
-            <div
-              className={`flex justify-end border-t px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+            <div className="flex justify-end border-t border-white/10 px-6 py-4">
               <button
                 type="button"
                 onClick={() => setViewingSteps(null)}
-                className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
-                  isDarkMode
-                    ? 'bg-slate-700 text-white hover:bg-slate-600'
-                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                }`}>
+                className="glass-button rounded-xl px-4 py-2 text-sm font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30">
                 Close
               </button>
             </div>
@@ -3207,7 +2802,6 @@ interface CreateSuiteModalProps {
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   editingSuite: TestSuite | null;
-  isDarkMode: boolean;
   projectId: string;
   availableTestCases: TestCase[];
   testsInSuite: TestCase[];
@@ -3223,7 +2817,6 @@ function CreateSuiteModal({
   onSubmit,
   onClose,
   editingSuite,
-  isDarkMode,
   projectId,
   availableTestCases,
   testsInSuite,
@@ -3234,6 +2827,7 @@ function CreateSuiteModal({
 }: CreateSuiteModalProps) {
   const [selectedAvailableTests, setSelectedAvailableTests] = useState<Set<string>>(new Set());
   const [selectedInSuiteTests, setSelectedInSuiteTests] = useState<Set<string>>(new Set());
+  const [allCandidates, setAllCandidates] = useState<TestCase[]>([]);
 
   // Load available test cases when modal opens
   useEffect(() => {
@@ -3252,36 +2846,57 @@ function CreateSuiteModal({
         const suiteCases = projectCases.filter(tc => tc.testSuiteId === editingSuite.id);
         const available = projectCases.filter(tc => tc.testSuiteId !== editingSuite.id || !tc.testSuiteId);
         setTestsInSuite(suiteCases);
-        setAvailableTestCases(available);
+        setAllCandidates(available);
         setSelectedTestCasesForSuite(new Set(suiteCases.map(tc => tc.id)));
       } else {
         // For creating, all tests are available
         setTestsInSuite([]);
-        setAvailableTestCases(projectCases);
+        setAllCandidates(projectCases);
         setSelectedTestCasesForSuite(new Set());
       }
     };
     loadTestCases();
   }, [projectId, editingSuite]);
 
+  // Filter available test cases when test type or candidates change
+  useEffect(() => {
+    let filtered = allCandidates;
+    if (formData.testType === 'UI Tests') {
+      filtered = allCandidates.filter(tc => getTestType(tc) === 'ui');
+    } else if (formData.testType === 'API Tests') {
+      filtered = allCandidates.filter(tc => getTestType(tc) === 'api');
+    }
+    setAvailableTestCases(filtered);
+  }, [allCandidates, formData.testType]);
+
   const handleMoveToSuite = () => {
     const testsToMove = availableTestCases.filter(tc => selectedAvailableTests.has(tc.id));
     setTestsInSuite([...testsInSuite, ...testsToMove]);
-    setAvailableTestCases(availableTestCases.filter(tc => !selectedAvailableTests.has(tc.id)));
+    // Remove from allCandidates (which triggers filter update)
+    const testsToMoveIds = new Set(testsToMove.map(tc => tc.id));
+    setAllCandidates(allCandidates.filter(tc => !testsToMoveIds.has(tc.id)));
+
     setSelectedTestCasesForSuite(new Set([...selectedTestCasesForSuite, ...testsToMove.map(tc => tc.id)]));
     setSelectedAvailableTests(new Set());
   };
 
   const handleMoveAllToSuite = () => {
-    setTestsInSuite([...testsInSuite, ...availableTestCases]);
-    setSelectedTestCasesForSuite(new Set([...selectedTestCasesForSuite, ...availableTestCases.map(tc => tc.id)]));
-    setAvailableTestCases([]);
+    // Move all CURRENTLY VISIBLE available tests
+    const testsToMove = availableTestCases;
+    setTestsInSuite([...testsInSuite, ...testsToMove]);
+
+    const testsToMoveIds = new Set(testsToMove.map(tc => tc.id));
+    setAllCandidates(allCandidates.filter(tc => !testsToMoveIds.has(tc.id)));
+
+    setSelectedTestCasesForSuite(new Set([...selectedTestCasesForSuite, ...testsToMove.map(tc => tc.id)]));
     setSelectedAvailableTests(new Set());
   };
 
   const handleMoveFromSuite = () => {
     const testsToMove = testsInSuite.filter(tc => selectedInSuiteTests.has(tc.id));
-    setAvailableTestCases([...availableTestCases, ...testsToMove]);
+    // Add back to allCandidates
+    setAllCandidates([...allCandidates, ...testsToMove]);
+
     setTestsInSuite(testsInSuite.filter(tc => !selectedInSuiteTests.has(tc.id)));
     const newSelected = new Set(selectedTestCasesForSuite);
     testsToMove.forEach(tc => newSelected.delete(tc.id));
@@ -3290,7 +2905,9 @@ function CreateSuiteModal({
   };
 
   const handleMoveAllFromSuite = () => {
-    setAvailableTestCases([...availableTestCases, ...testsInSuite]);
+    // Move all from suite back to candidates
+    setAllCandidates([...allCandidates, ...testsInSuite]);
+
     setTestsInSuite([]);
     setSelectedTestCasesForSuite(new Set());
     setSelectedInSuiteTests(new Set());
@@ -3317,25 +2934,22 @@ function CreateSuiteModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-5xl rounded-lg border shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel w-full max-w-5xl rounded-2xl shadow-2xl">
         {/* Header */}
-        <div
-          className={`flex items-center justify-between border-b px-6 py-4 ${
-            isDarkMode ? 'border-slate-700' : 'border-gray-200'
-          }`}>
-          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-            {editingSuite ? 'Edit Test Suite' : 'Create Test Suite'}
-          </h2>
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+              <FiFolder size={20} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              {editingSuite ? 'Edit Test Suite' : 'Create Test Suite'}
+            </h2>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiXCircle size={24} />
           </button>
         </div>
@@ -3343,9 +2957,9 @@ function CreateSuiteModal({
         <form onSubmit={onSubmit}>
           <div className="p-6">
             {/* Basic Information */}
-            <div className="mb-6 space-y-4">
-              <div>
-                <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-3">
+              <div className="md:col-span-1">
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Test Suite Name <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -3353,65 +2967,59 @@ function CreateSuiteModal({
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className={`w-full rounded-lg border px-3 py-2 ${
-                    isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-                  } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
                   placeholder="Enter test suite name"
                 />
               </div>
-              <div>
-                <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Description
-                </label>
+              <div className="md:col-span-1">
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
                 <input
                   type="text"
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className={`w-full rounded-lg border px-3 py-2 ${
-                    isDarkMode
-                      ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                      : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-                  } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                  className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
                   placeholder="Enter test suite description"
                 />
               </div>
-              <div>
-                <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Test Type
-                </label>
-                <select
-                  value={formData.testType || 'UI Tests'}
-                  onChange={e => setFormData({ ...formData, testType: e.target.value })}
-                  className={`w-full rounded-lg border px-3 py-2 ${
-                    isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-white text-gray-900'
-                  } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
-                  <option value="UI Tests">UI Tests</option>
-                  <option value="API Tests">API Tests</option>
-                  <option value="Integration Tests">Integration Tests</option>
-                </select>
+              <div className="md:col-span-1">
+                <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Test Type</label>
+                <div className="relative">
+                  <select
+                    value={formData.testType || 'UI Tests'}
+                    onChange={e => setFormData({ ...formData, testType: e.target.value })}
+                    className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                    <option value="UI Tests" className="dark:bg-slate-800">
+                      UI Tests
+                    </option>
+                    <option value="API Tests" className="dark:bg-slate-800">
+                      API Tests
+                    </option>
+                    <option value="Integration Tests" className="dark:bg-slate-800">
+                      Integration Tests
+                    </option>
+                  </select>
+                  <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                    <FiChevronDown size={16} />
+                  </div>
+                </div>
               </div>
             </div>
 
             {/* Test Selection Panels */}
             <div className="mb-6 flex gap-4">
               {/* Left Panel - Tests in Suite */}
-              <div
-                className={`flex-1 rounded-lg border ${
-                  isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-gray-50'
-                }`}>
-                <div className={`border-b px-4 py-3 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
-                  <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className="glass-card flex-1 overflow-hidden rounded-xl border-0">
+                <div className="bg-gray-50/50 px-4 py-3 dark:bg-white/5">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
                     Tests in Suite ({testsInSuite.length})
                   </h3>
                 </div>
-                <div className={`max-h-64 overflow-y-auto p-4 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                <div className="max-h-64 overflow-y-auto p-4 custom-scrollbar">
                   {testsInSuite.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-8 text-center">
-                      <FiFile size={48} className={`mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>No tests in suite</p>
-                      <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+                      <FiFile size={48} className="mb-2 text-gray-400 dark:text-gray-600" />
+                      <p className="text-sm text-gray-500 dark:text-gray-400">No tests in suite</p>
+                      <p className="mt-1 text-xs text-gray-400 dark:text-gray-500">
                         Select tests from the right panel.
                       </p>
                     </div>
@@ -3420,24 +3028,18 @@ function CreateSuiteModal({
                       {testsInSuite.map(testCase => (
                         <label
                           key={testCase.id}
-                          className={`flex cursor-pointer items-center gap-2 rounded border p-2 transition-colors ${
+                          className={`flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 transition-all ${
                             selectedInSuiteTests.has(testCase.id)
-                              ? isDarkMode
-                                ? 'border-blue-500 bg-blue-900/20'
-                                : 'border-blue-500 bg-blue-50'
-                              : isDarkMode
-                                ? 'border-slate-700 hover:bg-slate-700'
-                                : 'border-gray-200 hover:bg-gray-50'
+                              ? 'border-blue-500 bg-blue-500/10 shadow-sm'
+                              : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5'
                           }`}>
                           <input
                             type="checkbox"
                             checked={selectedInSuiteTests.has(testCase.id)}
                             onChange={() => toggleInSuiteTest(testCase.id)}
-                            className="rounded border-gray-300"
+                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
                           />
-                          <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {testCase.name}
-                          </span>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">{testCase.name}</span>
                         </label>
                       ))}
                     </div>
@@ -3451,12 +3053,10 @@ function CreateSuiteModal({
                   type="button"
                   onClick={handleMoveAllFromSuite}
                   disabled={testsInSuite.length === 0}
-                  className={`rounded border p-2 transition-colors ${
+                  className={`rounded-xl border p-2.5 transition-all ${
                     testsInSuite.length === 0
-                      ? 'cursor-not-allowed opacity-50'
-                      : isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
-                        : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      : 'glass-button border-blue-500/30'
                   }`}
                   title="Move all from suite">
                   <FiChevronLeft size={20} />
@@ -3466,12 +3066,10 @@ function CreateSuiteModal({
                   type="button"
                   onClick={handleMoveFromSuite}
                   disabled={selectedInSuiteTests.size === 0}
-                  className={`rounded border p-2 transition-colors ${
+                  className={`rounded-xl border p-2.5 transition-all ${
                     selectedInSuiteTests.size === 0
-                      ? 'cursor-not-allowed opacity-50'
-                      : isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
-                        : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      : 'glass-button border-blue-500/30'
                   }`}
                   title="Move selected from suite">
                   <FiChevronLeft size={20} />
@@ -3480,12 +3078,10 @@ function CreateSuiteModal({
                   type="button"
                   onClick={handleMoveToSuite}
                   disabled={selectedAvailableTests.size === 0}
-                  className={`rounded border p-2 transition-colors ${
+                  className={`rounded-xl border p-2.5 transition-all ${
                     selectedAvailableTests.size === 0
-                      ? 'cursor-not-allowed opacity-50'
-                      : isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
-                        : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      : 'glass-button border-blue-500/30'
                   }`}
                   title="Move selected to suite">
                   <FiChevronRight size={20} />
@@ -3494,12 +3090,10 @@ function CreateSuiteModal({
                   type="button"
                   onClick={handleMoveAllToSuite}
                   disabled={availableTestCases.length === 0}
-                  className={`rounded border p-2 transition-colors ${
+                  className={`rounded-xl border p-2.5 transition-all ${
                     availableTestCases.length === 0
-                      ? 'cursor-not-allowed opacity-50'
-                      : isDarkMode
-                        ? 'border-slate-600 bg-slate-700 text-gray-300 hover:bg-slate-600'
-                        : 'border-gray-300 bg-gray-200 text-gray-700 hover:bg-gray-300'
+                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      : 'glass-button border-blue-500/30'
                   }`}
                   title="Move all to suite">
                   <FiChevronRight size={20} />
@@ -3508,44 +3102,35 @@ function CreateSuiteModal({
               </div>
 
               {/* Right Panel - Available Tests */}
-              <div
-                className={`flex-1 rounded-lg border ${
-                  isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-gray-50'
-                }`}>
-                <div className={`border-b px-4 py-3 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
-                  <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+              <div className="glass-card flex-1 overflow-hidden rounded-xl border-0">
+                <div className="bg-gray-50/50 px-4 py-3 dark:bg-white/5">
+                  <h3 className="font-semibold text-gray-900 dark:text-white">
                     Available Tests ({availableTestCases.length})
                   </h3>
                 </div>
-                <div className={`max-h-64 overflow-y-auto p-4 ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
+                <div className="max-h-64 overflow-y-auto p-4 custom-scrollbar">
                   {availableTestCases.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-8 text-center">
-                      <FiFile size={48} className={`mb-2 ${isDarkMode ? 'text-gray-600' : 'text-gray-400'}`} />
-                      <p className={`text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>No available tests</p>
+                      <FiFile size={48} className="mb-2 text-gray-400 dark:text-gray-600" />
+                      <p className="text-sm text-gray-500 dark:text-gray-400">No available tests</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
                       {availableTestCases.map(testCase => (
                         <label
                           key={testCase.id}
-                          className={`flex cursor-pointer items-center gap-2 rounded border p-2 transition-colors ${
+                          className={`flex cursor-pointer items-center gap-3 rounded-lg border p-2.5 transition-all ${
                             selectedAvailableTests.has(testCase.id)
-                              ? isDarkMode
-                                ? 'border-blue-500 bg-blue-900/20'
-                                : 'border-blue-500 bg-blue-50'
-                              : isDarkMode
-                                ? 'border-slate-700 hover:bg-slate-700'
-                                : 'border-gray-200 hover:bg-gray-50'
+                              ? 'border-blue-500 bg-blue-500/10 shadow-sm'
+                              : 'border-transparent hover:bg-black/5 dark:hover:bg-white/5'
                           }`}>
                           <input
                             type="checkbox"
                             checked={selectedAvailableTests.has(testCase.id)}
                             onChange={() => toggleAvailableTest(testCase.id)}
-                            className="rounded border-gray-300"
+                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
                           />
-                          <span className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                            {testCase.name}
-                          </span>
+                          <span className="text-sm text-gray-700 dark:text-gray-300">{testCase.name}</span>
                         </label>
                       ))}
                     </div>
@@ -3555,35 +3140,26 @@ function CreateSuiteModal({
             </div>
 
             {/* Suite Summary */}
-            <div
-              className={`mb-6 rounded-lg border p-4 ${
-                isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-gray-50'
-              }`}>
-              <p className={`text-sm ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Suite Summary: {testsInSuite.length} test(s) configured • {availableTestCases.length} test(s) available
-                to add.
+            <div className="mb-6 rounded-xl border border-blue-100 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-900/10">
+              <p className="text-sm text-blue-800 dark:text-blue-200">
+                <span className="font-semibold">Suite Summary:</span> {testsInSuite.length} test(s) configured •{' '}
+                {availableTestCases.length} test(s) available to add.
               </p>
             </div>
           </div>
 
           {/* Footer */}
-          <div
-            className={`flex items-center justify-end gap-3 border-t px-6 py-4 ${
-              isDarkMode ? 'border-slate-700' : 'border-gray-200'
-            }`}>
+          <div className="flex items-center justify-end gap-3 border-t border-white/10 px-6 py-4">
             <button
               type="button"
               onClick={onClose}
-              className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-                isDarkMode
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
+              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
+              className="glass-button flex items-center gap-2 rounded-xl px-6 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30">
+              <FiCheckCircle size={18} />
               {editingSuite ? 'Save Changes' : 'Create Suite'}
             </button>
           </div>
@@ -3599,17 +3175,9 @@ interface CreateCaseModalProps {
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   editingTestCase?: TestCase | null;
-  isDarkMode: boolean;
 }
 
-function CreateCaseModal({
-  formData,
-  setFormData,
-  onSubmit,
-  onClose,
-  editingTestCase,
-  isDarkMode,
-}: CreateCaseModalProps) {
+function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTestCase }: CreateCaseModalProps) {
   const [isEditingCode, setIsEditingCode] = useState(false);
   const [codeLineNumbers, setCodeLineNumbers] = useState<string[]>([]);
   const codeTextareaRef = React.useRef<HTMLTextAreaElement>(null);
@@ -3664,206 +3232,161 @@ function CreateCaseModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-4xl rounded-lg border p-6 shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-            {editingTestCase ? 'Edit Test Case' : 'Create Test Case'}
-          </h2>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel w-full max-w-4xl rounded-2xl shadow-2xl">
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+              <FiFileText size={20} />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              {editingTestCase ? 'Edit Test Case' : 'Create Test Case'}
+            </h2>
+          </div>
           <button
             type="button"
             onClick={onClose}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiX size={20} />
           </button>
         </div>
         <form onSubmit={onSubmit}>
-          <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Test Case Name *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter test case name"
-            />
-          </div>
-          <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={e => setFormData({ ...formData, description: e.target.value })}
-              rows={2}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter description"
-            />
-          </div>
-          <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Automation Prompt *
-            </label>
-            <textarea
-              required
-              value={formData.prompt}
-              onChange={e => setFormData({ ...formData, prompt: e.target.value })}
-              rows={4}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-              placeholder="Enter the automation prompt for this test case"
-            />
-            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Note: Planner description will appear here after the test case is executed with the planner agent.
-            </p>
-          </div>
-
-          {/* Playwright Code Section - Only show when editing */}
-          {editingTestCase && (
+          <div className="p-6">
             <div className="mb-6">
-              <div className="mb-2 flex items-center justify-between">
-                <label className={`block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Playwright Code
-                </label>
-                <div className="flex items-center gap-2">
-                  {!isEditingCode ? (
-                    <>
-                      <button
-                        type="button"
-                        onClick={() => setIsEditingCode(true)}
-                        className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                          isDarkMode
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }`}>
-                        <FiEdit2 size={12} />
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleCopyCode}
-                        className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                          isDarkMode
-                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}>
-                        <FiCopy size={12} />
-                        Copy
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleDownloadCode}
-                        className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                          isDarkMode
-                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}>
-                        <FiDownload size={12} />
-                        Download
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        type="button"
-                        onClick={handleCancelEdit}
-                        className={`rounded px-2 py-1 text-xs transition-colors ${
-                          isDarkMode
-                            ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                        }`}>
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setIsEditingCode(false)}
-                        className={`rounded px-2 py-1 text-xs transition-colors ${
-                          isDarkMode
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'bg-blue-600 text-white hover:bg-blue-700'
-                        }`}>
-                        Save
-                      </button>
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="relative">
-                {/* Line Numbers */}
-                {formData.playwrightCode && (
-                  <div
-                    ref={lineNumbersRef}
-                    className={`absolute left-0 top-0 h-full overflow-hidden border-r pr-2 text-right font-mono text-xs ${
-                      isDarkMode ? 'border-slate-600 text-gray-500' : 'border-gray-300 text-gray-400'
-                    }`}
-                    style={{ width: '40px', paddingTop: '12px', paddingBottom: '12px' }}>
-                    {codeLineNumbers.map((line, idx) => (
-                      <div key={idx} className="leading-6">
-                        {line}
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {/* Code Textarea */}
-                <textarea
-                  ref={codeTextareaRef}
-                  readOnly={!isEditingCode}
-                  value={formData.playwrightCode}
-                  onChange={e => setFormData({ ...formData, playwrightCode: e.target.value })}
-                  onScroll={handleCodeScroll}
-                  rows={15}
-                  className={`w-full rounded-lg border px-3 py-2 font-mono text-sm ${
-                    isDarkMode
-                      ? isEditingCode
-                        ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                        : 'border-slate-600 bg-slate-900 text-white placeholder:text-gray-400'
-                      : isEditingCode
-                        ? 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-                        : 'border-gray-300 bg-gray-50 text-gray-900 placeholder:text-gray-500'
-                  } ${formData.playwrightCode ? 'pl-12' : ''} focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                  placeholder="Playwright code will appear here after test execution"
-                  style={{ resize: 'vertical' }}
-                />
-              </div>
-              <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                Note: Edit the Playwright code directly. Changes will be saved when you update the test case.
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Test Case Name <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                placeholder="Enter test case name"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
+              <textarea
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                rows={2}
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                placeholder="Enter description"
+              />
+            </div>
+            <div className="mb-6">
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Automation Prompt <span className="text-red-500">*</span>
+              </label>
+              <textarea
+                required
+                value={formData.prompt}
+                onChange={e => setFormData({ ...formData, prompt: e.target.value })}
+                rows={4}
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                placeholder="Enter the automation prompt for this test case"
+              />
+              <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                Note: Planner description will appear here after the test case is executed with the planner agent.
               </p>
             </div>
-          )}
 
-          <div className="flex justify-end gap-3">
+            {/* Playwright Code Section - Only show when editing */}
+            {editingTestCase && (
+              <div className="glass-card mb-6 rounded-xl p-4">
+                <div className="mb-3 flex items-center justify-between">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Playwright Code</label>
+                  <div className="flex items-center gap-2">
+                    {!isEditingCode ? (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => setIsEditingCode(true)}
+                          className="flex items-center gap-1 rounded-lg bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-500/20 dark:bg-blue-400/10 dark:text-blue-400 dark:hover:bg-blue-400/20 transition-colors">
+                          <FiEdit2 size={12} />
+                          Edit
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleCopyCode}
+                          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 transition-colors">
+                          <FiCopy size={12} />
+                          Copy
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleDownloadCode}
+                          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 transition-colors">
+                          <FiDownload size={12} />
+                          Download
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          onClick={handleCancelEdit}
+                          className="rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 transition-colors">
+                          Cancel
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsEditingCode(false)}
+                          className="glass-button rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30">
+                          Save
+                        </button>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="glass-input relative overflow-hidden rounded-lg p-0">
+                  {/* Line Numbers */}
+                  {formData.playwrightCode && (
+                    <div
+                      ref={lineNumbersRef}
+                      className="absolute left-0 top-0 h-full overflow-hidden border-r border-gray-200/50 bg-black/5 pr-2 text-right font-mono text-xs text-gray-400 dark:border-white/10 dark:bg-white/5 dark:text-gray-500"
+                      style={{ width: '40px', paddingTop: '12px', paddingBottom: '12px' }}>
+                      {codeLineNumbers.map((line, idx) => (
+                        <div key={idx} className="leading-6">
+                          {line}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Code Textarea */}
+                  <textarea
+                    ref={codeTextareaRef}
+                    readOnly={!isEditingCode}
+                    value={formData.playwrightCode}
+                    onChange={e => setFormData({ ...formData, playwrightCode: e.target.value })}
+                    onScroll={handleCodeScroll}
+                    rows={15}
+                    className={`w-full bg-transparent px-3 py-3 font-mono text-sm ${
+                      isEditingCode ? 'text-gray-900 dark:text-white' : 'text-gray-800 dark:text-gray-200'
+                    } ${formData.playwrightCode ? 'pl-12' : ''} outline-none`}
+                    placeholder="Playwright code will appear here after test execution"
+                    style={{ resize: 'vertical' }}
+                  />
+                </div>
+                <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  Note: Edit the Playwright code directly. Changes will be saved when you update the test case.
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex items-center justify-end gap-3 border-t border-white/10 px-6 py-4">
             <button
               type="button"
               onClick={onClose}
-              className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-                isDarkMode
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
+              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
               Cancel
             </button>
             <button
               type="submit"
-              className="rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
+              className="glass-button flex items-center gap-2 rounded-xl px-6 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30">
+              <FiCheckCircle size={18} />
               {editingTestCase ? 'Update Test Case' : 'Create Test Case'}
             </button>
           </div>

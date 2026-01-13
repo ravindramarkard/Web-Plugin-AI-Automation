@@ -12,6 +12,7 @@ import {
   FiCode,
   FiXCircle,
   FiSave,
+  FiChevronDown,
 } from 'react-icons/fi';
 import { promptStorage, type Prompt } from '../lib/promptStorage';
 import { webService, type WebServiceMessage } from '../lib/webService';
@@ -21,11 +22,10 @@ import { ExecutionState } from '../types/event';
 
 interface PromptsTabProps {
   projectId: string;
-  isDarkMode: boolean;
   onExecutePrompt: (promptContent: string) => void;
 }
 
-export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: PromptsTabProps) {
+export default function PromptsTab({ projectId, onExecutePrompt }: PromptsTabProps) {
   const [prompts, setPrompts] = useState<Prompt[]>([]);
   const [isLoadingPrompts, setIsLoadingPrompts] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
@@ -300,17 +300,16 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
   };
 
   return (
-    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+    <div className="flex h-full flex-col bg-transparent">
       {/* Header */}
-      <div
-        className={`border-b ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} px-6 py-4`}>
+      <div className="glass-panel border-b border-white/10 px-6 py-4">
         <div className="flex items-center justify-between">
-          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Prompts</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Prompts</h2>
           <div className="flex items-center gap-3">
             {/* Search */}
             <div className="relative">
               <FiSearch
-                className={`absolute left-3 top-1/2 -translate-y-1/2 ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 dark:text-gray-400"
                 size={18}
               />
               <input
@@ -318,37 +317,28 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search prompts..."
-                className={`w-64 rounded-lg border py-2 pl-10 pr-4 ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-                } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className="glass-input w-64 rounded-xl py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500/50"
               />
             </div>
             {/* View Toggle */}
-            <div
-              className={`flex rounded-lg border ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'} p-1`}>
+            <div className="glass-panel flex rounded-lg p-1">
               <button
                 type="button"
                 onClick={() => setViewMode('list')}
-                className={`rounded px-3 py-1.5 transition-colors ${
+                className={`rounded-md px-3 py-1.5 transition-all ${
                   viewMode === 'list'
-                    ? 'bg-blue-500 text-white'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:bg-slate-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                    : 'text-gray-600 hover:bg-gray-100/50 dark:text-gray-400 dark:hover:bg-white/5'
                 }`}>
                 <FiList size={18} />
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
-                className={`rounded px-3 py-1.5 transition-colors ${
+                className={`rounded-md px-3 py-1.5 transition-all ${
                   viewMode === 'grid'
-                    ? 'bg-blue-500 text-white'
-                    : isDarkMode
-                      ? 'text-gray-400 hover:bg-slate-700'
-                      : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
+                    : 'text-gray-600 hover:bg-gray-100/50 dark:text-gray-400 dark:hover:bg-white/5'
                 }`}>
                 <FiGrid size={18} />
               </button>
@@ -370,9 +360,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
                 });
                 setShowCreateModal(true);
               }}
-              className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium transition-colors ${
-                isDarkMode ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}>
+              className="glass-button flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-700 hover:shadow-blue-500/30">
               <FiPlus size={18} />
               Create New Prompt
             </button>
@@ -383,7 +371,7 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
       {/* Prompts List/Grid */}
       <div className="flex-1 overflow-y-auto p-6">
         {filteredPrompts.length === 0 ? (
-          <div className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+          <div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
             <div className="text-center">
               <FiMessageSquare size={48} className="mx-auto mb-4 opacity-50" />
               <p className="text-lg font-medium">No prompts yet</p>
@@ -396,7 +384,6 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
               <PromptListItem
                 key={prompt.id}
                 prompt={prompt}
-                isDarkMode={isDarkMode}
                 onEdit={() => handleEditPrompt(prompt)}
                 onDelete={() => handleDeletePrompt(prompt.id)}
                 onDuplicate={() => handleDuplicatePrompt(prompt.id)}
@@ -410,7 +397,6 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
               <PromptGridItem
                 key={prompt.id}
                 prompt={prompt}
-                isDarkMode={isDarkMode}
                 onEdit={() => handleEditPrompt(prompt)}
                 onDelete={() => handleDeletePrompt(prompt.id)}
                 onDuplicate={() => handleDuplicatePrompt(prompt.id)}
@@ -442,7 +428,6 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
             });
           }}
           editingPrompt={editingPrompt}
-          isDarkMode={isDarkMode}
         />
       )}
 
@@ -518,7 +503,6 @@ export default function PromptsTab({ projectId, isDarkMode, onExecutePrompt }: P
             setShowGeneratedCodeModal(false);
             setGeneratedCode(null);
           }}
-          isDarkMode={isDarkMode}
         />
       )}
     </div>
@@ -534,7 +518,6 @@ interface GeneratedCodeModalProps {
   onTestSuiteChange: (suiteId: string) => void;
   onSave: (testSuiteId: string, testCaseName: string) => Promise<void>;
   onClose: () => void;
-  isDarkMode: boolean;
 }
 
 function GeneratedCodeModal({
@@ -546,7 +529,6 @@ function GeneratedCodeModal({
   onTestSuiteChange,
   onSave,
   onClose,
-  isDarkMode,
 }: GeneratedCodeModalProps) {
   const [testCaseName, setTestCaseName] = useState(prompt.title || 'Generated Test');
   const [isSaving, setIsSaving] = useState(false);
@@ -570,26 +552,18 @@ function GeneratedCodeModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`max-h-[90vh] w-full max-w-4xl overflow-hidden rounded-lg border shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        } flex flex-col`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl">
         {/* Header */}
-        <div
-          className={`flex items-center justify-between border-b px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <div className="flex items-center gap-2">
-            <FiCode size={20} className={isDarkMode ? 'text-gray-300' : 'text-gray-700'} />
-            <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-              Generated Test Code
-            </h2>
+            <FiCode size={20} className="text-gray-700 dark:text-gray-300" />
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Generated Test Code</h2>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className={`rounded p-1 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiXCircle size={20} />
           </button>
         </div>
@@ -597,44 +571,42 @@ function GeneratedCodeModal({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {/* Test Case Info */}
-          <div
-            className={`mb-4 rounded-lg border p-4 ${isDarkMode ? 'bg-slate-750 border-slate-700' : 'border-gray-200 bg-gray-50'}`}>
-            <div className="mb-3">
-              <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+          <div className="mb-6 rounded-xl border border-white/10 bg-white/50 p-6 dark:bg-white/5">
+            <div className="mb-4">
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Test Case Name *
               </label>
               <input
                 type="text"
                 value={testCaseName}
                 onChange={e => setTestCaseName(e.target.value)}
-                className={`w-full rounded-lg border px-3 py-2 ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-                } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
                 placeholder="Enter test case name"
               />
             </div>
-            <div className="mb-3">
-              <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Test Suite *
-              </label>
-              <select
-                value={selectedTestSuiteId}
-                onChange={e => onTestSuiteChange(e.target.value)}
-                className={`w-full rounded-lg border px-3 py-2 ${
-                  isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-white text-gray-900'
-                } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
-                <option value="">Select a test suite</option>
-                {testSuites.map(suite => (
-                  <option key={suite.id} value={suite.id}>
-                    {suite.name}
+            <div className="mb-4">
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Test Suite *</label>
+              <div className="relative">
+                <select
+                  value={selectedTestSuiteId}
+                  onChange={e => onTestSuiteChange(e.target.value)}
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                  <option value="" className="dark:bg-slate-800">
+                    Select a test suite
                   </option>
-                ))}
-              </select>
+                  {testSuites.map(suite => (
+                    <option key={suite.id} value={suite.id} className="dark:bg-slate-800">
+                      {suite.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <FiGrid size={16} />
+                </div>
+              </div>
             </div>
             {testSuites.length === 0 && (
-              <p className={`text-sm ${isDarkMode ? 'text-yellow-400' : 'text-yellow-600'}`}>
+              <p className="text-sm text-yellow-600 dark:text-yellow-400">
                 No test suites found. Please create a test suite first in the Test Suites tab.
               </p>
             )}
@@ -642,31 +614,23 @@ function GeneratedCodeModal({
 
           {/* Code Display */}
           <div>
-            <div className="mb-2 flex items-center justify-between">
-              <h3 className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Playwright Test Code
-              </h3>
+            <div className="mb-3 flex items-center justify-between">
+              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300">Playwright Test Code</h3>
               <button
                 type="button"
                 onClick={handleCopyCode}
-                className={`flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors ${
-                  isDarkMode
-                    ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}>
+                className="glass-button flex items-center gap-2 rounded-lg bg-gray-200/50 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-300/50 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20">
                 <FiCopy size={12} />
                 Copy Code
               </button>
             </div>
             <div
-              className={`relative max-h-96 overflow-auto rounded-lg border ${
-                isDarkMode ? 'border-slate-600 bg-[#1e1e1e]' : 'border-gray-300 bg-[#1e1e1e]'
-              }`}
+              className="relative max-h-96 overflow-auto rounded-xl border border-white/10 bg-[#1e1e1e] shadow-inner"
               style={{
                 fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
               }}>
               <pre
-                className={`m-0 p-4 text-xs leading-relaxed text-white`}
+                className="m-0 p-4 text-xs leading-relaxed text-white"
                 style={{
                   userSelect: 'text',
                   WebkitUserSelect: 'text',
@@ -698,26 +662,21 @@ function GeneratedCodeModal({
         </div>
 
         {/* Footer */}
-        <div
-          className={`flex items-center justify-end gap-3 border-t px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+        <div className="flex items-center justify-end gap-3 border-t border-white/10 px-6 py-4">
           <button
             type="button"
             onClick={onClose}
-            className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-              isDarkMode
-                ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-            }`}>
+            className="rounded-xl bg-gray-200/50 px-6 py-2.5 font-medium text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 transition-all backdrop-blur-sm">
             Close
           </button>
           <button
             type="button"
             onClick={handleSave}
             disabled={!selectedTestSuiteId || !testCaseName.trim() || isSaving}
-            className={`flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white transition-colors ${
+            className={`glass-button flex items-center gap-2 rounded-xl px-6 py-2.5 font-bold text-white shadow-lg transition-all ${
               !selectedTestSuiteId || !testCaseName.trim() || isSaving
-                ? 'cursor-not-allowed bg-gray-400'
-                : 'bg-blue-600 hover:bg-blue-700'
+                ? 'cursor-not-allowed opacity-50'
+                : 'bg-blue-600 shadow-blue-500/20 hover:bg-blue-700 hover:shadow-blue-500/30'
             }`}>
             <FiSave size={18} />
             {isSaving ? 'Saving...' : 'Save Test Case'}
@@ -730,59 +689,51 @@ function GeneratedCodeModal({
 
 interface PromptListItemProps {
   prompt: Prompt;
-  isDarkMode: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
   onExecute: () => void;
 }
 
-function PromptListItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onExecute }: PromptListItemProps) {
+function PromptListItem({ prompt, onEdit, onDelete, onDuplicate, onExecute }: PromptListItemProps) {
   return (
-    <div
-      className={`flex items-center gap-4 rounded-lg border p-4 transition-colors ${
-        isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
-      }`}>
+    <div className="glass-card group flex items-center gap-4 rounded-xl p-4 transition-all hover:shadow-lg dark:hover:shadow-white/5">
       <div className="flex-1">
-        <h3 className={`font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{prompt.title}</h3>
-        <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <h3 className="font-semibold text-gray-900 dark:text-white">{prompt.title}</h3>
+        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
           {prompt.description || prompt.baseUrl || 'No description'}
         </p>
         <div className="mt-2 flex items-center gap-4 text-xs">
-          <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>Type: {prompt.testType}</span>
-          <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>
+          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+            {prompt.testType}
+          </span>
+          <span className="text-gray-500 dark:text-gray-400">
             Created: {new Date(prompt.createdAt).toLocaleDateString()}
           </span>
-          <span className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>
+          <span className="text-gray-500 dark:text-gray-400">
             Tags: {prompt.tags.length > 0 ? prompt.tags.join(', ') : 'None'}
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
         <button
           type="button"
           onClick={onExecute}
-          className={`rounded p-2 transition-colors ${
-            isDarkMode ? 'text-blue-400 hover:bg-slate-700' : 'text-blue-600 hover:bg-gray-100'
-          }`}
+          className="glass-button rounded-lg border border-blue-200/50 bg-blue-50/50 p-2 text-blue-600 hover:bg-blue-100/50 dark:border-blue-800/50 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40"
           title="Execute">
           <FiPlay size={18} />
         </button>
         <button
           type="button"
           onClick={onEdit}
-          className={`rounded p-2 transition-colors ${
-            isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-          }`}
+          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/10"
           title="Edit">
           <FiEdit2 size={18} />
         </button>
         <button
           type="button"
           onClick={onDuplicate}
-          className={`rounded p-2 transition-colors ${
-            isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-          }`}
+          className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-white/10"
           title="Duplicate">
           <FiCopy size={18} />
         </button>
@@ -790,9 +741,7 @@ function PromptListItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onE
         <button
           type="button"
           onClick={onDelete}
-          className={`rounded p-2 transition-colors ${
-            isDarkMode ? 'text-red-400 hover:bg-slate-700' : 'text-red-600 hover:bg-gray-100'
-          }`}
+          className="rounded-lg p-2 text-red-500 hover:bg-red-50/50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
           title="Delete">
           <FiTrash2 size={18} />
         </button>
@@ -803,61 +752,60 @@ function PromptListItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onE
 
 interface PromptGridItemProps {
   prompt: Prompt;
-  isDarkMode: boolean;
   onEdit: () => void;
   onDelete: () => void;
   onDuplicate: () => void;
   onExecute: () => void;
 }
 
-function PromptGridItem({ prompt, isDarkMode, onEdit, onDelete, onDuplicate, onExecute }: PromptGridItemProps) {
+function PromptGridItem({ prompt, onEdit, onDelete, onDuplicate, onExecute }: PromptGridItemProps) {
   return (
-    <div
-      className={`rounded-lg border p-4 transition-colors ${
-        isDarkMode ? 'hover:bg-slate-750 border-slate-700 bg-slate-800' : 'border-gray-200 bg-white hover:bg-gray-50'
-      }`}>
+    <div className="glass-card group relative flex flex-col rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-white/5">
       <div className="mb-3 flex items-start justify-between">
-        <h3 className={`flex-1 font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{prompt.title}</h3>
-        <div className="flex items-center gap-1">
+        <h3 className="flex-1 font-semibold text-gray-900 dark:text-white line-clamp-1">{prompt.title}</h3>
+        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           <button
             type="button"
             onClick={onExecute}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-blue-400 hover:bg-slate-700' : 'text-blue-600 hover:bg-gray-100'
-            }`}
+            className="glass-button rounded-lg bg-blue-50/50 p-1.5 text-blue-600 hover:bg-blue-100/50 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40"
             title="Execute">
             <FiPlay size={16} />
           </button>
           <button
             type="button"
             onClick={onEdit}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}
+            className="glass-button rounded-lg p-1.5 text-gray-500 hover:bg-gray-100/50 dark:text-gray-400 dark:hover:bg-white/10"
             title="Edit">
             <FiEdit2 size={16} />
           </button>
           <button
             type="button"
             onClick={onDelete}
-            className={`rounded p-1.5 transition-colors ${
-              isDarkMode ? 'text-red-400 hover:bg-slate-700' : 'text-red-600 hover:bg-gray-100'
-            }`}
+            className="glass-button rounded-lg p-1.5 text-red-500 hover:bg-red-50/50 dark:text-red-400 dark:hover:bg-red-900/20"
             title="Delete">
             <FiTrash2 size={16} />
           </button>
         </div>
       </div>
-      <p className={`mb-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+      <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
         {prompt.description || prompt.baseUrl || 'No description'}
       </p>
-      <div className="space-y-1 text-xs">
-        <div className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>Type: {prompt.testType}</div>
-        <div className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>
-          Created: {new Date(prompt.createdAt).toLocaleDateString()}
+      <div className="space-y-2 border-t border-gray-100 pt-3 text-xs dark:border-white/5">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500 dark:text-gray-400">Type</span>
+          <span className="rounded-full bg-blue-100 px-2 py-0.5 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+            {prompt.testType}
+          </span>
         </div>
-        <div className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}>
-          Tags: {prompt.tags.length > 0 ? prompt.tags.join(', ') : 'None'}
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500 dark:text-gray-400">Created</span>
+          <span className="text-gray-900 dark:text-white">{new Date(prompt.createdAt).toLocaleDateString()}</span>
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-gray-500 dark:text-gray-400">Tags</span>
+          <span className="max-w-[60%] truncate text-gray-900 dark:text-white">
+            {prompt.tags.length > 0 ? prompt.tags.join(', ') : 'None'}
+          </span>
         </div>
       </div>
     </div>
@@ -881,200 +829,156 @@ interface CreatePromptModalProps {
   onSubmit: (e: React.FormEvent) => void;
   onClose: () => void;
   editingPrompt: Prompt | null;
-  isDarkMode: boolean;
 }
 
-function CreatePromptModal({
-  formData,
-  setFormData,
-  onSubmit,
-  onClose,
-  editingPrompt,
-  isDarkMode,
-}: CreatePromptModalProps) {
+function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPrompt }: CreatePromptModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg border p-6 shadow-xl ${
-          isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'
-        }`}>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className={`text-xl font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl shadow-xl">
+        <div className="mb-4 flex items-center justify-between border-b border-white/10 px-6 py-4">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
             {editingPrompt ? 'Edit Prompt' : 'Create New Prompt'}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className={`rounded p-1 transition-colors ${
-              isDarkMode ? 'text-gray-400 hover:bg-slate-700' : 'text-gray-600 hover:bg-gray-100'
-            }`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiXCircle size={20} />
           </button>
         </div>
-        <form onSubmit={onSubmit}>
+        <form onSubmit={onSubmit} className="p-6">
           {/* Title */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Title *
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Title *</label>
             <input
               type="text"
               required
               value={formData.title}
               onChange={e => setFormData({ ...formData, title: e.target.value })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="Enter prompt title"
             />
           </div>
 
           {/* Description */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Description
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Description</label>
             <textarea
               value={formData.description}
               onChange={e => setFormData({ ...formData, description: e.target.value })}
               rows={2}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="Enter prompt description"
             />
           </div>
 
           {/* Prompt Content */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Prompt Content *
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Prompt Content *</label>
             <textarea
               required
               value={formData.promptContent}
               onChange={e => setFormData({ ...formData, promptContent: e.target.value })}
-              rows={4}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              rows={6}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm font-mono text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="Enter your test prompt (e.g., 'Navigate to login, enter username/password, click login, validate dashboard')"
             />
           </div>
 
           {/* Test Type */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Test Type
-            </label>
-            <select
-              value={formData.testType}
-              onChange={e => setFormData({ ...formData, testType: e.target.value as Prompt['testType'] })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode ? 'border-slate-600 bg-slate-700 text-white' : 'border-gray-300 bg-white text-gray-900'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}>
-              <option value="UI Test">UI Test</option>
-              <option value="API Test">API Test</option>
-              <option value="Integration Test">Integration Test</option>
-              <option value="E2E Test">E2E Test</option>
-            </select>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Test Type</label>
+            <div className="relative">
+              <select
+                value={formData.testType}
+                onChange={e => setFormData({ ...formData, testType: e.target.value as Prompt['testType'] })}
+                className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                <option value="UI Test" className="dark:bg-slate-800">
+                  UI Test
+                </option>
+                <option value="API Test" className="dark:bg-slate-800">
+                  API Test
+                </option>
+                <option value="Integration Test" className="dark:bg-slate-800">
+                  Integration Test
+                </option>
+                <option value="E2E Test" className="dark:bg-slate-800">
+                  E2E Test
+                </option>
+              </select>
+              <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                <FiChevronDown size={16} />
+              </div>
+            </div>
           </div>
 
           {/* Tags */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Tags (comma separated)
             </label>
             <input
               type="text"
               value={formData.tags}
               onChange={e => setFormData({ ...formData, tags: e.target.value })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="smoke, regression, critical"
             />
           </div>
 
           {/* Additional Context */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Additional Context
             </label>
             <textarea
               value={formData.additionalContext}
               onChange={e => setFormData({ ...formData, additionalContext: e.target.value })}
               rows={3}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="Any additional context for the test"
             />
           </div>
 
           {/* Base URL */}
           <div className="mb-4">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-              Base URL
-            </label>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Base URL</label>
             <input
               type="url"
               value={formData.baseUrl}
               onChange={e => setFormData({ ...formData, baseUrl: e.target.value })}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="https://example.com"
             />
           </div>
 
           {/* Additional Information */}
           <div className="mb-6">
-            <label className={`mb-2 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
               Additional Information
             </label>
             <textarea
               value={formData.additionalInformation}
               onChange={e => setFormData({ ...formData, additionalInformation: e.target.value })}
               rows={3}
-              className={`w-full rounded-lg border px-3 py-2 ${
-                isDarkMode
-                  ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-400'
-                  : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-500'
-              } focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500`}
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               placeholder="Any additional information or requirements"
             />
           </div>
 
-          {/* Actions */}
-          <div className="flex justify-end gap-3">
+          {/* Footer */}
+          <div className="flex justify-end gap-3 border-t border-white/10 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className={`rounded-lg px-4 py-2 font-medium transition-colors ${
-                isDarkMode
-                  ? 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              }`}>
+              className="rounded-xl bg-gray-200/50 px-6 py-2.5 font-medium text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 transition-all backdrop-blur-sm">
               Cancel
             </button>
             <button
               type="submit"
-              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700">
-              <FiPlus size={18} />
-              {editingPrompt ? 'Update' : 'Create'}
+              className="glass-button flex items-center gap-2 rounded-xl px-6 py-2.5 font-bold text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30">
+              <FiSave size={18} />
+              {editingPrompt ? 'Update Prompt' : 'Create Prompt'}
             </button>
           </div>
         </form>

@@ -31,7 +31,17 @@ export interface Environment {
   authorizationEnabled: boolean;
   authType?: 'Bearer Token' | 'API Key' | 'Basic Auth' | 'OAuth2';
   authToken?: string;
+  authKey?: string;
+  authValue?: string;
+  authLocation?: 'header' | 'query';
+  authUsername?: string;
+  authPassword?: string;
+  oauthClientId?: string;
+  oauthClientSecret?: string;
+  oauthTokenUrl?: string;
+  oauthScope?: string;
   status: 'active' | 'inactive';
+  variables?: Record<string, string>;
   createdAt: number;
   updatedAt: number;
 }

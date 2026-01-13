@@ -5,17 +5,14 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { type Message, Actors, chatHistoryStore } from '@extension/storage';
+import { type Message, Actors } from '@extension/storage';
 import MessageList from './MessageList';
-import { EventType, type AgentEvent, ExecutionState } from '../types/event';
+import { type AgentEvent, ExecutionState } from '../types/event';
 import { webService } from '../lib/webService';
 
-interface ChatViewProps {
-  projectId: string;
-  isDarkMode: boolean;
-}
+interface ChatViewProps {}
 
-export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
+export default function ChatView({}: ChatViewProps) {
   const progressMessage = 'Showing progress...';
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -26,8 +23,6 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
   }, [messages]);
 
   const appendMessage = useCallback((newMessage: Message) => {
-    const isProgressMessage = newMessage.content === progressMessage;
-
     setMessages(prev => {
       const filteredMessages = prev.filter((msg, idx) => !(msg.content === progressMessage && idx === prev.length - 1));
       return [...filteredMessages, newMessage];
@@ -58,9 +53,13 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
     const handleTaskState = (event: AgentEvent) => {
       const { actor, state, timestamp, data } = event;
       // Try multiple ways to extract content
-      let content = data?.details || data?.message || data?.content || event.content || '';
-
-      console.log('[ChatView] ========== Received event ==========');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const safeData = data as any;
+      let content = '';
+      if (safeData) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        content = safeData.details || safeData.message || safeData.content || (event as any).content || '';
+      }
       console.log('[ChatView] Full event object:', event);
       console.log('[ChatView] Actor:', actor, typeof actor);
       console.log('[ChatView] Actor enum values:', {
@@ -102,7 +101,8 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
           }
           break;
         case Actors.PLANNER:
-        case 'planner': // Handle string literal as fallback
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        case 'planner' as any: // Handle string literal as fallback
           console.log('[ChatView] ✅ PLANNER event detected, state:', state);
           // Show ALL Planner events - they contain important planning information
           skip = false;
@@ -124,7 +124,8 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
           }
           break;
         case Actors.NAVIGATOR:
-        case 'navigator': // Handle string literal as fallback
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        case 'navigator' as any: // Handle string literal as fallback
           console.log('[ChatView] ✅ NAVIGATOR event detected, state:', state);
           // Show ALL Navigator events - they contain the actual automation steps
           skip = false;
@@ -167,22 +168,12 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
 
       // Final check: if we have content and it's not a system internal message, show it
       if (skip && content && content.trim().length > 0 && actor !== Actors.SYSTEM) {
-        console.log('[ChatView] 🔄 Overriding skip=true because content exists:', { actor, state });
         skip = false;
       }
 
       if (!skip) {
         // Always show message if not skipped, even if content is empty (for progress messages)
         const displayContent = content || (displayProgress ? progressMessage : '');
-
-        console.log('[ChatView] ✅ Adding message:', {
-          actor,
-          state,
-          content: displayContent.substring(0, 100),
-          skip,
-          hasContent: !!content,
-          displayContentLength: displayContent.length,
-        });
 
         // Always add message for Planner and Navigator, even with minimal content
         if (displayContent && displayContent.trim().length > 0) {
@@ -193,14 +184,18 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
           });
         } else if (
           actor === Actors.PLANNER ||
-          actor === 'planner' ||
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (actor as any) === 'planner' ||
           actor === Actors.NAVIGATOR ||
-          actor === 'navigator'
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (actor as any) === 'navigator'
         ) {
           // For Planner/Navigator, show a default message if content is empty
           const defaultMessage =
-            actor === Actors.PLANNER || actor === 'planner' ? 'Planner processing...' : 'Navigator executing...';
-          console.log('[ChatView] ✅ Adding default message for', actor, ':', defaultMessage);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            actor === Actors.PLANNER || (actor as any) === 'planner'
+              ? 'Planner processing...'
+              : 'Navigator executing...';
           appendMessage({
             actor: actor as Actors,
             content: defaultMessage,
@@ -208,21 +203,12 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
           });
         } else if (displayProgress) {
           // Show progress message even if content is empty
-          console.log('[ChatView] ✅ Adding progress message');
           appendMessage({
             actor: actor as Actors,
             content: progressMessage,
             timestamp: timestamp,
           });
-        } else {
-          console.log('[ChatView] ⚠️ Skipping message - no content:', { actor, state, skip });
         }
-      } else {
-        console.log('[ChatView] ⏭️ Skipping message (skip=true):', {
-          actor,
-          state,
-          content: content?.substring(0, 50),
-        });
       }
     };
 
@@ -231,30 +217,25 @@ export default function ChatView({ projectId, isDarkMode }: ChatViewProps) {
   }, [appendMessage]);
 
   return (
-    <div className={`flex h-full flex-col ${isDarkMode ? 'bg-slate-900' : 'bg-gray-50'}`}>
+    <div className="glass-panel flex h-full flex-col overflow-hidden border-0">
       {/* Header */}
-      <div
-        className={`border-b px-4 py-3 ${isDarkMode ? 'border-slate-700 bg-slate-800' : 'border-gray-200 bg-white'}`}>
-        <h2 className={`text-lg font-semibold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
-          Live Automation Steps
-        </h2>
-        <p className={`text-xs ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
-          Watch real-time execution of your automation tasks
-        </p>
+      <div className="relative z-10 border-b border-white/10 px-4 py-3 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Live Automation Steps</h2>
+        <p className="text-xs text-gray-500 dark:text-gray-400">Watch real-time execution of your automation tasks</p>
       </div>
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4">
         {messages.length === 0 ? (
-          <div className={`flex h-full items-center justify-center ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-            <div className="text-center">
-              <p className="mb-2">No automation steps yet</p>
-              <p className="text-sm">Execute a prompt to see live automation steps here</p>
+          <div className="flex h-full items-center justify-center text-gray-400 dark:text-gray-500">
+            <div className="glass-card rounded-xl p-8 text-center">
+              <p className="mb-2 font-medium">No automation steps yet</p>
+              <p className="text-sm opacity-70">Execute a prompt to see live automation steps here</p>
             </div>
           </div>
         ) : (
           <>
-            <MessageList messages={messages} isDarkMode={isDarkMode} />
+            <MessageList messages={messages} />
             <div ref={messagesEndRef} />
           </>
         )}

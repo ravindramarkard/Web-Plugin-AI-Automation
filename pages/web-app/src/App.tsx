@@ -7,6 +7,7 @@ const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const ChatPage = lazy(() => import('./pages/ChatPage'));
 const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
 const ProjectDetailPage = lazy(() => import('./pages/ProjectDetailPage'));
+const ApiTestGeneratorPage = lazy(() => import('./pages/ApiTestGeneratorPage'));
 const SettingsPage = lazy(() => import('./pages/SettingsPage'));
 
 // Loading component
@@ -30,6 +31,7 @@ function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/projects" element={<ProjectsPage />} />
             <Route path="/projects/:projectId" element={<ProjectDetailPage />} />
+            {/* <Route path="/api-test-generator" element={<ApiTestGeneratorPage />} /> */}
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </Suspense>

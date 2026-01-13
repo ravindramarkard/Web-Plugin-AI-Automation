@@ -15,7 +15,6 @@ interface BookmarkListProps {
   onBookmarkUpdateTitle?: (id: number, title: string) => void;
   onBookmarkDelete?: (id: number) => void;
   onBookmarkReorder?: (draggedId: number, targetId: number) => void;
-  isDarkMode?: boolean;
 }
 
 const BookmarkList: React.FC<BookmarkListProps> = ({
@@ -24,7 +23,6 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
   onBookmarkUpdateTitle,
   onBookmarkDelete,
   onBookmarkReorder,
-  isDarkMode = false,
 }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState<string>('');
@@ -82,9 +80,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
 
   return (
     <div className="p-2">
-      <h3 className={`mb-3 text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-        {t('chat_bookmarks_header')}
-      </h3>
+      <h3 className="mb-3 text-sm font-medium text-gray-700 dark:text-gray-200">{t('chat_bookmarks_header')}</h3>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {bookmarks.map(bookmark => (
           <div
@@ -94,9 +90,9 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
             onDragEnd={handleDragEnd}
             onDragOver={handleDragOver}
             onDrop={e => handleDrop(e, bookmark.id)}
-            className={`group relative rounded-lg p-3 ${
-              isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-sky-50'
-            } border ${isDarkMode ? 'border-slate-700' : 'border-sky-100'}`}>
+            className={`glass-card group relative rounded-lg p-3 transition-all hover:bg-white/80 dark:hover:bg-white/10 ${
+              editingId === bookmark.id ? 'ring-2 ring-blue-500/50' : ''
+            }`}>
             {editingId === bookmark.id ? (
               <div className="flex items-center">
                 <input
@@ -104,28 +100,18 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
                   type="text"
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
-                  className={`mr-2 grow rounded px-2 py-1 text-sm ${
-                    isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-200' : 'border-sky-100 bg-white text-gray-700'
-                  } border`}
+                  className="glass-input mr-2 grow px-2 py-1 text-sm"
                 />
                 <button
                   onClick={() => handleSaveEdit(bookmark.id)}
-                  className={`rounded p-1 ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-green-400 hover:bg-slate-600'
-                      : 'bg-white text-green-500 hover:bg-gray-100'
-                  }`}
+                  className="rounded p-1 text-green-500 hover:bg-green-100/20 dark:text-green-400 dark:hover:bg-green-900/30"
                   aria-label={t('chat_bookmarks_saveEdit')}
                   type="button">
                   <FaCheck size={14} />
                 </button>
                 <button
                   onClick={handleCancelEdit}
-                  className={`ml-1 rounded p-1 ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-red-400 hover:bg-slate-600'
-                      : 'bg-white text-red-500 hover:bg-gray-100'
-                  }`}
+                  className="ml-1 rounded p-1 text-red-500 hover:bg-red-100/20 dark:text-red-400 dark:hover:bg-red-900/30"
                   aria-label={t('chat_bookmarks_cancelEdit')}
                   type="button">
                   <FaTimes size={14} />
@@ -142,9 +128,8 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
                         onBookmarkSelect(bookmark.content);
                       }
                     }}
-                    className="rgb-border w-full rounded-lg p-2 text-left">
-                    <div
-                      className={`truncate pr-10 text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+                    className="w-full rounded-lg p-2 text-left focus:outline-none">
+                    <div className="truncate pr-10 text-sm font-medium text-gray-700 dark:text-gray-200">
                       {bookmark.title}
                     </div>
                   </button>
@@ -160,11 +145,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
                     e.stopPropagation();
                     handleEditClick(bookmark);
                   }}
-                  className={`absolute right-[28px] top-1/2 z-10 -translate-y-1/2 rounded p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-sky-400 hover:bg-slate-600'
-                      : 'bg-white text-sky-500 hover:bg-gray-100'
-                  }`}
+                  className="absolute right-[28px] top-1/2 z-10 -translate-y-1/2 rounded glass-button p-1 opacity-0 transition-all duration-200 group-hover:opacity-100 text-sky-500 hover:bg-sky-100/20 dark:text-sky-400 dark:hover:bg-sky-900/30"
                   aria-label={t('chat_bookmarks_edit')}
                   type="button">
                   <FaPen size={14} />
@@ -178,11 +159,7 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
                       onBookmarkDelete(bookmark.id);
                     }
                   }}
-                  className={`absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded p-1 opacity-0 transition-opacity duration-200 group-hover:opacity-100 ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-gray-400 hover:bg-slate-600'
-                      : 'bg-white text-gray-500 hover:bg-gray-100'
-                  }`}
+                  className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded glass-button p-1 opacity-0 transition-all duration-200 group-hover:opacity-100 text-gray-500 hover:bg-red-100/20 hover:text-red-500 dark:text-gray-400 dark:hover:bg-red-900/30 dark:hover:text-red-400"
                   aria-label={t('chat_bookmarks_delete')}
                   type="button">
                   <FaTrash size={14} />

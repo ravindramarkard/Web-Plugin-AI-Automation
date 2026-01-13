@@ -17,10 +17,9 @@ interface RunTestSuiteModalProps {
   projectId: string;
   onClose: () => void;
   onRun: (options: RunSuiteOptions) => Promise<void>;
-  isDarkMode: boolean;
 }
 
-export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, isDarkMode }: RunTestSuiteModalProps) {
+export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: RunTestSuiteModalProps) {
   const [environments, setEnvironments] = useState<Environment[]>([]);
   const [loadingEnvs, setLoadingEnvs] = useState(true);
 
@@ -86,26 +85,22 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div
-        className={`w-full max-w-lg rounded-lg shadow-xl ${
-          isDarkMode ? 'bg-slate-800 text-white' : 'bg-white text-gray-900'
-        }`}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="glass-panel w-full max-w-lg rounded-2xl">
         {/* Header */}
-        <div
-          className={`flex items-center justify-between border-b px-6 py-4 ${isDarkMode ? 'border-slate-700' : 'border-gray-200'}`}>
+        <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <div>
-            <h2 className="text-xl font-bold">Run Test Suite</h2>
-            <div className={`flex items-center gap-2 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">Run Test Suite</h2>
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
               <span className="flex items-center gap-1">📁 {suite.name}</span>
             </div>
-            <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-400'}`}>
+            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
               Override environment and execution settings for this run
             </p>
           </div>
           <button
             onClick={onClose}
-            className={`rounded-full p-1 transition-colors ${isDarkMode ? 'hover:bg-slate-700' : 'hover:bg-gray-100'}`}>
+            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
             <FiX size={20} />
           </button>
         </div>
@@ -115,75 +110,82 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
           <div className="space-y-4">
             {/* Environment Override */}
             <div>
-              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Environment Override
               </label>
-              <select
-                value={environmentId}
-                onChange={e => setEnvironmentId(e.target.value)}
-                className={`w-full rounded border px-3 py-2 text-sm ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white focus:border-blue-500'
-                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
-                } focus:outline-none focus:ring-1 focus:ring-blue-500`}>
-                <option value="">Suite's configured environment (Default)</option>
-                {environments.map(env => (
-                  <option key={env.id} value={env.id}>
-                    {env.name}
+              <div className="relative">
+                <select
+                  value={environmentId}
+                  onChange={e => setEnvironmentId(e.target.value)}
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white outline-none">
+                  <option value="" className="dark:bg-slate-800">
+                    Suite's configured environment (Default)
                   </option>
-                ))}
-              </select>
-              <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                Will use suite's configured environment.
-              </p>
+                  {environments.map(env => (
+                    <option key={env.id} value={env.id} className="dark:bg-slate-800">
+                      {env.name}
+                    </option>
+                  ))}
+                </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <FiSettings size={14} />
+                </div>
+              </div>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Will use suite's configured environment.</p>
             </div>
 
             {/* Browser */}
             <div>
-              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Browser
-              </label>
-              <select
-                value={browser}
-                onChange={e => setBrowser(e.target.value)}
-                className={`w-full rounded border px-3 py-2 text-sm ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white focus:border-blue-500'
-                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
-                } focus:outline-none focus:ring-1 focus:ring-blue-500`}>
-                <option value="chromium">Chromium</option>
-                <option value="firefox">Firefox</option>
-                <option value="webkit">Webkit</option>
-              </select>
-              <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
-                Select browser for test execution
-              </p>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Browser</label>
+              <div className="relative">
+                <select
+                  value={browser}
+                  onChange={e => setBrowser(e.target.value)}
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white outline-none">
+                  <option value="chromium" className="dark:bg-slate-800">
+                    Chromium
+                  </option>
+                  <option value="firefox" className="dark:bg-slate-800">
+                    Firefox
+                  </option>
+                  <option value="webkit" className="dark:bg-slate-800">
+                    Webkit
+                  </option>
+                </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <FiSettings size={14} />
+                </div>
+              </div>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Select browser for test execution</p>
             </div>
 
             {/* Execution Mode */}
             <div>
-              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                Execution Mode
-              </label>
-              <select
-                value={executionMode}
-                onChange={e => setExecutionMode(e.target.value as 'sequential' | 'parallel')}
-                className={`w-full rounded border px-3 py-2 text-sm ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white focus:border-blue-500'
-                    : 'border-gray-300 bg-white text-gray-900 focus:border-blue-500'
-                } focus:outline-none focus:ring-1 focus:ring-blue-500`}>
-                <option value="sequential">Sequential Execution</option>
-                <option value="parallel">Parallel Execution</option>
-              </select>
-              <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Execution Mode</label>
+              <div className="relative">
+                <select
+                  value={executionMode}
+                  onChange={e => setExecutionMode(e.target.value as 'sequential' | 'parallel')}
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white outline-none">
+                  <option value="sequential" className="dark:bg-slate-800">
+                    Sequential Execution
+                  </option>
+                  <option value="parallel" className="dark:bg-slate-800">
+                    Parallel Execution
+                  </option>
+                </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-500">
+                  <FiSettings size={14} />
+                </div>
+              </div>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Sequential: Run tests one after another. Parallel: Run tests simultaneously with multiple workers.
               </p>
             </div>
 
             {/* Filter by Tags */}
             <div>
-              <label className={`mb-1 block text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                 Filter by Tags (optional)
               </label>
               <input
@@ -191,23 +193,17 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
                 value={tags}
                 onChange={e => setTags(e.target.value)}
                 placeholder="e.g. @smoke"
-                className={`w-full rounded border px-3 py-2 text-sm ${
-                  isDarkMode
-                    ? 'border-slate-600 bg-slate-700 text-white placeholder:text-gray-500 focus:border-blue-500'
-                    : 'border-gray-300 bg-white text-gray-900 placeholder:text-gray-400 focus:border-blue-500'
-                } focus:outline-none focus:ring-1 focus:ring-blue-500`}
+                className="glass-input w-full rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
               />
-              <p className={`mt-1 text-xs ${isDarkMode ? 'text-gray-500' : 'text-gray-500'}`}>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Will run all tests in the suite (no tag filter).
               </p>
             </div>
 
-            <div className="pt-2">
+            <div className="space-y-3 pt-2">
               {/* Run in Headless Mode */}
-              <div className="flex items-center justify-between py-2">
-                <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Run in Headless Mode
-                </span>
+              <div className="glass-card flex items-center justify-between rounded-xl p-3 transition-colors hover:bg-white/40 dark:hover:bg-white/10">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Run in Headless Mode</span>
                 <label className="relative inline-flex cursor-pointer items-center">
                   <input
                     type="checkbox"
@@ -215,15 +211,13 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
                     onChange={e => setHeadless(e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white dark:after:bg-slate-200 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
               {/* Run in Parallel */}
-              <div className="flex items-center justify-between py-2">
-                <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                  Run in Parallel
-                </span>
+              <div className="glass-card flex items-center justify-between rounded-xl p-3 transition-colors hover:bg-white/40 dark:hover:bg-white/10">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Run in Parallel</span>
                 <label className="relative inline-flex cursor-pointer items-center">
                   <input
                     type="checkbox"
@@ -231,20 +225,19 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
                     onChange={e => handleToggleParallel(e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white dark:after:bg-slate-200 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
             </div>
 
             {/* Jira Integration */}
             <div className="pt-2">
-              <div
-                className={`mb-2 flex items-center gap-2 text-sm font-bold ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <div className="mb-2 flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-300">
                 <FiExternalLink /> Jira Integration
               </div>
 
-              <div className="flex items-center justify-between py-2">
-                <span className={`text-sm font-medium ${isDarkMode ? 'text-gray-300' : 'text-gray-700'}`}>
+              <div className="glass-card flex items-center justify-between rounded-xl p-3 transition-colors hover:bg-white/40 dark:hover:bg-white/10">
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Log failures to Jira {isJiraConfigured ? '' : '(Not configured)'}
                 </span>
                 <label
@@ -256,7 +249,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
                     disabled={!isJiraConfigured}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-focus:ring-blue-800"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white dark:after:bg-slate-200 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
                 </label>
               </div>
 
@@ -268,17 +261,17 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun, is
             </div>
           </div>
 
-          {/* Footer Actions */}
-          <div className="mt-8 flex justify-end gap-3">
-            {/* Cancel button usually top right, but modal standard has actions at bottom */}
-          </div>
-
-          <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700">
-            {/* Run Button */}
+          <div className="mt-6 flex justify-end gap-3 border-t border-white/10 pt-6">
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+              Cancel
+            </button>
             <button
               type="submit"
-              className="flex items-center gap-2 rounded bg-green-600 px-6 py-2 text-sm font-bold text-white transition-colors hover:bg-green-700">
-              <FiPlay size={16} /> RUN
+              className="glass-button flex items-center gap-2 rounded-xl bg-green-600 px-6 py-2.5 font-bold text-white shadow-lg shadow-green-500/20 hover:bg-green-700 hover:shadow-green-500/30">
+              <FiPlay size={16} /> RUN SUITE
             </button>
           </div>
         </form>
