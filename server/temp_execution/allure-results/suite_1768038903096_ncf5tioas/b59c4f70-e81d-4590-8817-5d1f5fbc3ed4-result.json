@@ -1,0 +1,443 @@
+{
+  "uuid": "b59c4f70-e81d-4590-8817-5d1f5fbc3ed4",
+  "name": "should navigate to forgot login page and verify the lookup form is displayed",
+  "historyId": "f5ca1fff9c6c424559389c100875c265:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n",
+    "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768038903096_ncf5tioas/test-case_1768062985119_a0aevlqu3.spec.ts:84:28)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768038903096_ncf5tioas/test-case_1768062985119_a0aevlqu3.spec.ts:79:18"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768063016753,
+              "uuid": "ad503a5c-4d64-49b1-8bf7-3f4a9d2356d7",
+              "stop": 1768063017094
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768063016751,
+          "uuid": "8c764076-7ce5-4f39-9531-5f60a76dbfcb",
+          "stop": 1768063017094
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768063017101,
+              "uuid": "be0796b7-e8ee-4248-97b0-3bf95036fbf4",
+              "stop": 1768063017115
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768063017096,
+          "uuid": "0958ddcb-4dd7-4c28-a736-20d620640328",
+          "stop": 1768063017121
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768063017123,
+              "uuid": "2de77eac-0fe7-407b-9859-2632c2c1b025",
+              "stop": 1768063017363
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768063017121,
+          "uuid": "8996ef85-122a-452b-b514-4d04974a7a4c",
+          "stop": 1768063017363
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768063016744,
+      "uuid": "37992774-2d7b-4720-b262-2f28392799f9",
+      "stop": 1768063017363
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063017386,
+      "name": "Starting forgot login information test",
+      "uuid": "06e9a4f4-5e7e-410d-b1e2-14d816272ba5",
+      "stop": 1768063017387
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063017389,
+          "name": "Navigate to \"/\"",
+          "uuid": "77de2490-45d1-4744-a753-d11e8293f45b",
+          "stop": 1768063019942
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063019943,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "a203feea-bf60-49ea-9be0-0f2cee1243b6",
+          "stop": 1768063020441
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063017387,
+      "name": "Navigate to ParaBank home page",
+      "uuid": "849a52c8-da6e-4aa1-937b-ff651c5be8af",
+      "stop": 1768063020441
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020447,
+          "name": "Expect \"toBe\"",
+          "uuid": "e85ac91f-24f8-47c6-be97-163648572d31",
+          "stop": 1768063020451
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063020442,
+      "name": "Verify we are on the correct home page",
+      "uuid": "5a0a005a-4ad6-4608-963d-bf4a3adc6c09",
+      "stop": 1768063020448
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020456,
+          "name": "Wait for selector getByText('Forgot login info?', { exact: true })",
+          "uuid": "8e2d564c-88aa-4e8c-8c97-bd9dbde82af7",
+          "stop": 1768063020483
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020484,
+          "name": "Click getByText('Forgot login info?', { exact: true })",
+          "uuid": "7ac23628-7a65-4ed7-993f-af4849957a49",
+          "stop": 1768063020829
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063020449,
+      "name": "Click on \"Forgot login info?\" link",
+      "uuid": "ab0bc80b-d7b2-420e-a807-ab7226cab1fe",
+      "stop": 1768063020829
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020831,
+          "name": "Wait for load state \"load\"",
+          "uuid": "1de77e8d-6fa8-467e-ad45-af8ff11d5aac",
+          "stop": 1768063020831
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020831,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "5b1b3ab9-4305-4d15-a6fb-ff0af9acae48",
+          "stop": 1768063021329
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063020829,
+      "name": "Wait for navigation to lookup page",
+      "uuid": "a9e16e8c-dd01-4f99-88a6-c29dafda4e90",
+      "stop": 1768063021329
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063021330,
+          "name": "Expect \"toContain\"",
+          "uuid": "45862713-a482-4eda-9cb1-ed6fe851a859",
+          "stop": 1768063021330
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063021333,
+          "name": "Expect \"toBe\"",
+          "uuid": "586c826c-f9cc-4800-81c7-b5288fa67f43",
+          "stop": 1768063021333
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063021329,
+      "name": "Verify we are on the lookup page",
+      "uuid": "9ef8a5a9-7fbb-4262-8667-1b2164c93c3a",
+      "stop": 1768063021333
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n",
+        "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768038903096_ncf5tioas/test-case_1768062985119_a0aevlqu3.spec.ts:84:28)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768038903096_ncf5tioas/test-case_1768062985119_a0aevlqu3.spec.ts:79:18"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n",
+            "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768038903096_ncf5tioas/test-case_1768062985119_a0aevlqu3.spec.ts:84:28)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768038903096_ncf5tioas/test-case_1768062985119_a0aevlqu3.spec.ts:79:18"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063021334,
+          "name": "Wait for selector getByPlaceholder('First Name')",
+          "uuid": "a9121005-b3b3-4f49-9247-87539ecf807a",
+          "stop": 1768063036342
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063021333,
+      "name": "Verify lookup form is displayed",
+      "uuid": "73cdb1d8-ef3d-4b91-ab73-365c17b8ba38",
+      "stop": 1768063036343
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "ecbdeb13-741e-4fe6-948d-be80a37ee3e2-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768063036627,
+      "name": "screenshot",
+      "stop": 1768063036627
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "fd97a4ba-5ec1-490b-a17a-d402f9f7787a-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768063036628,
+      "name": "video",
+      "stop": 1768063036628
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "c94b5b91-a740-41a0-9ea2-a192623c16ba-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768063036628,
+      "name": "error-context",
+      "stop": 1768063036628
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "0ccd46ae-b560-4214-b787-59b27dc60333-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768063036628,
+      "name": "trace",
+      "stop": 1768063036628
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768063036399,
+          "uuid": "ac7024e5-b0dc-4199-bc9f-0b7a192c82bc",
+          "stop": 1768063036399
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768063036496,
+              "uuid": "1e7bddbd-14be-4c2c-ae9f-2be70e0b1ce7",
+              "stop": 1768063036522
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768063036399,
+          "uuid": "a7820a6a-5d76-4fb2-a0d2-84844eb4003d",
+          "stop": 1768063036524
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768063036344,
+      "uuid": "3b6012ca-872c-4cf4-872f-b9322dae0237",
+      "stop": 1768063036527
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "808844f8-b793-4e13-84a2-22854a8c348a-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768062985119_a0aevlqu3.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768062985119_a0aevlqu3.spec.ts > Forgot Login Information Flow" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-22007-worker-1" },
+    { "name": "suite", "value": "test-case_1768062985119_a0aevlqu3.spec.ts" },
+    { "name": "subSuite", "value": "Forgot Login Information Flow" }
+  ],
+  "links": [],
+  "start": 1768063016744,
+  "testCaseId": "f5ca1fff9c6c424559389c100875c265",
+  "fullName": "test-case_1768062985119_a0aevlqu3.spec.ts:5:3",
+  "titlePath": ["test-case_1768062985119_a0aevlqu3.spec.ts", "Forgot Login Information Flow"],
+  "stop": 1768063036171
+}

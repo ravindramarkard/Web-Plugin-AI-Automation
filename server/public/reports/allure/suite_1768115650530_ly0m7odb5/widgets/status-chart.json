@@ -1,0 +1,9 @@
+[
+  {
+    "uid": "c1c060c23b131dfb",
+    "name": "should navigate to registration page when clicking register link",
+    "time": { "start": 1768115663327, "stop": 1768115668948, "duration": 5621 },
+    "status": "passed",
+    "severity": "normal"
+  }
+]

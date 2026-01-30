@@ -1,0 +1,23 @@
+{
+  "f5ca1fff9c6c424559389c100875c265:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "17544ea8e05c99cb",
+        "status": "failed",
+        "statusDetails": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for getByPlaceholder('First Name') to be visible\n",
+        "time": { "start": 1768063016744, "stop": 1768063036171, "duration": 19427 }
+      }
+    ]
+  },
+  "2b241c742d4b673920bc5bd6ba682ce4:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 0, "broken": 0, "skipped": 0, "passed": 1, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "bd2d924971310734",
+        "status": "passed",
+        "time": { "start": 1768063016736, "stop": 1768063021120, "duration": 4384 }
+      }
+    ]
+  }
+}

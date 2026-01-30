@@ -59,7 +59,7 @@ const ChatHistoryList: React.FC<ChatHistoryListProps> = ({
                     e.stopPropagation();
                     onSessionBookmark(session.id);
                   }}
-                  className="glass-button absolute right-2 top-2 rounded p-1.5 opacity-0 transition-all group-hover:opacity-100 text-blue-500"
+                  className="glass-button absolute right-2 top-2 rounded p-1.5 text-blue-500 opacity-0 transition-all group-hover:opacity-100"
                   aria-label={t('chat_history_bookmark')}
                   type="button">
                   <BsBookmark size={14} />
@@ -72,7 +72,7 @@ const ChatHistoryList: React.FC<ChatHistoryListProps> = ({
                   e.stopPropagation();
                   onSessionDelete(session.id);
                 }}
-                className="glass-button absolute bottom-2 right-2 rounded p-1.5 opacity-0 transition-all hover:text-red-500 group-hover:opacity-100 text-gray-400"
+                className="glass-button absolute bottom-2 right-2 rounded p-1.5 text-gray-400 opacity-0 transition-all hover:text-red-500 group-hover:opacity-100"
                 aria-label={t('chat_history_delete')}
                 type="button">
                 <FaTrash size={14} />

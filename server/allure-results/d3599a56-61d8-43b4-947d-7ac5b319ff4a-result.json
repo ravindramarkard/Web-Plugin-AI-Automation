@@ -1,0 +1,548 @@
+{
+  "uuid": "d3599a56-61d8-43b4-947d-7ac5b319ff4a",
+  "name": "successfully submits contact form",
+  "historyId": "7b7bad21446d121f0673ea00bfc7573f:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "broken",
+  "statusDetails": { "message": "Test timeout of 30000ms exceeded.", "trace": "Test timeout of 30000ms exceeded." },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768049051702,
+              "uuid": "4052f01a-5deb-4bd9-812d-02c3e56f49d3",
+              "stop": 1768049052415
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768049051700,
+          "uuid": "0025dfce-8cd6-4b8e-8b0b-1dbe514e4f12",
+          "stop": 1768049052415
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768049052418,
+              "uuid": "351ea984-7d17-4a3a-9dcc-8202f143547b",
+              "stop": 1768049052431
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768049052417,
+          "uuid": "a58f129d-3bb1-43b5-b04f-637d846760f3",
+          "stop": 1768049052432
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768049052433,
+              "uuid": "1bc692b8-eefc-43c2-82b5-b86f463549dc",
+              "stop": 1768049052873
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768049052432,
+          "uuid": "188238f1-e748-4510-b903-9eec568481b3",
+          "stop": 1768049052873
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768049051694,
+      "uuid": "a92ffacc-d46f-40f7-941c-a2ea8dcd39d5",
+      "stop": 1768049052873
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049052897,
+              "name": "Navigate to \"/\"",
+              "uuid": "2afc8c6e-c785-4231-b7d4-ac38da05936e",
+              "stop": 1768049055387
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049055389,
+              "name": "Wait for load state \"networkidle\"",
+              "uuid": "a9ca0763-a195-4e91-b057-3bc10ace9e15",
+              "stop": 1768049055889
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768049052895,
+          "name": "Navigating to https://parabank.parasoft.com",
+          "uuid": "09aa1144-7df5-48ed-9424-e99dfe9f8859",
+          "stop": 1768049055889
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768049052895,
+      "name": "Navigate to Parabank URL",
+      "uuid": "b745f56f-425d-4c2e-99a3-a81e557a7672",
+      "stop": 1768049055889
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049055895,
+              "name": "Wait for selector locator('a[href*=\"contact\"], a:has-text(\"Contact\"), a[href*=\"contact.htm\"]').first()",
+              "uuid": "e36eb818-0a96-4dac-8e21-19a04b3ba009",
+              "stop": 1768049055921
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049055922,
+              "name": "Click locator('a[href*=\"contact\"], a:has-text(\"Contact\"), a[href*=\"contact.htm\"]').first()",
+              "uuid": "f9ee7326-89c7-4eb7-9944-0a3b6405e52e",
+              "stop": 1768049060774
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049060775,
+              "name": "Wait for load state \"networkidle\"",
+              "uuid": "2b17e4f3-f0c0-4937-b814-9258095af0e6",
+              "stop": 1768049068227
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768049055890,
+          "name": "Clicking Contact Us link",
+          "uuid": "8b6d76f5-e770-403a-8b08-8ad6598e0573",
+          "stop": 1768049068228
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768049055890,
+      "name": "Click Contact Us link",
+      "uuid": "2eab4b09-49b5-4ef9-a2c8-52c55ac64beb",
+      "stop": 1768049068228
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068230,
+              "name": "Wait for selector locator('input[name=\"name\"], input#name, input[placeholder*=\"Name\"], input[placeholder*=\"name\"]').first()",
+              "uuid": "3f0aa440-6f99-45e7-a3d6-c8156c1c1898",
+              "stop": 1768049068681
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068682,
+              "name": "Fill \"John Doe\" locator('input[name=\"name\"], input#name, input[placeholder*=\"Name\"], input[placeholder*=\"name\"]').first()",
+              "uuid": "6b9b4db9-bedc-4e7a-ba9a-421bf4d685f4",
+              "stop": 1768049068695
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068697,
+              "name": "Wait for selector locator('input[name=\"email\"], input#email, input[type=\"email\"], input[placeholder*=\"Email\"]').first()",
+              "uuid": "1caf00bc-d54b-4989-bfcd-0f236234b07b",
+              "stop": 1768049068705
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068706,
+              "name": "Fill \"john.doe@example.com\" locator('input[name=\"email\"], input#email, input[type=\"email\"], input[placeholder*=\"Email\"]').first()",
+              "uuid": "092f1acc-169e-48a3-aa95-1d290effa8f4",
+              "stop": 1768049068711
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068712,
+              "name": "Wait for selector locator('input[name=\"phone\"], input#phone, input[placeholder*=\"Phone\"], input[placeholder*=\"phone\"]').first()",
+              "uuid": "36d33ac6-e892-4f71-b6d6-61448c95c957",
+              "stop": 1768049068714
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068715,
+              "name": "Fill \"555-123-4567\" locator('input[name=\"phone\"], input#phone, input[placeholder*=\"Phone\"], input[placeholder*=\"phone\"]').first()",
+              "uuid": "b2cee1bd-8e59-460f-824d-38e98da89cbf",
+              "stop": 1768049068719
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068720,
+              "name": "Wait for selector locator('textarea[name=\"message\"], textarea#message, textarea[placeholder*=\"Message\"], textarea[placeholder*=\"message\"]').first()",
+              "uuid": "8a72f23a-51c5-492c-b792-53b238e1387d",
+              "stop": 1768049068722
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068723,
+              "name": "Fill \"inquiry about banking services\" locator('textarea[name=\"message\"], textarea#message, textarea[placeholder*=\"Message\"], textarea[placeholder*=\"message\"]').first()",
+              "uuid": "f6c2174b-e871-4f5e-82d9-fe1fc5274cb7",
+              "stop": 1768049068737
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768049068229,
+          "name": "Filling out contact form details",
+          "uuid": "bbe1d58d-b26f-4086-9672-59abd2165627",
+          "stop": 1768049068737
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768049068228,
+      "name": "Fill out contact form",
+      "uuid": "39068c4b-114e-4aa1-80ea-4af0ae0829fc",
+      "stop": 1768049068737
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068739,
+              "name": "Wait for selector locator('button[type=\"submit\"], input[type=\"submit\"], button:has-text(\"Submit\"), button:has-text(\"Send\")').first()",
+              "uuid": "537806f2-7dd8-4762-8f18-fd0e626c5fc1",
+              "stop": 1768049068748
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049068749,
+              "name": "Click locator('button[type=\"submit\"], input[type=\"submit\"], button:has-text(\"Submit\"), button:has-text(\"Send\")').first()",
+              "uuid": "df05579c-61eb-4218-b917-05f6d26851ee",
+              "stop": 1768049069081
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049069083,
+              "name": "Wait for load state \"networkidle\"",
+              "uuid": "6b36f9bc-bb35-407f-9ae7-d785568ea7c2",
+              "stop": 1768049069585
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768049068738,
+          "name": "Submitting the contact form",
+          "uuid": "416fc519-9df5-4244-81d5-97aa72b7c27f",
+          "stop": 1768049069585
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768049068737,
+      "name": "Submit the contact form",
+      "uuid": "7bd5d90e-b4c9-4dab-a1a8-da6bca3d740b",
+      "stop": 1768049069585
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: page.screenshot: Target page, context or browser has been closed",
+        "trace": "Error: page.screenshot: Target page, context or browser has been closed\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:140:66"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: page.screenshot: Target page, context or browser has been closed",
+            "trace": "Error: page.screenshot: Target page, context or browser has been closed\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:140:66"
+          },
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "failed",
+              "statusDetails": {
+                "message": "Error: locator.waitFor: Test timeout of 30000ms exceeded.\nCall log:\n  - waiting for locator('text=Thank you John Doe') to be visible\n    - waiting for\" https://parabank.parasoft.com/parabank/contact.htm\" navigation to finish...\n    - navigated to \"https://parabank.parasoft.com/parabank/contact.htm\"\n",
+                "trace": "Error: locator.waitFor: Test timeout of 30000ms exceeded.\nCall log:\n  - waiting for locator('text=Thank you John Doe') to be visible\n    - waiting for\" https://parabank.parasoft.com/parabank/contact.htm\" navigation to finish...\n    - navigated to \"https://parabank.parasoft.com/parabank/contact.htm\"\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:126:57)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:123:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:122:16"
+              },
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049069587,
+              "name": "Wait for selector locator('text=Thank you John Doe')",
+              "uuid": "d8f2fcaf-1b68-4856-839f-d76a7443f9cd",
+              "stop": 1768049082468
+            },
+            {
+              "status": "failed",
+              "statusDetails": {
+                "message": "Error: page.screenshot: Target page, context or browser has been closed",
+                "trace": "Error: page.screenshot: Target page, context or browser has been closed\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:140:66"
+              },
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768049082470,
+              "name": "Screenshot",
+              "uuid": "b55f1c75-36f2-4681-bc4a-ec78ad4bb9f4",
+              "stop": 1768049082472
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768049069586,
+          "name": "Verifying form submission success",
+          "uuid": "066507d6-643a-4fdc-a118-6462eb092dc2",
+          "stop": 1768049082472
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768049069585,
+      "name": "Verify form submission success",
+      "uuid": "602bab87-9b11-43f5-b6db-89b42ff89ae3",
+      "stop": 1768049082472
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "5cfe7450-5a68-477b-9af3-3faae23e08c0-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768049082588,
+      "name": "error-context",
+      "stop": 1768049082588
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768049082418,
+          "uuid": "912ae023-8d42-491c-9b83-9235665c3cf0",
+          "stop": 1768049082418
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768049082430,
+              "uuid": "125a41e5-6fec-44e9-bf62-999337cac45c",
+              "stop": 1768049082472
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768049082418,
+          "uuid": "e980a450-7322-4daf-8c7d-1f75d0c365ef",
+          "stop": 1768049082472
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768049082418,
+      "uuid": "3c434e08-b789-4da8-b05f-3358e4270f0e",
+      "stop": 1768049082478
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "b23d9b65-2c2b-4134-8739-18993ee3fd2e-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "c7d65560-0314-4ef3-9123-b235efaa07db-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "temp_execution.test-case_1768041946448_g2g25so8p.spec.ts" },
+    {
+      "name": "titlePath",
+      "value": " >  > temp_execution/test-case_1768041946448_g2g25so8p.spec.ts > Contact Us Form Test"
+    },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-32692-worker-0" },
+    { "name": "suite", "value": "temp_execution/test-case_1768041946448_g2g25so8p.spec.ts" },
+    { "name": "subSuite", "value": "Contact Us Form Test" },
+    { "name": "feature", "value": "Contact Form" },
+    { "name": "story", "value": "Submit Contact Information" }
+  ],
+  "links": [],
+  "start": 1768049051694,
+  "testCaseId": "7b7bad21446d121f0673ea00bfc7573f",
+  "fullName": "temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:5:3",
+  "titlePath": ["temp_execution", "test-case_1768041946448_g2g25so8p.spec.ts", "Contact Us Form Test"],
+  "stop": 1768049081750
+}

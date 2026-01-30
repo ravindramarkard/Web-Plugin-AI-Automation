@@ -219,7 +219,7 @@ export default function ChatView({}: ChatViewProps) {
   return (
     <div className="glass-panel flex h-full flex-col overflow-hidden border-0">
       {/* Header */}
-      <div className="relative z-10 border-b border-white/10 px-4 py-3 bg-white/50 dark:bg-black/20 backdrop-blur-sm">
+      <div className="relative z-10 border-b border-white/10 bg-white/50 px-4 py-3 backdrop-blur-sm dark:bg-black/20">
         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Live Automation Steps</h2>
         <p className="text-xs text-gray-500 dark:text-gray-400">Watch real-time execution of your automation tasks</p>
       </div>

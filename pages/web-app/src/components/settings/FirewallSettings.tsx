@@ -57,7 +57,7 @@ export const FirewallSettings = ({}: FirewallSettingsProps) => {
         <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">{t('options_firewall_header')}</h2>
 
         <div className="space-y-6">
-          <div className="my-6 rounded-lg glass-panel p-4">
+          <div className="glass-panel my-6 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <label htmlFor="toggle-firewall" className="text-base font-medium text-gray-900 dark:text-white">
                 {t('options_firewall_enableToggle')}
@@ -72,7 +72,7 @@ export const FirewallSettings = ({}: FirewallSettingsProps) => {
                 />
                 <label
                   htmlFor="toggle-firewall"
-                  className="block h-6 cursor-pointer overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 peer-checked:bg-blue-500">
+                  className="block h-6 cursor-pointer overflow-hidden rounded-full bg-gray-200 peer-checked:bg-blue-500 dark:bg-gray-700">
                   <span className="sr-only">{t('options_firewall_toggleFirewall_a11y')}</span>
                   <span
                     className={`block size-6 rounded-full bg-white shadow transition-transform ${
@@ -133,7 +133,7 @@ export const FirewallSettings = ({}: FirewallSettingsProps) => {
               allowList.length > 0 ? (
                 <ul className="space-y-2">
                   {allowList.map(url => (
-                    <li key={url} className="flex items-center justify-between rounded-md glass-panel p-2 pr-0">
+                    <li key={url} className="glass-panel flex items-center justify-between rounded-md p-2 pr-0">
                       <span className="text-sm text-gray-900 dark:text-white">{url}</span>
                       <Button
                         onClick={() => handleRemoveUrl(url, 'allow')}
@@ -151,7 +151,7 @@ export const FirewallSettings = ({}: FirewallSettingsProps) => {
             ) : denyList.length > 0 ? (
               <ul className="space-y-2">
                 {denyList.map(url => (
-                  <li key={url} className="flex items-center justify-between rounded-md glass-panel p-2 pr-0">
+                  <li key={url} className="glass-panel flex items-center justify-between rounded-md p-2 pr-0">
                     <span className="text-sm text-gray-900 dark:text-white">{url}</span>
                     <Button
                       onClick={() => handleRemoveUrl(url, 'deny')}

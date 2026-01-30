@@ -1,0 +1,263 @@
+{
+  "uuid": "2dedf74d-a33a-4f7d-912b-f07614d6a70f",
+  "name": "should successfully fill and submit contact form",
+  "historyId": "7a89da97cd28cbeffe1271f14c88f4dc:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\n",
+    "trace": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:15:28\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:11:7"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768050344497,
+              "uuid": "2c28f5cb-a7f0-4288-a58e-e11a06e3ec14",
+              "stop": 1768050345258
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768050344494,
+          "uuid": "62b1ede6-e8bd-4f1a-a0c9-18a5446be36e",
+          "stop": 1768050345258
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768050345262,
+              "uuid": "d25bd7d1-66fc-4d01-a494-c80726cf7158",
+              "stop": 1768050345280
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768050345260,
+          "uuid": "e34c4b07-e5fb-4ab5-8806-17f9d2248da8",
+          "stop": 1768050345281
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768050345282,
+              "uuid": "5898bcb5-666c-4168-abe1-7f132e63b0a4",
+              "stop": 1768050345777
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768050345281,
+          "uuid": "c7128e73-0550-4832-97ea-918f290e5626",
+          "stop": 1768050345778
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768050344489,
+      "uuid": "501b9862-191a-4639-adf4-1e0a97ae656e",
+      "stop": 1768050345778
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\n",
+        "trace": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:15:28\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:11:7"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768050345800,
+          "name": "Navigate to \"/\"",
+          "uuid": "60155827-a260-4974-9410-e56b0f626748",
+          "stop": 1768050348416
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768050348418,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "3bb46b64-b312-4aa8-8295-4a495f0cedb7",
+          "stop": 1768050348918
+        },
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\n",
+            "trace": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=A2A3CA29E1527AFF78F288A198464FC9\"\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:15:28\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:11:7"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768050348920,
+          "name": "Expect \"toHaveURL\"",
+          "uuid": "406a0f1c-93d1-47a1-b8c6-e0c79ad65420",
+          "stop": 1768050353927
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768050345798,
+      "name": "Navigate to Parabank homepage",
+      "uuid": "667e2431-ffa0-4c15-960e-13166ca26088",
+      "stop": 1768050353928
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "Error details",
+          "source": "59c0f120-d008-40a8-b2a9-fd6efad51c12-attachment.txt",
+          "type": "text/plain"
+        }
+      ],
+      "parameters": [],
+      "start": 1768050354079,
+      "name": "Error details",
+      "stop": 1768050354079
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "770b2b03-f616-4d74-a293-9a3c270f3014-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768050354079,
+      "name": "error-context",
+      "stop": 1768050354079
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768050353929,
+          "uuid": "4cef1607-8e21-4087-93a9-8fd9a8905f13",
+          "stop": 1768050353930
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768050353945,
+              "uuid": "15fb30f0-dc01-4d4d-a4da-fe0e1e93fc53",
+              "stop": 1768050353989
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768050353930,
+          "uuid": "f4ee2674-0bd6-42e6-b58f-cc8329c9aaf6",
+          "stop": 1768050353989
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768050353929,
+      "uuid": "73a3c7b9-6d1e-466c-9fa0-1b0b8f51a0b7",
+      "stop": 1768050353993
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "2773d1df-189e-4adb-a9b1-cb320d5ee490-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "4acefdb3-beba-48ea-9663-f92fd610d609-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "temp_execution.test-case_1768050267865_5j180s0rg.spec.ts" },
+    {
+      "name": "titlePath",
+      "value": " >  > temp_execution/test-case_1768050267865_5j180s0rg.spec.ts > Contact Us Form"
+    },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-41542-worker-0" },
+    { "name": "suite", "value": "temp_execution/test-case_1768050267865_5j180s0rg.spec.ts" },
+    { "name": "subSuite", "value": "Contact Us Form" }
+  ],
+  "links": [],
+  "start": 1768050344489,
+  "testCaseId": "7a89da97cd28cbeffe1271f14c88f4dc",
+  "fullName": "temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:5:3",
+  "titlePath": ["temp_execution", "test-case_1768050267865_5j180s0rg.spec.ts", "Contact Us Form"],
+  "description": "Test the contact us form functionality by filling in required fields and submitting",
+  "stop": 1768050353219
+}

@@ -1,0 +1,10 @@
+{
+  "total": 2,
+  "items": [
+    {
+      "uid": "6ea36a7e519c4714033016b905f3bbb3",
+      "name": "Banking Application",
+      "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 }
+    }
+  ]
+}

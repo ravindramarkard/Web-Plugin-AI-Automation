@@ -1,0 +1,3 @@
+locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for locator('input[value="Login"]') to be visible[22m

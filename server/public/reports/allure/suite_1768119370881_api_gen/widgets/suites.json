@@ -1,0 +1,10 @@
+{
+  "total": 1,
+  "items": [
+    {
+      "uid": "c12e35ad8797e4c83f81d6d981d4eab3",
+      "name": "test-tc_1768119370881_ffbrgioko.spec.ts",
+      "statistic": { "failed": 3, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 3 }
+    }
+  ]
+}

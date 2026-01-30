@@ -1,0 +1,6 @@
+Navigating to ParaBank homepage
+Entering username
+Username entered successfully
+Entering password
+Password entered successfully
+Clicking login button

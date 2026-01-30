@@ -1,0 +1,358 @@
+{
+  "uuid": "b996c69e-5f46-4856-86ce-326660c781d3",
+  "name": "should navigate to registration page when clicking register link",
+  "historyId": "d31240e8e8aa797145cb73c1c5c4ed36:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:\n    1) <form name=\"login\" method=\"POST\" action=\"login.htm\">…</form> aka getByText('Username Password Log In')\n    2) <form method=\"post\" id=\"customerForm\" action=\"register.htm\">…</form> aka locator('#customerForm')\n\nCall log:\n  - waiting for locator('form, #registerForm, .register-form') to be visible\n",
+    "trace": "Error: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:\n    1) <form name=\"login\" method=\"POST\" action=\"login.htm\">…</form> aka getByText('Username Password Log In')\n    2) <form method=\"post\" id=\"customerForm\" action=\"register.htm\">…</form> aka locator('#customerForm')\n\nCall log:\n  - waiting for locator('form, #registerForm, .register-form') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768110646934_dnu117mve.spec.ts:112:32\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768110646934_dnu117mve.spec.ts:103:18"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768111525980,
+              "uuid": "9dd69616-bdb1-4ea2-bd42-7bff57a5bb34",
+              "stop": 1768111527435
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768111525977,
+          "uuid": "53041162-f67c-4f84-8d7d-e16d02356e8f",
+          "stop": 1768111527436
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768111527458,
+              "uuid": "2f2e2b1f-2954-4833-8539-adf1fbb5bbea",
+              "stop": 1768111529294
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768111527445,
+          "uuid": "5cc88c11-6183-4b8e-8203-5e65f209c129",
+          "stop": 1768111529320
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768111529328,
+              "uuid": "671745c9-f4c4-43ba-ba09-751460d3ad58",
+              "stop": 1768111530081
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768111529322,
+          "uuid": "22356b13-157a-4620-8587-7d8333cbab30",
+          "stop": 1768111530081
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768111525956,
+      "uuid": "7149ffa2-1f36-4ffb-8642-1d4c8e75b621",
+      "stop": 1768111530081
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111530300,
+          "name": "Navigate to \"/\"",
+          "uuid": "29e295cc-9b80-4063-93f7-e3b928879bf1",
+          "stop": 1768111537305
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111537315,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "208349d5-519e-4890-9d54-b74c94cc3733",
+          "stop": 1768111537727
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768111530281,
+      "name": "Navigate to Parabank homepage",
+      "uuid": "388108d6-aa81-486e-afab-89e9e977ef3e",
+      "stop": 1768111537727
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111537734,
+          "name": "Wait for selector getByRole('link', { name: 'Register' })",
+          "uuid": "ab7da634-a424-4216-ac4e-ecdb3a2b28c5",
+          "stop": 1768111537781
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111537839,
+          "name": "Click getByRole('link', { name: 'Register' })",
+          "uuid": "1406ce3f-71be-40eb-8080-0e12d49d36d0",
+          "stop": 1768111538318
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111538320,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "f47f7991-e289-4ac9-8901-e18db1529044",
+          "stop": 1768111538802
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768111537727,
+      "name": "Click on Register link",
+      "uuid": "813ef09b-30cf-404d-8819-6cccc75d4c1a",
+      "stop": 1768111538802
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:\n    1) <form name=\"login\" method=\"POST\" action=\"login.htm\">…</form> aka getByText('Username Password Log In')\n    2) <form method=\"post\" id=\"customerForm\" action=\"register.htm\">…</form> aka locator('#customerForm')\n\nCall log:\n  - waiting for locator('form, #registerForm, .register-form') to be visible\n",
+        "trace": "Error: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:\n    1) <form name=\"login\" method=\"POST\" action=\"login.htm\">…</form> aka getByText('Username Password Log In')\n    2) <form method=\"post\" id=\"customerForm\" action=\"register.htm\">…</form> aka locator('#customerForm')\n\nCall log:\n  - waiting for locator('form, #registerForm, .register-form') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768110646934_dnu117mve.spec.ts:112:32\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768110646934_dnu117mve.spec.ts:103:18"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111538806,
+          "name": "Expect \"toContain\"",
+          "uuid": "4e2f6a17-5a8d-4151-a2bd-0e1c53292495",
+          "stop": 1768111538807
+        },
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:\n    1) <form name=\"login\" method=\"POST\" action=\"login.htm\">…</form> aka getByText('Username Password Log In')\n    2) <form method=\"post\" id=\"customerForm\" action=\"register.htm\">…</form> aka locator('#customerForm')\n\nCall log:\n  - waiting for locator('form, #registerForm, .register-form') to be visible\n",
+            "trace": "Error: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:\n    1) <form name=\"login\" method=\"POST\" action=\"login.htm\">…</form> aka getByText('Username Password Log In')\n    2) <form method=\"post\" id=\"customerForm\" action=\"register.htm\">…</form> aka locator('#customerForm')\n\nCall log:\n  - waiting for locator('form, #registerForm, .register-form') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768110646934_dnu117mve.spec.ts:112:32\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768110646934_dnu117mve.spec.ts:103:18"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768111538810,
+          "name": "Wait for selector locator('form, #registerForm, .register-form')",
+          "uuid": "a32cc28c-19f4-48bd-b053-e4c6ae01b6f3",
+          "stop": 1768111538832
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768111538803,
+      "name": "Verify navigation to registration page",
+      "uuid": "dfe59ca7-2974-407d-b643-e09084995a00",
+      "stop": 1768111538833
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "3148be85-4e9c-4326-8209-f6523e3cf141-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768111539397,
+      "name": "screenshot",
+      "stop": 1768111539397
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "79c85ac0-decb-4a03-aa3a-752510579445-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768111539398,
+      "name": "video",
+      "stop": 1768111539398
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "9d8753a2-ed90-4a9f-bec6-ec08d120d7db-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768111539400,
+      "name": "error-context",
+      "stop": 1768111539400
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "97ddb10c-5c45-421d-a4fa-cfe96d0e5804-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768111539401,
+      "name": "trace",
+      "stop": 1768111539401
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768111538885,
+          "uuid": "8aa7429e-280e-457c-831b-70aff6bdd93b",
+          "stop": 1768111538885
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768111538994,
+              "uuid": "d10a849a-ee71-4b62-8cec-f992d40cd830",
+              "stop": 1768111539112
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768111538886,
+          "uuid": "5b9dfdea-9791-4f1d-9c60-151d458eaf3a",
+          "stop": 1768111539118
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768111538833,
+      "uuid": "7afcbf70-0489-4d72-b2ef-170c8dd0157c",
+      "stop": 1768111539130
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "22df356e-5df6-4c0b-940d-f3be4b4e5f48-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "cc011544-4924-4a3a-9876-b546781e82af-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768110646934_dnu117mve.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768110646934_dnu117mve.spec.ts > Register Link Navigation Test" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-66887-worker-0" },
+    { "name": "suite", "value": "test-case_1768110646934_dnu117mve.spec.ts" },
+    { "name": "subSuite", "value": "Register Link Navigation Test" }
+  ],
+  "links": [],
+  "start": 1768111525956,
+  "testCaseId": "d31240e8e8aa797145cb73c1c5c4ed36",
+  "fullName": "test-case_1768110646934_dnu117mve.spec.ts:5:3",
+  "titlePath": ["test-case_1768110646934_dnu117mve.spec.ts", "Register Link Navigation Test"],
+  "description": "Navigate to Parabank homepage and click the Register link to access the registration page",
+  "stop": 1768111537633
+}

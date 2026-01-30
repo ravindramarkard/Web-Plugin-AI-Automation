@@ -1,0 +1,12 @@
+Starting About Us page navigation test
+Navigating to https://parabank.parasoft.com
+Clicking on About Us link
+Found About Us element using selector: a[href*="about"]
+Successfully clicked About Us link
+Clicking on secondary element in About Us section
+Found secondary element using selector: a[href*="contact"]
+Successfully clicked secondary element
+Verifying About Us page content
+Current URL: https://www.parasoft.com/solutions/
+About Us content not found, but navigation completed
+About Us page navigation test completed successfully

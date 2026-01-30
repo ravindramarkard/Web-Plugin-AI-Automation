@@ -221,10 +221,20 @@ function ProjectCard({ project, viewMode, onEdit, onDelete, onClick, getIconEmoj
     onClick();
   };
 
+  const handleCardKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   if (viewMode === 'list') {
     return (
       <div
+        role="button"
+        tabIndex={0}
         onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
         className="glass-card flex cursor-pointer items-center gap-4 rounded-lg p-4 transition-colors hover:bg-white/10 dark:hover:bg-white/5">
         <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100/50 text-2xl dark:bg-blue-900/50">
           {getIconEmoji(project.icon)}
@@ -254,7 +264,10 @@ function ProjectCard({ project, viewMode, onEdit, onDelete, onClick, getIconEmoj
   if (viewMode === 'card') {
     return (
       <div
+        role="button"
+        tabIndex={0}
         onClick={handleCardClick}
+        onKeyDown={handleCardKeyDown}
         className="glass-card cursor-pointer rounded-lg p-6 transition-colors hover:bg-white/10 dark:hover:bg-white/5">
         <div className="mb-4 flex items-center justify-between">
           <div className="flex size-16 items-center justify-center rounded-xl bg-blue-100/50 text-4xl dark:bg-blue-900/50">
@@ -287,7 +300,10 @@ function ProjectCard({ project, viewMode, onEdit, onDelete, onClick, getIconEmoj
   // Grid view (default)
   return (
     <div
+      role="button"
+      tabIndex={0}
       onClick={handleCardClick}
+      onKeyDown={handleCardKeyDown}
       className="glass-card cursor-pointer rounded-lg p-4 transition-colors hover:bg-white/10 dark:hover:bg-white/5">
       <div className="mb-3 flex items-center justify-between">
         <div className="flex size-12 items-center justify-center rounded-lg bg-blue-100/50 text-2xl dark:bg-blue-900/50">
@@ -324,17 +340,19 @@ interface CreateProjectModalProps {
 
 function CreateProjectModal({ formData, setFormData, onSubmit, onClose, editingProject }: CreateProjectModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4 transition-all duration-300">
-      <div className="glass-panel w-full max-w-md scale-100 transform rounded-2xl p-6 shadow-2xl transition-all">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm transition-all duration-300">
+      <div className="glass-panel w-full max-w-md scale-100 rounded-2xl p-6 shadow-2xl transition-all">
         <h2 className="mb-6 text-xl font-bold text-gray-900 dark:text-white">
           {editingProject ? 'Edit Project' : 'Create New Project'}
         </h2>
         <form onSubmit={onSubmit}>
-          {/* Project Name */}
           <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Project Name *</label>
+            <label htmlFor="project-name" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Project Name *
+            </label>
             <input
               type="text"
+              id="project-name"
               required
               value={formData.name}
               onChange={e => setFormData({ ...formData, name: e.target.value })}
@@ -343,11 +361,13 @@ function CreateProjectModal({ formData, setFormData, onSubmit, onClose, editingP
             />
           </div>
 
-          {/* Team */}
           <div className="mb-4">
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Team</label>
+            <label htmlFor="project-team" className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+              Team
+            </label>
             <input
               type="text"
+              id="project-team"
               value={formData.team}
               onChange={e => setFormData({ ...formData, team: e.target.value })}
               className="glass-input w-full rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
@@ -355,9 +375,8 @@ function CreateProjectModal({ formData, setFormData, onSubmit, onClose, editingP
             />
           </div>
 
-          {/* Icon Selection */}
           <div className="mb-6">
-            <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Project Icon</label>
+            <p className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">Project Icon</p>
             <div className="grid grid-cols-8 gap-2">
               {PROJECT_ICONS.map(icon => (
                 <button

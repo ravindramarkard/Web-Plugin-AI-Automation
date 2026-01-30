@@ -159,6 +159,26 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
     };
 
     loadAgentModels();
+
+    // Listen for storage changes to keep UI in sync
+    const handleStorageChange = (changes: { [key: string]: chrome.storage.StorageChange }, areaName: string) => {
+      if (areaName === 'local') {
+        const storageKey = 'agent-models';
+        if (changes[storageKey]) {
+          loadAgentModels();
+        }
+      }
+    };
+
+    if (globalThis.chrome?.storage?.onChanged) {
+      globalThis.chrome.storage.onChanged.addListener(handleStorageChange);
+    }
+
+    return () => {
+      if (globalThis.chrome?.storage?.onChanged) {
+        globalThis.chrome.storage.onChanged.removeListener(handleStorageChange);
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -1789,7 +1809,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
 
             {isProviderSelectorOpen && (
               <div
-                className={`absolute z-10 mt-2 w-full overflow-hidden rounded-md border ${
+                className={`absolute z-50 mt-2 max-h-64 w-full overflow-y-auto rounded-md border ${
                   isDarkMode
                     ? 'border-blue-600 bg-slate-700 shadow-lg shadow-slate-900/50'
                     : 'border-blue-200 bg-white shadow-xl shadow-blue-100/50'

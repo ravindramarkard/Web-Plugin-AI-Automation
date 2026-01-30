@@ -1,0 +1,85 @@
+Test failed with error: ExpectError: expect(page).toHaveURL(expected) failed
+
+Expected: "https://parabank.parasoft.com/"
+Received: "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"
+Timeout:  5000ms
+
+Call log:
+  - Expect "toHaveURL" with timeout 5000ms
+    9 × unexpected value "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:15:28
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:11:7 {
+  matcherResult: {
+    name: 'toHaveURL',
+    expected: 'https://parabank.parasoft.com/',
+    message: '\x1B[2mexpect(\x1B[22m\x1B[31mpage\x1B[39m\x1B[2m).\x1B[22mtoHaveURL\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m)\x1B[22m failed\n' +
+      '\n' +
+      'Expected: \x1B[32m"https://parabank.parasoft.com/"\x1B[39m\n' +
+      'Received: \x1B[31m"https://parabank.parasoft.com/\x1B[7mparabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB\x1B[27m"\x1B[39m\n' +
+      'Timeout:  5000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      '\x1B[2m  - Expect "toHaveURL" with timeout 5000ms\x1B[22m\n' +
+      '\x1B[2m    9 × unexpected value "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"\x1B[22m\n',
+    pass: false,
+    actual: 'https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB',
+    log: [
+      '  - Expect "toHaveURL" with timeout 5000ms',
+      '    9 × unexpected value "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"'
+    ],
+    timeout: 5000
+  },
+  Symbol(step): {
+    category: 'expect',
+    apiName: 'expect.toHaveURL',
+    title: 'Expect "toHaveURL"',
+    shortTitle: 'Expect "toHaveURL"',
+    params: { expected: 'https://parabank.parasoft.com' },
+    infectParentStepsWithError: undefined,
+    stepId: 'expect@44',
+    group: undefined,
+    boxedStack: undefined,
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts',
+      line: 15,
+      column: 28
+    },
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'expect@44',
+      _title: 'Expect "toHaveURL"',
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768052704530,
+    error: {
+      message: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mpage\x1B[39m\x1B[2m).\x1B[22mtoHaveURL\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m)\x1B[22m failed\n' +
+        '\n' +
+        'Expected: \x1B[32m"https://parabank.parasoft.com/"\x1B[39m\n' +
+        'Received: \x1B[31m"https://parabank.parasoft.com/\x1B[7mparabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB\x1B[27m"\x1B[39m\n' +
+        'Timeout:  5000ms\n' +
+        '\n' +
+        'Call log:\n' +
+        '\x1B[2m  - Expect "toHaveURL" with timeout 5000ms\x1B[22m\n' +
+        '\x1B[2m    9 × unexpected value "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"\x1B[22m\n',
+      stack: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mpage\x1B[39m\x1B[2m).\x1B[22mtoHaveURL\x1B[2m(\x1B[22m\x1B[32mexpected\x1B[39m\x1B[2m)\x1B[22m failed\n' +
+        '\n' +
+        'Expected: \x1B[32m"https://parabank.parasoft.com/"\x1B[39m\n' +
+        'Received: \x1B[31m"https://parabank.parasoft.com/\x1B[7mparabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB\x1B[27m"\x1B[39m\n' +
+        'Timeout:  5000ms\n' +
+        '\n' +
+        'Call log:\n' +
+        '\x1B[2m  - Expect "toHaveURL" with timeout 5000ms\x1B[22m\n' +
+        '\x1B[2m    9 × unexpected value "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"\x1B[22m\n' +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:15:28\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:11:7',
+      cause: undefined
+    }
+  }
+}

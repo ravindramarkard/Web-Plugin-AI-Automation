@@ -344,7 +344,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as any)}
                         className={`
-                          flex items-center gap-2 rounded-t-lg border-b-2 py-3 px-4 text-sm font-medium transition-all
+                          flex items-center gap-2 rounded-t-lg border-b-2 px-4 py-3 text-sm font-medium transition-all
                           ${
                             activeTab === tab.id
                               ? 'border-blue-500 bg-blue-50/50 text-blue-600 dark:border-blue-400 dark:bg-blue-900/20 dark:text-blue-400'
@@ -369,7 +369,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                         <select
                           value={selectedEnvId}
                           onChange={e => handleEnvChange(e.target.value)}
-                          className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:text-white sm:text-sm">
+                          className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-600 dark:text-white">
                           <option value="" disabled>
                             Select Environment
                           </option>
@@ -396,7 +396,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                             Authentication Details
                           </h4>
 
-                          <div className="grid grid-cols-1 gap-y-4 gap-x-6 sm:grid-cols-2">
+                          <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2">
                             <div className="flex flex-col">
                               <span className="text-xs text-gray-500 dark:text-gray-400">Username:</span>
                               <span className="font-mono text-sm text-gray-900 dark:text-white">
@@ -454,7 +454,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                           value={swaggerUrl}
                           onChange={e => setSwaggerUrl(e.target.value)}
                           placeholder="https://petstore.swagger.io/v2/swagger.json"
-                          className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:text-white sm:text-sm"
+                          className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-600 dark:text-white"
                         />
                         <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
                           Enter the full URL to the swagger.json or openapi.json file.
@@ -469,7 +469,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                         <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
                           Upload Swagger / OpenAPI File
                         </label>
-                        <div className="glass-panel flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 pt-5 pb-6 dark:border-gray-600">
+                        <div className="glass-panel flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 px-6 pb-6 pt-5 dark:border-gray-600">
                           <div className="space-y-1 text-center">
                             <FiFile className="mx-auto size-12 text-gray-400" />
                             <div className="flex text-sm text-gray-600 dark:text-gray-400">
@@ -516,8 +516,8 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                         (activeTab === 'environment' && !selectedEnvId) ||
                         (activeTab === 'swagger' && !swaggerUrl) ||
                         (activeTab === 'file' && !fileContent)
-                          ? 'bg-blue-400/50 cursor-not-allowed'
-                          : 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30'
+                          ? 'cursor-not-allowed bg-blue-400/50'
+                          : 'bg-blue-600 shadow-lg shadow-blue-500/30 hover:bg-blue-700'
                       }`}>
                     {isLoading ? (
                       <>
@@ -590,7 +590,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                     placeholder="Search endpoints by path or summary..."
                     value={filterText}
                     onChange={e => setFilterText(e.target.value)}
-                    className="glass-input block w-full rounded-lg border-gray-300 pl-10 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:text-sm"
+                    className="glass-input block w-full rounded-lg border-gray-300 pl-10 focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
@@ -602,7 +602,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                       className={`rounded-lg px-3 py-1 text-xs font-medium transition-all ${
                         selectedMethods.has(method)
                           ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
-                          : 'glass-button border border-gray-200 hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5 text-gray-600 dark:text-gray-300'
+                          : 'glass-button border border-gray-200 text-gray-600 hover:bg-black/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/5'
                       }`}>
                       {method}
                     </button>
@@ -610,7 +610,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                 </div>
 
                 {filteredEndpoints.length > 0 ? (
-                  <div className="glass-panel max-h-[500px] space-y-2 overflow-y-auto rounded-xl p-2 pr-2">
+                  <div className="glass-panel max-h-[500px] space-y-2 overflow-y-auto rounded-xl p-2">
                     {filteredEndpoints.map(endpoint => (
                       <div
                         key={endpoint.originalIndex}
@@ -622,13 +622,13 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                         onClick={() => toggleEndpointSelection(endpoint.originalIndex)}>
                         <div className="flex items-center gap-3">
                           <div
-                            className={`flex h-5 w-5 items-center justify-center rounded border transition-colors ${
+                            className={`flex size-5 items-center justify-center rounded border transition-colors ${
                               selectedEndpointIndices.has(endpoint.originalIndex)
                                 ? 'border-blue-500 bg-blue-500 text-white'
                                 : 'border-gray-300 bg-white dark:border-gray-600 dark:bg-gray-700'
                             }`}>
                             {selectedEndpointIndices.has(endpoint.originalIndex) && (
-                              <FiCheckCircle className="h-3.5 w-3.5" />
+                              <FiCheckCircle className="size-3.5" />
                             )}
                           </div>
                           <span
@@ -682,10 +682,10 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                       }}
                       className={`glass-button flex w-full items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium text-white transition-all ${
                         selectedEndpointIndices.size > 0
-                          ? 'bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/30'
+                          ? 'bg-blue-600 shadow-lg shadow-blue-500/30 hover:bg-blue-700'
                           : 'cursor-not-allowed bg-gray-300 dark:bg-gray-700'
                       }`}>
-                      <FiSettings className="h-5 w-5" />
+                      <FiSettings className="size-5" />
                       Next: Configure Tests ({selectedEndpointIndices.size} selected)
                     </button>
                   </div>
@@ -733,7 +733,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                         value={testName}
                         onChange={e => setTestName(e.target.value)}
                         placeholder="e.g., User Management API Tests"
-                        className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:text-sm"
+                        className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                       />
                     </div>
 
@@ -744,7 +744,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                       <select
                         value={testFramework}
                         onChange={e => setTestFramework(e.target.value)}
-                        className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:text-sm">
+                        className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white">
                         <option value="Playwright API" className="dark:bg-gray-800">
                           Playwright API (Recommended)
                         </option>
@@ -829,7 +829,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                     onChange={e => setAdditionalInstructions(e.target.value)}
                     placeholder="e.g., Use data-driven tests, handle edge cases for invalid IDs..."
                     rows={4}
-                    className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white sm:text-sm"
+                    className="glass-input block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm dark:border-gray-600 dark:bg-gray-800 dark:text-white"
                   />
                 </div>
 
@@ -842,7 +842,7 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                     ${
                       isGenerating || selectedEndpointIndices.size === 0
                         ? 'cursor-not-allowed bg-gray-400 dark:bg-gray-600'
-                        : 'bg-green-600 hover:bg-green-700 shadow-green-500/30'
+                        : 'bg-green-600 shadow-green-500/30 hover:bg-green-700'
                     }
                   `}>
                     {isGenerating ? (
@@ -890,14 +890,14 @@ export default function ApiTestGeneratorPage({ projectId }: ApiTestGeneratorPage
                 </button>
                 <button
                   onClick={handleDownloadCode}
-                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-md hover:bg-blue-700 shadow-blue-500/30">
+                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white shadow-md shadow-blue-500/30 hover:bg-blue-700">
                   <FiCloud className="size-4" />
                   Download File
                 </button>
               </div>
 
-              <div className="max-h-[500px] overflow-auto rounded-xl bg-gray-900 p-4 shadow-inner">
-                <pre className="text-sm text-gray-100 font-mono whitespace-pre-wrap">
+              <div className="max-h-[500px] overflow-auto rounded-xl bg-slate-950 p-4 shadow-inner border border-white/10">
+                <pre className="whitespace-pre-wrap font-mono text-sm text-white">
                   <code>{generatedCode}</code>
                 </pre>
               </div>

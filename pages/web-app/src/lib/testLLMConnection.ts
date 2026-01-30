@@ -287,8 +287,18 @@ export async function testLLMConnection(
 
     // Make a simple test call with a timeout
     const testMessage = new HumanMessage('test');
+    // Reasoning models (like o1, DeepSeek R1) can be slow to start responding
+    const timeoutMs = 120000; // 2 minutes
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error('Connection test timed out after 10 seconds')), 10000),
+      setTimeout(
+        () =>
+          reject(
+            new Error(
+              `Connection test timed out after ${timeoutMs / 1000} seconds. The model might be generating a long reasoning trace.`,
+            ),
+          ),
+        timeoutMs,
+      ),
     );
 
     await Promise.race([chatModel.invoke([testMessage]), timeoutPromise]);
@@ -301,6 +311,13 @@ export async function testLLMConnection(
     // Handle specific error case often seen with incompatible API responses
     if (errorMessage.includes("Cannot read properties of undefined (reading 'message')")) {
       errorMessage = 'Invalid response from provider. Please check your API Key and Base URL.';
+    } else if (errorMessage.includes('404')) {
+      errorMessage = `Model "${params.modelName}" not found (404). Please check:
+1. The model name is correct.
+2. You have access to this model.
+3. The Base URL is correct (if using a custom provider).`;
+    } else if (errorMessage.includes('401')) {
+      errorMessage = 'Unauthorized (401). Please check your API Key.';
     }
 
     return { success: false, error: errorMessage };

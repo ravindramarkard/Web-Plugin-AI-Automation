@@ -43,7 +43,8 @@ router.post('/', (req, res) => {
   try {
     const { testSuiteId, name, description, prompt, plannerDescription, status, testType, playwrightCode, baseUrl } =
       req.body;
-    if (!testSuiteId || !name || !description || !prompt) {
+    // testSuiteId can be null (unassigned)
+    if (!name || !description || !prompt) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
@@ -77,12 +78,13 @@ router.post('/', (req, res) => {
 // Update test case
 router.put('/:id', (req, res) => {
   try {
-    const existing = db.prepare('SELECT * FROM test_cases WHERE id = ?').get(req.params.id);
+    const existing = db.prepare('SELECT * FROM test_cases WHERE id = ?').get(req.params.id) as any;
     if (!existing) {
       return res.status(404).json({ error: 'Test case not found' });
     }
 
     const updates = {
+      testSuiteId: req.body.testSuiteId !== undefined ? req.body.testSuiteId : existing.testSuiteId,
       name: req.body.name ?? existing.name,
       description: req.body.description ?? existing.description,
       prompt: req.body.prompt ?? existing.prompt,
@@ -99,8 +101,9 @@ router.put('/:id', (req, res) => {
     };
 
     db.prepare(
-      'UPDATE test_cases SET name = ?, description = ?, prompt = ?, plannerDescription = ?, status = ?, testType = ?, playwrightCode = ?, baseUrl = ?, lastRunAt = ?, executionTime = ?, errorMessage = ?, updatedAt = ? WHERE id = ?',
+      'UPDATE test_cases SET testSuiteId = ?, name = ?, description = ?, prompt = ?, plannerDescription = ?, status = ?, testType = ?, playwrightCode = ?, baseUrl = ?, lastRunAt = ?, executionTime = ?, errorMessage = ?, updatedAt = ? WHERE id = ?',
     ).run(
+      updates.testSuiteId,
       updates.name,
       updates.description,
       updates.prompt,

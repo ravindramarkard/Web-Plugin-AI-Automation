@@ -1,0 +1,16 @@
+[
+  {
+    "uid": "b13ae484f85b2aab",
+    "name": "should login successfully and navigate to Bill Pay page",
+    "time": { "start": 1768944338421, "stop": 1768944349914, "duration": 11493 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "91b1f9004505b4c1",
+    "name": "click to Transfer Funds",
+    "time": { "start": 1768944359313, "stop": 1768944364815, "duration": 5502 },
+    "status": "failed",
+    "severity": "normal"
+  }
+]

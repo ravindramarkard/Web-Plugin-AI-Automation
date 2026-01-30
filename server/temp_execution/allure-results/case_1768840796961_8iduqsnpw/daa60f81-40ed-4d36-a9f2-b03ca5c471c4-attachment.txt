@@ -1,0 +1,4 @@
+Starting test with BASE_URL: https://parabank.parasoft.com/parabank/index.htm
+Using credentials: testuser1 / password
+Navigating to: https://parabank.parasoft.com/parabank/index.htm
+Navigation completed

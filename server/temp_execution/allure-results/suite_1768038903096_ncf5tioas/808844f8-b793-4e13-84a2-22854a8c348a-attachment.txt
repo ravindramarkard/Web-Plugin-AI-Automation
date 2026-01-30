@@ -1,0 +1,12 @@
+Starting test: forgot login information flow
+Navigating to https://parabank.parasoft.com
+Page loaded successfully
+Page title: ParaBank | Welcome | Online Banking
+Attempting to find and click "Forgot login info?" link
+Found "Forgot login info?" link by text
+Successfully clicked "Forgot login info?" link
+Waiting for navigation to lookup page...
+Successfully navigated to lookup page
+Current URL: https://parabank.parasoft.com/parabank/lookup.htm
+Page title: ParaBank | Customer Lookup
+Verifying lookup form elements are visible...

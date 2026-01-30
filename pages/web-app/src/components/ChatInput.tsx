@@ -183,7 +183,7 @@ export default function ChatInput({
   return (
     <form
       onSubmit={handleSubmit}
-      className={`glass-panel overflow-hidden rounded-xl border-0 transition-all ${disabled ? 'opacity-60 cursor-not-allowed' : 'focus-within:ring-2 focus-within:ring-blue-500/50 hover:shadow-lg'}`}
+      className={`glass-panel overflow-hidden rounded-xl border-0 transition-all ${disabled ? 'cursor-not-allowed opacity-60' : 'focus-within:ring-2 focus-within:ring-blue-500/50 hover:shadow-lg'}`}
       aria-label={t('chat_input_form')}>
       <div className="flex flex-col">
         {/* File attachments display */}
@@ -198,7 +198,7 @@ export default function ChatInput({
                 <button
                   type="button"
                   onClick={() => handleRemoveFile(index)}
-                  className="ml-1 rounded-sm hover:bg-red-500/20 hover:text-red-500 transition-colors"
+                  className="ml-1 rounded-sm transition-colors hover:bg-red-500/20 hover:text-red-500"
                   aria-label={`Remove ${file.name}`}>
                   <span className="text-xs">✕</span>
                 </button>
@@ -218,7 +218,7 @@ export default function ChatInput({
           className={`w-full resize-none border-none bg-transparent p-3 focus:outline-none ${
             disabled
               ? 'cursor-not-allowed text-gray-500'
-              : 'text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400'
+              : 'text-gray-900 placeholder:text-gray-500 dark:text-gray-100 dark:placeholder:text-gray-400'
           }`}
           placeholder={attachedFiles.length > 0 ? 'Add a message (optional)...' : t('chat_input_placeholder')}
           aria-label={t('chat_input_editor')}
@@ -266,7 +266,7 @@ export default function ChatInput({
                   disabled || isProcessingSpeech
                     ? 'cursor-not-allowed opacity-50'
                     : isRecording
-                      ? 'bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/30 animate-pulse'
+                      ? 'animate-pulse bg-red-500 text-white shadow-lg shadow-red-500/30 hover:bg-red-600'
                       : 'hover:text-red-500 active:scale-95'
                 }`}>
                 {isProcessingSpeech ? (
@@ -293,8 +293,8 @@ export default function ChatInput({
               aria-disabled={!historicalSessionId}
               className={`glass-button rounded-lg px-4 py-1.5 text-sm font-medium text-white shadow-lg transition-all ${
                 !historicalSessionId
-                  ? 'cursor-not-allowed opacity-50 bg-gray-500/50'
-                  : 'bg-green-600/80 hover:bg-green-700 shadow-green-500/20'
+                  ? 'cursor-not-allowed bg-gray-500/50 opacity-50'
+                  : 'bg-green-600/80 shadow-green-500/20 hover:bg-green-700'
               }`}>
               {t('chat_buttons_replay')}
             </button>
@@ -305,8 +305,8 @@ export default function ChatInput({
               aria-disabled={isSendButtonDisabled}
               className={`glass-button rounded-lg px-4 py-1.5 text-sm font-medium text-white shadow-lg transition-all ${
                 isSendButtonDisabled
-                  ? 'cursor-not-allowed opacity-50 bg-blue-500/30'
-                  : 'bg-blue-600/80 hover:bg-blue-700 shadow-blue-500/20'
+                  ? 'cursor-not-allowed bg-blue-500/30 opacity-50'
+                  : 'bg-blue-600/80 shadow-blue-500/20 hover:bg-blue-700'
               }`}>
               {t('chat_buttons_send')}
             </button>

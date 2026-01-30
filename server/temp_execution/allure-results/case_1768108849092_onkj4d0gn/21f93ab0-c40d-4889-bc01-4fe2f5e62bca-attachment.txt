@@ -1,0 +1,5 @@
+Successfully navigated to ParaBank homepage
+Found forgot login link by text content
+Successfully clicked on Forgot login info? link
+Successfully navigated to customer lookup page
+Customer lookup form is visible

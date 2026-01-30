@@ -25,11 +25,11 @@ export interface LLMKeyRecord {
 }
 
 export type LLMProviderStorage = BaseStorage<LLMKeyRecord> & {
-  setProvider: (providerId: string, config: ProviderConfig) => Promise<void>;
-  getProvider: (providerId: string) => Promise<ProviderConfig | undefined>;
-  removeProvider: (providerId: string) => Promise<void>;
-  hasProvider: (providerId: string) => Promise<boolean>;
-  getAllProviders: () => Promise<Record<string, ProviderConfig>>;
+  setProvider: (providerId: string, config: ProviderConfig, projectId?: string) => Promise<void>;
+  getProvider: (providerId: string, projectId?: string) => Promise<ProviderConfig | undefined>;
+  removeProvider: (providerId: string, projectId?: string) => Promise<void>;
+  hasProvider: (providerId: string, projectId?: string) => Promise<boolean>;
+  getAllProviders: (projectId?: string) => Promise<Record<string, ProviderConfig>>;
 };
 
 // Storage for LLM provider configurations
@@ -42,6 +42,42 @@ const storage = createStorage<LLMKeyRecord>(
     liveUpdate: true,
   },
 );
+
+// Helper to access project-specific storage
+const getProjectStorageKey = (projectId: string) => `project:${projectId}:llm_providers`;
+
+const getStorageData = async (projectId?: string): Promise<LLMKeyRecord> => {
+  if (!projectId) {
+    return (await storage.get()) || { providers: {} };
+  }
+
+  // Access chrome.storage.local directly for project settings
+  const chrome = (globalThis as any).chrome;
+  if (!chrome?.storage?.local) {
+    console.warn('[LLMProviderStorage] Chrome storage not available for project settings');
+    return { providers: {} };
+  }
+
+  const key = getProjectStorageKey(projectId);
+  const result = await chrome.storage.local.get([key]);
+  return (result[key] as LLMKeyRecord) || { providers: {} };
+};
+
+const setStorageData = async (data: LLMKeyRecord, projectId?: string): Promise<void> => {
+  if (!projectId) {
+    await storage.set(data);
+    return;
+  }
+
+  const chrome = (globalThis as any).chrome;
+  if (!chrome?.storage?.local) {
+    console.warn('[LLMProviderStorage] Chrome storage not available for project settings');
+    return;
+  }
+
+  const key = getProjectStorageKey(projectId);
+  await chrome.storage.local.set({ [key]: data });
+};
 
 // Helper function to determine provider type from provider name
 // Make sure to update this function if you add a new provider type
@@ -241,7 +277,7 @@ function ensureBackwardCompatibility(providerId: string, config: ProviderConfig)
 
 export const llmProviderStore: LLMProviderStorage = {
   ...storage,
-  async setProvider(providerId: string, config: ProviderConfig) {
+  async setProvider(providerId: string, config: ProviderConfig, projectId?: string) {
     if (!providerId) {
       throw new Error('Provider id cannot be empty');
     }
@@ -293,34 +329,40 @@ export const llmProviderStore: LLMProviderStorage = {
           }),
     };
 
-    console.log(`[llmProviderStore.setProvider] Saving config for ${providerId}:`, JSON.stringify(completeConfig));
+    console.log(
+      `[llmProviderStore.setProvider] Saving config for ${providerId} (Project: ${projectId || 'Global'}):`,
+      JSON.stringify(completeConfig),
+    );
 
-    const current = (await storage.get()) || { providers: {} };
-    await storage.set({
-      providers: {
-        ...current.providers,
-        [providerId]: completeConfig,
+    const current = await getStorageData(projectId);
+    await setStorageData(
+      {
+        providers: {
+          ...current.providers,
+          [providerId]: completeConfig,
+        },
       },
-    });
+      projectId,
+    );
   },
-  async getProvider(providerId: string) {
-    const data = (await storage.get()) || { providers: {} };
+  async getProvider(providerId: string, projectId?: string) {
+    const data = await getStorageData(projectId);
     const config = data.providers[providerId];
     return config ? ensureBackwardCompatibility(providerId, config) : undefined;
   },
-  async removeProvider(providerId: string) {
-    const current = (await storage.get()) || { providers: {} };
+  async removeProvider(providerId: string, projectId?: string) {
+    const current = await getStorageData(projectId);
     const newProviders = { ...current.providers };
     delete newProviders[providerId];
-    await storage.set({ providers: newProviders });
+    await setStorageData({ providers: newProviders }, projectId);
   },
-  async hasProvider(providerId: string) {
-    const data = (await storage.get()) || { providers: {} };
+  async hasProvider(providerId: string, projectId?: string) {
+    const data = await getStorageData(projectId);
     return providerId in data.providers;
   },
 
-  async getAllProviders() {
-    const data = await storage.get();
+  async getAllProviders(projectId?: string) {
+    const data = await getStorageData(projectId);
     const providers = { ...data.providers };
 
     // Add backward compatibility for all providers

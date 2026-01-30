@@ -1,0 +1,592 @@
+{
+  "uuid": "119f2454-e294-4899-9a4e-ff35401dd6e4",
+  "name": "should login successfully and navigate to Bill Pay page",
+  "historyId": "ec85a89dbd76cd737145e6e79a7f9c8a:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n",
+    "trace": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:100:63\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:83:7"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Launch browser",
+                  "start": 1768944338507,
+                  "uuid": "9695b3d1-8249-4d3c-948c-06e745429510",
+                  "stop": 1768944339989
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"browser\"",
+              "start": 1768944338485,
+              "uuid": "e97a51fa-ab2c-480b-91d2-ade5af646438",
+              "stop": 1768944339989
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Create context",
+                  "start": 1768944339997,
+                  "uuid": "ea4cd87d-0fb8-4454-a568-2992273aab24",
+                  "stop": 1768944340026
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"context\"",
+              "start": 1768944339994,
+              "uuid": "2b489480-f6b1-4006-ad51-f849becbd89c",
+              "stop": 1768944340033
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Create page",
+                  "start": 1768944340039,
+                  "uuid": "ebce6829-cbcc-43ef-9a4b-dd2bf27555af",
+                  "stop": 1768944341904
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"page\"",
+              "start": 1768944340033,
+              "uuid": "112177c5-8b6a-4f6c-abc5-b48ac54fdbae",
+              "stop": 1768944341904
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Navigate to \"/parabank/index.htm?ConnType=JDBC\"",
+              "start": 1768944341909,
+              "uuid": "0202cb7f-77f8-492e-8f39-904357aec110",
+              "stop": 1768944344189
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Wait for load state \"networkidle\"",
+              "start": 1768944344275,
+              "uuid": "6b8cdb97-081b-4fe8-aa42-6ed096535414",
+              "stop": 1768944344679
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "beforeEach hook",
+          "start": 1768944338428,
+          "uuid": "152b28c1-6017-485c-87bf-5a23c9817a94",
+          "stop": 1768944344680
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768944338424,
+      "uuid": "8833595a-95e5-4d3d-b371-478180367ad1",
+      "stop": 1768944344680
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944344831,
+          "name": "Navigate to \"/parabank/index.htm\"",
+          "uuid": "bf042d0f-589d-4866-ae4d-69adcd186b15",
+          "stop": 1768944345648
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944345661,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "484a57c0-7711-45da-9627-27cfdb5a3ae2",
+          "stop": 1768944346151
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944344828,
+      "name": "Navigate to ParaBank application",
+      "uuid": "bd781449-d49b-4fcd-863a-f97c39b879b2",
+      "stop": 1768944346156
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346165,
+          "name": "Wait for selector locator('input[name=\"username\"]')",
+          "uuid": "3d4f0711-754c-4201-aa5c-7cbcd7adcc45",
+          "stop": 1768944346276
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346279,
+          "name": "Wait for selector locator('input[name=\"password\"]')",
+          "uuid": "36ef52a5-6bfb-4dd9-8176-d16f55e66fca",
+          "stop": 1768944346407
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944346157,
+      "name": "Wait for login form to be visible",
+      "uuid": "14163d03-a617-4a4a-b85f-ec6f9d353af2",
+      "stop": 1768944346408
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346416,
+          "name": "Wait for selector locator('input[name=\"username\"]')",
+          "uuid": "fae6c1f6-0293-4832-a39d-916889e7c40b",
+          "stop": 1768944346428
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346431,
+          "name": "Fill \"333\" locator('input[name=\"username\"]')",
+          "uuid": "58cf64e5-26d1-454f-a3a2-e4fe4b5a2aef",
+          "stop": 1768944346497
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346510,
+          "name": "Expect \"toBe\"",
+          "uuid": "991eb225-4f6a-4f0c-b4f6-9f476b000eb7",
+          "stop": 1768944346511
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944346409,
+      "name": "Enter username",
+      "uuid": "890bf8a9-483d-4844-be7c-500600c4d27d",
+      "stop": 1768944346511
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346517,
+          "name": "Wait for selector locator('input[name=\"password\"]')",
+          "uuid": "bc83b11b-a209-4890-bfa1-4b16b3317e94",
+          "stop": 1768944346544
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346551,
+          "name": "Fill \"333\" locator('input[name=\"password\"]')",
+          "uuid": "f27756c1-0f53-40ea-bb73-3f430df08971",
+          "stop": 1768944346578
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346594,
+          "name": "Expect \"toBe\"",
+          "uuid": "d1312190-cf1e-43b3-8785-3c1bd48d2fca",
+          "stop": 1768944346595
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944346511,
+      "name": "Enter password",
+      "uuid": "d96166c1-1951-44a9-b48c-ca741b286935",
+      "stop": 1768944346596
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346606,
+          "name": "Wait for selector locator('input[type=\"submit\"]').or(getByRole('button', { name: 'Log In' })).or(getByRole('button', { name: 'Login' }))",
+          "uuid": "433a2ee0-6699-43ad-8d75-463c57b05d17",
+          "stop": 1768944346625
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944346631,
+          "name": "Click locator('input[type=\"submit\"]').or(getByRole('button', { name: 'Log In' })).or(getByRole('button', { name: 'Login' }))",
+          "uuid": "3bb8d869-5232-4abc-89b5-4d2affbccf87",
+          "stop": 1768944347772
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944347788,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "41210852-33f8-4f72-b77f-de68bd2c6f55",
+          "stop": 1768944348527
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944348530,
+          "name": "Expect \"toBeVisible\" locator('a[href*=\"logout\"]')",
+          "uuid": "6a88f340-585b-4fee-bd0d-92b3f0f642a2",
+          "stop": 1768944348582
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944346598,
+      "name": "Click login button",
+      "uuid": "ef3e0124-5068-45ce-9486-cd5c4ecd183b",
+      "stop": 1768944348582
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n",
+        "trace": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:100:63\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:83:7"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944348639,
+          "name": "Wait for selector getByRole('link', { name: 'Bill Pay' }).or(locator('a[href*=\"billpay\"]')).or(locator('a:has-text(\"Bill Payment\")'))",
+          "uuid": "987de73a-627c-4d66-93c0-4e3fd8ad1fc5",
+          "stop": 1768944348682
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944348686,
+          "name": "Click getByRole('link', { name: 'Bill Pay' }).or(locator('a[href*=\"billpay\"]')).or(locator('a:has-text(\"Bill Payment\")'))",
+          "uuid": "44f817b7-0fa5-483b-ae18-80d653c403fa",
+          "stop": 1768944349141
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944349143,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "0d93caf1-90d7-4029-a706-4b3abe265ec5",
+          "stop": 1768944349956
+        },
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n",
+            "trace": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:100:63\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:83:7"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944349958,
+          "name": "Expect \"toBeVisible\" locator('h1:has-text(\"Bill Pay\")')",
+          "uuid": "b5688583-a6cd-4831-af10-8b89f153dbd0",
+          "stop": 1768944350069
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944348582,
+      "name": "Navigate to Bill Pay page",
+      "uuid": "af34be0a-2ca7-42b0-8d17-9feb5e2e3088",
+      "stop": 1768944350070
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944350080,
+      "name": "Screenshot",
+      "uuid": "5f5b31de-cbe9-456d-a390-54dd5c2eb172",
+      "stop": 1768944350230
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "Screenshot", "source": "0b64226f-6ef1-4b53-92f3-1fa7e963d514-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768944353184,
+      "name": "Screenshot",
+      "stop": 1768944353184
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "deaf271f-5f3e-4437-9234-a9bd11673fa9-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768944353187,
+      "name": "screenshot",
+      "stop": 1768944353187
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "1f9e2e14-c50d-4bc6-899b-9f3735c6af5f-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768944353196,
+      "name": "video",
+      "stop": 1768944353196
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "0f54e49c-8813-448c-9bb4-51c02d04e7c1-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768944353197,
+      "name": "error-context",
+      "stop": 1768944353197
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "bae59c6c-de3b-4c26-8ea7-6a6568bda140-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768944353200,
+      "name": "trace",
+      "stop": 1768944353200
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768944350341,
+          "uuid": "709656e4-dd3e-4c6e-a930-58c295cfd035",
+          "stop": 1768944350342
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768944351235,
+              "uuid": "a307cf2c-43e1-4d68-8174-2b143dd12a6c",
+              "stop": 1768944351461
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768944350342,
+          "uuid": "91b8d487-94a8-4ec9-b3af-fc44995106c0",
+          "stop": 1768944351473
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768944350234,
+      "uuid": "416d33dc-70bc-423b-9d4b-7b608f7ed510",
+      "stop": 1768944351488
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "2edc815a-ad6a-4d74-aca3-ec517377bbf7-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "51f55fe4-80db-4846-9620-95b1dbe27a13-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768940056039_m2g1gd9k4.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768940056039_m2g1gd9k4.spec.ts > Login and Bill Pay Navigation" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-75918-worker-0" },
+    { "name": "suite", "value": "test-case_1768940056039_m2g1gd9k4.spec.ts" },
+    { "name": "subSuite", "value": "Login and Bill Pay Navigation" },
+    { "name": "epic", "value": "Banking Application" },
+    { "name": "feature", "value": "Authentication" },
+    { "name": "story", "value": "Login and Bill Pay Access" }
+  ],
+  "links": [],
+  "start": 1768944338421,
+  "testCaseId": "ec85a89dbd76cd737145e6e79a7f9c8a",
+  "fullName": "test-case_1768940056039_m2g1gd9k4.spec.ts:12:3",
+  "titlePath": ["test-case_1768940056039_m2g1gd9k4.spec.ts", "Login and Bill Pay Navigation"],
+  "stop": 1768944349914
+}

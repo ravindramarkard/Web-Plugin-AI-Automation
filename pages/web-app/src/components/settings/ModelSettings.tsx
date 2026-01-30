@@ -1,13 +1,6 @@
-/*
- * Changes:
- * - Added a searchable select component with filtering capability for model selection
- * - Implemented keyboard navigation and accessibility for the custom dropdown
- * - Added search functionality that filters models based on user input
- * - Added keyboard event handlers to close dropdowns with Escape key
- * - Styling for both light and dark mode themes
- */
 import { useEffect, useState, useRef, useCallback } from 'react';
 import type { KeyboardEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { Button } from '@extension/ui';
 import {
   llmProviderStore,
@@ -79,6 +72,12 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
   });
   const [newModelInputs, setNewModelInputs] = useState<Record<string, string>>({});
   const [isProviderSelectorOpen, setIsProviderSelectorOpen] = useState(false);
+  const providerSelectorRef = useRef<HTMLDivElement | null>(null);
+  const [providerDropdownRect, setProviderDropdownRect] = useState<{
+    top: number;
+    left: number;
+    width: number;
+  } | null>(null);
   const newlyAddedProviderRef = useRef<string | null>(null);
   const [nameErrors, setNameErrors] = useState<Record<string, string>>({});
   // Add state for tracking API key visibility
@@ -146,7 +145,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
     };
 
     loadProviders();
-  }, []);
+  }, [projectId]);
 
   // Load existing agent models and parameters on mount
   useEffect(() => {
@@ -187,7 +186,29 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
     };
 
     loadAgentModels();
-  }, []);
+
+    // Listen for storage changes to keep UI in sync
+    const handleStorageChange = (changes: { [key: string]: any }, areaName: string) => {
+      if (areaName === 'local') {
+        const storageKey = projectId ? `project:${projectId}:agent_models` : 'agent-models';
+        if (changes[storageKey]) {
+          loadAgentModels();
+        }
+      }
+    };
+
+    const chrome = (globalThis as any).chrome;
+    if (chrome?.storage?.onChanged) {
+      chrome.storage.onChanged.addListener(handleStorageChange);
+    }
+
+    return () => {
+      const chrome = (globalThis as any).chrome;
+      if (chrome?.storage?.onChanged) {
+        chrome.storage.onChanged.removeListener(handleStorageChange);
+      }
+    };
+  }, [projectId]);
 
   useEffect(() => {
     const loadSpeechToTextModel = async () => {
@@ -202,7 +223,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
     };
 
     loadSpeechToTextModel();
-  }, []);
+  }, [projectId]);
 
   // Auto-focus the input field when a new provider is added
   useEffect(() => {
@@ -230,7 +251,34 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
     }
   }, [providers]);
 
-  // Add a click outside handler to close the dropdown
+  useEffect(() => {
+    if (!isProviderSelectorOpen) {
+      return;
+    }
+
+    const updatePosition = () => {
+      if (!providerSelectorRef.current) {
+        return;
+      }
+      const rect = providerSelectorRef.current.getBoundingClientRect();
+      setProviderDropdownRect({
+        top: rect.bottom + 4,
+        left: rect.left,
+        width: rect.width,
+      });
+    };
+
+    updatePosition();
+
+    window.addEventListener('resize', updatePosition);
+    window.addEventListener('scroll', updatePosition, true);
+
+    return () => {
+      window.removeEventListener('resize', updatePosition);
+      window.removeEventListener('scroll', updatePosition, true);
+    };
+  }, [isProviderSelectorOpen]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement;
@@ -683,6 +731,9 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
           console.warn('[ModelSettings] Failed to sync agent model to extension:', error);
           // Don't fail the save if extension sync fails
         }
+
+        // Sync to server
+        await syncAgentModelsToServer();
       } else {
         // Reset storage if no model is selected
         await agentModelStore.resetAgentModel(agentName);
@@ -862,7 +913,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                 step="0.01"
                 value={modelParameters[agentName].temperature}
                 onChange={e => handleParameterChange(agentName, 'temperature', Number.parseFloat(e.target.value))}
-                className="flex-1 h-1 appearance-none rounded-full bg-gray-200 dark:bg-gray-700 accent-blue-500 dark:accent-blue-400"
+                className="h-1 flex-1 appearance-none rounded-full bg-gray-200 accent-blue-500 dark:bg-gray-700 dark:accent-blue-400"
               />
               <div className="flex items-center space-x-2">
                 <span className="w-12 text-sm text-gray-600 dark:text-gray-300">
@@ -907,7 +958,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                   step="0.001"
                   value={modelParameters[agentName].topP}
                   onChange={e => handleParameterChange(agentName, 'topP', Number.parseFloat(e.target.value))}
-                  className="flex-1 h-1 appearance-none rounded-full bg-gray-200 dark:bg-gray-700 accent-blue-500 dark:accent-blue-400"
+                  className="h-1 flex-1 appearance-none rounded-full bg-gray-200 accent-blue-500 dark:bg-gray-700 dark:accent-blue-400"
                 />
                 <div className="flex items-center space-x-2">
                   <span className="w-12 text-sm text-gray-600 dark:text-gray-300">
@@ -1339,7 +1390,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                 <div
                   key={providerId}
                   id={`provider-${providerId}`}
-                  className={`space-y-4 ${modifiedProviders.has(providerId) && !providersFromStorage.has(providerId) ? 'glass-panel rounded-xl p-6 border-blue-500/30' : ''}`}>
+                  className={`space-y-4 ${modifiedProviders.has(providerId) && !providersFromStorage.has(providerId) ? 'glass-panel rounded-xl border-blue-500/30 p-6' : ''}`}>
                   <div className="flex items-center justify-between">
                     <h3 className="text-lg font-medium text-gray-700 dark:text-gray-300">
                       {providerConfig.name || providerId}
@@ -1461,7 +1512,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                               console.log('Name input changed:', e.target.value);
                               handleNameChange(providerId, e.target.value);
                             }}
-                            className={`glass-input flex-1 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none transition-all focus:ring-2 ${
+                            className={`glass-input flex-1 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:ring-2 dark:text-gray-200 ${
                               nameErrors[providerId]
                                 ? 'border-red-500/50 focus:border-red-500/50 focus:ring-red-500/20'
                                 : 'focus:border-blue-500/50 focus:ring-blue-500/20'
@@ -1503,7 +1554,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                           }
                           value={providerConfig.apiKey || ''}
                           onChange={e => handleApiKeyChange(providerId, e.target.value, providerConfig.baseUrl)}
-                          className="glass-input w-full rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none transition-all focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                          className="glass-input w-full rounded-lg px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 dark:text-gray-200"
                         />
                         {/* Show eye button only for newly added providers */}
                         {modifiedProviders.has(providerId) && !providersFromStorage.has(providerId) && (
@@ -1596,7 +1647,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                           }
                           value={providerConfig.baseUrl || ''}
                           onChange={e => handleApiKeyChange(providerId, providerConfig.apiKey || '', e.target.value)}
-                          className="glass-input flex-1 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none transition-all focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                          className="glass-input flex-1 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 dark:text-gray-200"
                         />
                       </div>
                     </div>
@@ -1610,13 +1661,13 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                           {t('options_models_providers_deployment')}*
                         </label>
                         <div className="flex-1 space-y-2">
-                          <div className="flex min-h-[42px] flex-wrap items-center gap-2 rounded-md border border-gray-300 bg-white text-gray-700 p-2 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-200">
+                          <div className="flex min-h-[42px] flex-wrap items-center gap-2 rounded-md border border-gray-300 bg-white p-2 text-gray-700 dark:border-slate-600 dark:bg-slate-700 dark:text-gray-200">
                             {/* Show azure deployments */}
                             {(providerConfig.azureDeploymentNames || []).length > 0
                               ? (providerConfig.azureDeploymentNames || []).map((deploymentName: string) => (
                                   <div
                                     key={deploymentName}
-                                    className="flex items-center rounded-full bg-blue-100 text-blue-800 px-2 py-1 text-sm dark:bg-blue-900 dark:text-blue-100">
+                                    className="flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                                     <span>{deploymentName}</span>
                                     <button
                                       type="button"
@@ -1648,7 +1699,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                                   }
                                 }
                               }}
-                              className="min-w-[150px] flex-1 border-none text-sm bg-transparent text-gray-700 dark:text-gray-200 p-1 outline-none"
+                              className="min-w-[150px] flex-1 border-none bg-transparent p-1 text-sm text-gray-700 outline-none dark:text-gray-200"
                             />
                           </div>
                           <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -1672,7 +1723,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                           placeholder={t('options_models_providers_placeholders_azureApiVersion')}
                           value={providerConfig.azureApiVersion || ''}
                           onChange={e => handleAzureApiVersionChange(providerId, e.target.value)}
-                          className="glass-input flex-1 rounded-lg px-3 py-2 text-sm text-gray-700 dark:text-gray-200 outline-none transition-all focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20"
+                          className="glass-input flex-1 rounded-lg px-3 py-2 text-sm text-gray-700 outline-none transition-all focus:border-blue-500/50 focus:ring-2 focus:ring-blue-500/20 dark:text-gray-200"
                         />
                       </div>
                     )}
@@ -1694,7 +1745,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                                   providerConfig.modelNames.map(model => (
                                     <div
                                       key={model}
-                                      className="flex items-center rounded-full bg-blue-100 text-blue-800 px-2 py-1 text-sm dark:bg-blue-900 dark:text-blue-100">
+                                      className="flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                                       <span>{model}</span>
                                       <button
                                         type="button"
@@ -1717,7 +1768,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                                   value={newModelInputs[providerId] || ''}
                                   onChange={e => handleModelsChange(providerId, e.target.value)}
                                   onKeyDown={e => handleKeyDown(e, providerId)}
-                                  className="min-w-[150px] flex-1 border-none text-sm bg-transparent text-gray-700 placeholder:text-gray-400 p-1 outline-none dark:text-gray-200 dark:placeholder:text-gray-500"
+                                  className="min-w-[150px] flex-1 border-none bg-transparent p-1 text-sm text-gray-700 outline-none placeholder:text-gray-400 dark:text-gray-200 dark:placeholder:text-gray-500"
                                 />
                                 <button
                                   type="button"
@@ -1754,7 +1805,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                                   return models.map(model => (
                                     <div
                                       key={model}
-                                      className="flex items-center rounded-full bg-blue-100 text-blue-800 px-2 py-1 text-sm dark:bg-blue-900 dark:text-blue-100">
+                                      className="flex items-center rounded-full bg-blue-100 px-2 py-1 text-sm text-blue-800 dark:bg-blue-900 dark:text-blue-100">
                                       <span>{model}</span>
                                       <button
                                         type="button"
@@ -1773,7 +1824,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                                   value={newModelInputs[providerId] || ''}
                                   onChange={e => handleModelsChange(providerId, e.target.value)}
                                   onKeyDown={e => handleKeyDown(e, providerId)}
-                                  className="min-w-[150px] flex-1 border-none text-sm bg-transparent text-gray-700 placeholder:text-gray-400 p-1 outline-none dark:text-gray-200 dark:placeholder:text-gray-500"
+                                  className="min-w-[150px] flex-1 border-none bg-transparent p-1 text-sm text-gray-700 outline-none placeholder:text-gray-400 dark:text-gray-200 dark:placeholder:text-gray-500"
                                 />
                                 <button
                                   type="button"
@@ -1786,7 +1837,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                                   disabled={!newModelInputs[providerId]?.trim()}
                                   className={`rounded px-3 py-1 text-sm font-medium transition-colors ${
                                     newModelInputs[providerId]?.trim()
-                                      ? 'bg-blue-500 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:bg-gray-300 disabled:text-gray-500 dark:disabled:bg-slate-600 dark:disabled:text-gray-400'
+                                      ? 'bg-blue-500 text-white hover:bg-blue-600 disabled:bg-gray-300 disabled:text-gray-500 dark:bg-blue-600 dark:hover:bg-blue-500 dark:disabled:bg-slate-600 dark:disabled:text-gray-400'
                                       : 'cursor-not-allowed bg-gray-300 text-gray-500 dark:bg-slate-600 dark:text-gray-400'
                                   }`}
                                   aria-label="Add model">
@@ -1809,7 +1860,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
                         <p className="text-sm text-gray-700 dark:text-gray-200">
                           <strong>
                             {' '}
-                            <code className="rounded italic bg-blue-100 px-1 py-0.5 dark:bg-slate-600">
+                            <code className="rounded bg-blue-100 px-1 py-0.5 italic dark:bg-slate-600">
                               OLLAMA_ORIGINS=chrome-extension://*
                             </code>{' '}
                           </strong>
@@ -1836,7 +1887,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
           )}
 
           {/* Add Provider button and dropdown */}
-          <div className="provider-selector-container relative pt-4">
+          <div ref={providerSelectorRef} className="provider-selector-container relative pt-4">
             <Button
               variant="secondary"
               onClick={() => setIsProviderSelectorOpen(prev => !prev)}
@@ -1844,41 +1895,48 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
               <span className="mr-2 text-sm">+</span>{' '}
               <span className="text-sm">{t('options_models_addNewProvider')}</span>
             </Button>
-
-            {isProviderSelectorOpen && (
-              <div className="glass-panel absolute z-10 mt-2 w-full overflow-hidden rounded-md shadow-xl">
-                <div className="py-1">
-                  {/* Map through provider types to create buttons */}
-                  {Object.values(ProviderTypeEnum)
-                    // Allow Azure to appear multiple times, but filter out other already added providers
-                    .filter(
-                      type =>
-                        type === ProviderTypeEnum.AzureOpenAI || // Always show Azure
-                        (type !== ProviderTypeEnum.CustomOpenAI &&
-                          !providersFromStorage.has(type) &&
-                          !modifiedProviders.has(type)),
-                    )
-                    .map(type => (
-                      <button
-                        key={type}
-                        type="button"
-                        className="flex w-full items-center px-4 py-3 text-left text-sm text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:text-blue-200 dark:hover:bg-blue-600/30 dark:hover:text-white transition-colors duration-150"
-                        onClick={() => handleProviderSelection(type)}>
-                        <span className="font-medium">{getDefaultDisplayNameFromProviderId(type)}</span>
-                      </button>
-                    ))}
-
-                  {/* Custom provider button (always shown) */}
-                  <button
-                    type="button"
-                    className="flex w-full items-center px-4 py-3 text-left text-sm text-blue-700 hover:bg-blue-100 hover:text-blue-800 dark:text-blue-200 dark:hover:bg-blue-600/30 dark:hover:text-white transition-colors duration-150"
-                    onClick={() => handleProviderSelection(ProviderTypeEnum.CustomOpenAI)}>
-                    <span className="font-medium">{t('options_models_providers_openaiCompatible')}</span>
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
+          {isProviderSelectorOpen &&
+            providerDropdownRect &&
+            createPortal(
+              <div
+                className="provider-selector-container fixed z-[9999]"
+                style={{
+                  top: providerDropdownRect.top,
+                  left: providerDropdownRect.left,
+                  width: providerDropdownRect.width,
+                }}>
+                <div className="glass-panel mt-2 max-h-64 w-full overflow-y-auto rounded-md shadow-xl">
+                  <div className="py-1">
+                    {Object.values(ProviderTypeEnum)
+                      .filter(
+                        type =>
+                          type === ProviderTypeEnum.AzureOpenAI ||
+                          (type !== ProviderTypeEnum.CustomOpenAI &&
+                            !providersFromStorage.has(type) &&
+                            !modifiedProviders.has(type)),
+                      )
+                      .map(type => (
+                        <button
+                          key={type}
+                          type="button"
+                          className="flex w-full items-center px-4 py-3 text-left text-sm text-blue-700 transition-colors duration-150 hover:bg-blue-100 hover:text-blue-800 dark:text-blue-200 dark:hover:bg-blue-600/30 dark:hover:text-white"
+                          onClick={() => handleProviderSelection(type)}>
+                          <span className="font-medium">{getDefaultDisplayNameFromProviderId(type)}</span>
+                        </button>
+                      ))}
+
+                    <button
+                      type="button"
+                      className="flex w-full items-center px-4 py-3 text-left text-sm text-blue-700 transition-colors duration-150 hover:bg-blue-100 hover:text-blue-800 dark:text-blue-200 dark:hover:bg-blue-600/30 dark:hover:text-white"
+                      onClick={() => handleProviderSelection(ProviderTypeEnum.CustomOpenAI)}>
+                      <span className="font-medium">{t('options_models_providers_openaiCompatible')}</span>
+                    </button>
+                  </div>
+                </div>
+              </div>,
+              document.body,
+            )}
         </div>
       </div>
 
@@ -1908,7 +1966,7 @@ export const ModelSettings = ({ projectId }: ModelSettingsProps) => {
             </label>
             <select
               id="speech-to-text-model"
-              className="glass-input flex-1 rounded-md border text-sm px-3 py-2 text-gray-700 dark:text-gray-200"
+              className="glass-input flex-1 rounded-md border px-3 py-2 text-sm text-gray-700 dark:text-gray-200"
               value={selectedSpeechToTextModel}
               onChange={e => handleSpeechToTextModelChange(e.target.value)}>
               <option value="">{t('options_models_chooseModel')}</option>

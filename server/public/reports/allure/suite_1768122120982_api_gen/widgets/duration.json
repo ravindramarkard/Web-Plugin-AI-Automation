@@ -1,0 +1,16 @@
+[
+  {
+    "uid": "ed989568267aea7b",
+    "name": "POST /pet - Add a new pet to the store - Invalid input",
+    "time": { "start": 1768130567919, "stop": 1768130568157, "duration": 238 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "de661f64ab733bff",
+    "name": "POST /pet - Add a new pet to the store - Success",
+    "time": { "start": 1768130566659, "stop": 1768130567812, "duration": 1153 },
+    "status": "passed",
+    "severity": "normal"
+  }
+]

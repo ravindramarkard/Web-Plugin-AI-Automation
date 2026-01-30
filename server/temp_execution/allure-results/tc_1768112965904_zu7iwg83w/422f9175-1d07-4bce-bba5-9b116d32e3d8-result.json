@@ -1,0 +1,347 @@
+{
+  "uuid": "422f9175-1d07-4bce-bba5-9b116d32e3d8",
+  "name": "Navigate to Products and Forum from logged-in session",
+  "historyId": "9c68037e15fdcf43abadf5725014f057:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /parabank/\nReceived string:  \"https://forums.parasoft.com/\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://forums.parasoft.com/\"\n",
+    "trace": "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /parabank/\nReceived string:  \"https://forums.parasoft.com/\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://forums.parasoft.com/\"\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-tc_1768112965904_zu7iwg83w.spec.ts:32:22"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768498339729,
+              "uuid": "32c8ab96-9d39-43fd-9f09-83f705f4918d",
+              "stop": 1768498340234
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768498339726,
+          "uuid": "37a4b3b3-9445-4150-877d-539d5092336d",
+          "stop": 1768498340234
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768498340236,
+              "uuid": "3a3b3061-00cb-40f2-9bec-dd8542c78c5a",
+              "stop": 1768498340247
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768498340235,
+          "uuid": "fff2230d-80a8-4a2a-815a-f4ab0362285c",
+          "stop": 1768498340252
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768498340256,
+              "uuid": "65d8d88e-a1f6-44ed-a650-fc6a7f378791",
+              "stop": 1768498340587
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768498340253,
+          "uuid": "8a4316c8-058c-4611-822a-55572976bb1a",
+          "stop": 1768498340588
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768498339720,
+      "uuid": "6e60bfb5-152a-4b2c-ad42-87cddf911430",
+      "stop": 1768498340588
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498340619,
+      "name": "Navigate to \"/parabank/index.htm\"",
+      "uuid": "e024bb97-edf2-4346-9400-47dc992f18e1",
+      "stop": 1768498342749
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498342754,
+      "name": "Fill \"testuser1\" locator('input[name=\"username\"]')",
+      "uuid": "0940c32c-fd28-474f-b845-ffce590cac35",
+      "stop": 1768498342793
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498342795,
+      "name": "Fill \"password\" locator('input[name=\"password\"]')",
+      "uuid": "67ec8ed6-6e68-4a16-b3b8-7f220440d226",
+      "stop": 1768498342813
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498342815,
+      "name": "Click getByRole('button', { name: 'Log In' })",
+      "uuid": "ce9c0955-1c94-4945-9b67-c5b34a2e8920",
+      "stop": 1768498344185
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498344185,
+      "name": "Wait for load state \"networkidle\"",
+      "uuid": "541b7d79-0d9b-4921-8b17-b588e692721d",
+      "stop": 1768498344755
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498344756,
+      "name": "Navigate to \"/parabank/index.htm\"",
+      "uuid": "2f694f4d-7824-4754-8b9e-57021d19e78c",
+      "stop": 1768498345123
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498345124,
+      "name": "Click locator('#footerPanel').getByRole('link', { name: 'Products' })",
+      "uuid": "51b723c0-1de3-45ce-a5d2-019b5abdd78d",
+      "stop": 1768498347592
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498347592,
+      "name": "Navigate to \"/parabank/index.htm\"",
+      "uuid": "ebd8aee8-fea7-4751-9a24-b448b5ca6e4b",
+      "stop": 1768498347963
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498347967,
+      "name": "Click getByRole('link', { name: 'Forum' })",
+      "uuid": "0a6d7ebf-a8c1-40ea-8e2c-f254c4918449",
+      "stop": 1768498349618
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /parabank/\nReceived string:  \"https://forums.parasoft.com/\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://forums.parasoft.com/\"\n",
+        "trace": "Error: expect(page).toHaveURL(expected) failed\n\nExpected pattern: /parabank/\nReceived string:  \"https://forums.parasoft.com/\"\nTimeout: 5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://forums.parasoft.com/\"\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-tc_1768112965904_zu7iwg83w.spec.ts:32:22"
+      },
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768498349619,
+      "name": "Expect \"toHaveURL\"",
+      "uuid": "5b101c85-9762-44aa-99e6-9b7ffe9f6040",
+      "stop": 1768498354649
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "5c80cca8-cd9d-43ab-845b-96bd5a5ef5e7-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768498355630,
+      "name": "screenshot",
+      "stop": 1768498355630
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "bf0da616-d89c-47c8-85e5-3817bc3b5541-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768498355631,
+      "name": "video",
+      "stop": 1768498355631
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "9ba2e505-e5b1-4115-a527-a9b09898288d-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768498355632,
+      "name": "error-context",
+      "stop": 1768498355632
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "2c14a36f-62b4-464b-b946-b3b0b1e5e1dc-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768498355632,
+      "name": "trace",
+      "stop": 1768498355632
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768498354683,
+          "uuid": "184dd325-5d4b-4d6c-a2d7-b6fb5c12af25",
+          "stop": 1768498354683
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768498355039,
+              "uuid": "f0e8c456-eb47-45d4-adf0-00e169c714fa",
+              "stop": 1768498355135
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768498354683,
+          "uuid": "a62d7742-19ff-4eed-bdd4-a9819305ab0f",
+          "stop": 1768498355139
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768498354649,
+      "uuid": "c4eb6b0f-13e0-400d-a23b-0ea9d3a1b538",
+      "stop": 1768498355145
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-tc_1768112965904_zu7iwg83w.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-tc_1768112965904_zu7iwg83w.spec.ts" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-92483-worker-0" },
+    { "name": "suite", "value": "test-tc_1768112965904_zu7iwg83w.spec.ts" }
+  ],
+  "links": [],
+  "start": 1768498339720,
+  "testCaseId": "9c68037e15fdcf43abadf5725014f057",
+  "fullName": "test-tc_1768112965904_zu7iwg83w.spec.ts:23:1",
+  "titlePath": ["test-tc_1768112965904_zu7iwg83w.spec.ts"],
+  "stop": 1768498354624
+}

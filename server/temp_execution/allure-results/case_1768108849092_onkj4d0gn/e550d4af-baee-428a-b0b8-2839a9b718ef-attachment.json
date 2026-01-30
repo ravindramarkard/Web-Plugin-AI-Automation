@@ -1,0 +1,14 @@
+{
+  "name": "Error",
+  "matcherResult": {
+    "message": "\u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByRole('button', { name: 'Lookup' })\u001b[22m\n",
+    "pass": false,
+    "name": "toBeVisible",
+    "expected": "visible",
+    "log": [
+      "  - Expect \"toBeVisible\" with timeout 5000ms",
+      "  - waiting for getByRole('button', { name: 'Lookup' })"
+    ],
+    "timeout": 5000
+  }
+}

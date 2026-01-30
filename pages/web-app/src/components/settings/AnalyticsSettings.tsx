@@ -44,7 +44,7 @@ export const AnalyticsSettings: React.FC<AnalyticsSettingsProps> = () => {
   if (loading) {
     return (
       <section className="space-y-6">
-        <div className="rounded-lg glass-card p-6 text-left shadow-sm">
+        <div className="glass-card rounded-lg p-6 text-left shadow-sm">
           <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Analytics Settings</h2>
           <div className="animate-pulse">
             <div className="mb-2 h-4 w-3/4 rounded bg-gray-200 dark:bg-slate-600"></div>
@@ -58,7 +58,7 @@ export const AnalyticsSettings: React.FC<AnalyticsSettingsProps> = () => {
   if (!settings) {
     return (
       <section className="space-y-6">
-        <div className="rounded-lg glass-card p-6 text-left shadow-sm">
+        <div className="glass-card rounded-lg p-6 text-left shadow-sm">
           <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Analytics Settings</h2>
           <p className="text-red-600 dark:text-red-400">Failed to load analytics settings.</p>
         </div>
@@ -73,7 +73,7 @@ export const AnalyticsSettings: React.FC<AnalyticsSettingsProps> = () => {
 
         <div className="space-y-6">
           {/* Main toggle */}
-          <div className="my-6 rounded-lg glass-panel p-4">
+          <div className="glass-panel my-6 rounded-lg p-4">
             <div className="flex items-center justify-between">
               <label htmlFor="analytics-enabled" className="text-base font-medium text-gray-900 dark:text-white">
                 Help improve AITestGen
@@ -88,10 +88,10 @@ export const AnalyticsSettings: React.FC<AnalyticsSettingsProps> = () => {
                 />
                 <label
                   htmlFor="analytics-enabled"
-                  className="block h-6 cursor-pointer overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700 peer-checked:bg-blue-500">
+                  className="block h-6 cursor-pointer overflow-hidden rounded-full bg-gray-200 peer-checked:bg-blue-500 dark:bg-gray-700">
                   <span className="sr-only">Toggle analytics</span>
                   <span
-                    className={`block size-6 rounded-full bg-white dark:bg-slate-200 shadow transition-transform ${
+                    className={`block size-6 rounded-full bg-white shadow transition-transform dark:bg-slate-200 ${
                       settings.enabled ? 'translate-x-6' : 'translate-x-0'
                     }`}
                   />
@@ -104,7 +104,7 @@ export const AnalyticsSettings: React.FC<AnalyticsSettingsProps> = () => {
           </div>
 
           {/* Information about what we collect */}
-          <div className="rounded-md glass-panel p-4">
+          <div className="glass-panel rounded-md p-4">
             <h3 className="mb-4 text-base font-medium text-gray-900 dark:text-white">What we collect:</h3>
             <ul className="list-disc space-y-2 pl-5 text-left text-sm text-gray-600 dark:text-gray-300">
               <li>Task execution metrics (start, completion, failure counts and duration)</li>

@@ -1,0 +1,205 @@
+{
+  "uuid": "5b522eeb-a2a4-4dd5-9748-a543d4caddc7",
+  "name": "successfully submits contact form",
+  "historyId": "7b7bad21446d121f0673ea00bfc7573f:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "TypeError: body is not a function",
+    "trace": "TypeError: body is not a function\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:11:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:10:16"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768049768401,
+              "uuid": "2192669f-82aa-4844-9d76-ead11065f918",
+              "stop": 1768049769122
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768049768399,
+          "uuid": "96ddd966-e4ea-4389-a074-f111cf2b074b",
+          "stop": 1768049769123
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768049769127,
+              "uuid": "f8353487-f44d-49a9-ae83-473298493e92",
+              "stop": 1768049769141
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768049769125,
+          "uuid": "70e35f13-c082-4f01-a5b6-feee9ece1a64",
+          "stop": 1768049769142
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768049769145,
+              "uuid": "edd5b987-b52f-4682-978c-8f871de629f4",
+              "stop": 1768049769601
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768049769142,
+          "uuid": "6ba333d2-d8e4-4e55-99f5-0b25a0c3a27e",
+          "stop": 1768049769601
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768049768393,
+      "uuid": "446c0c69-d7b3-4406-917c-af300459944e",
+      "stop": 1768049769601
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "TypeError: body is not a function",
+        "trace": "TypeError: body is not a function\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:11:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:10:16"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "TypeError: body is not a function",
+            "trace": "TypeError: body is not a function\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:11:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:10:16"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768049769634,
+          "name": "Navigating to https://parabank.parasoft.com",
+          "uuid": "4d98a6dd-f728-4ac4-9651-e43ed4172e34",
+          "stop": 1768049769635
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768049769633,
+      "name": "Navigate to Parabank URL",
+      "uuid": "c0c4e674-4965-4097-94d4-30b20ab4fd7a",
+      "stop": 1768049769636
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768049769641,
+          "uuid": "c50b8342-3ce7-4931-a8da-dcd0f524a44d",
+          "stop": 1768049769641
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768049769702,
+              "uuid": "e20fe114-8bf6-4d31-b7d0-2f481601600e",
+              "stop": 1768049769793
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768049769642,
+          "uuid": "f8ee82c5-5e28-470d-9d1f-01211bbbd829",
+          "stop": 1768049769793
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768049769640,
+      "uuid": "6c71c6c8-c0e3-4ba7-a290-98c052c1daa0",
+      "stop": 1768049769796
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "temp_execution.test-case_1768041946448_g2g25so8p.spec.ts" },
+    {
+      "name": "titlePath",
+      "value": " >  > temp_execution/test-case_1768041946448_g2g25so8p.spec.ts > Contact Us Form Test"
+    },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-37971-worker-0" },
+    { "name": "suite", "value": "temp_execution/test-case_1768041946448_g2g25so8p.spec.ts" },
+    { "name": "subSuite", "value": "Contact Us Form Test" },
+    { "name": "feature", "value": "Contact Form" },
+    { "name": "story", "value": "Submit Contact Information" }
+  ],
+  "links": [],
+  "start": 1768049768393,
+  "testCaseId": "7b7bad21446d121f0673ea00bfc7573f",
+  "fullName": "temp_execution/test-case_1768041946448_g2g25so8p.spec.ts:5:3",
+  "titlePath": ["temp_execution", "test-case_1768041946448_g2g25so8p.spec.ts", "Contact Us Form Test"],
+  "stop": 1768049769059
+}

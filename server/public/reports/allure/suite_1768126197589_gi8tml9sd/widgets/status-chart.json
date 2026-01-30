@@ -1,0 +1,23 @@
+[
+  {
+    "uid": "67a26e5b68c2dd89",
+    "name": "Complete order lifecycle",
+    "time": { "start": 1768494328446, "stop": 1768494328798, "duration": 352 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "f7db650ecf128105",
+    "name": "Get non-existent order should return 404",
+    "time": { "start": 1768494330334, "stop": 1768494330693, "duration": 359 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "3138e37085e363f5",
+    "name": "Place order with invalid data should return 400",
+    "time": { "start": 1768494329378, "stop": 1768494329726, "duration": 348 },
+    "status": "failed",
+    "severity": "normal"
+  }
+]

@@ -1,0 +1,137 @@
+{
+  "uuid": "87f4e6bb-c3c5-4396-b037-e3aecc9bf13c",
+  "name": "POST /pet - Add a new pet without authentication (401 Unauthorized)",
+  "historyId": "378f7b0f31ca568d1373447fbe71dac8:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 401\nReceived: 404",
+    "trace": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 401\nReceived: 404\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768119370881_api_gen/test-tc_1768119370881_ffbrgioko.spec.ts:96:31"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create request context",
+              "start": 1768125480523,
+              "uuid": "53da3115-491a-4976-9d9b-e8a8b8a1311d",
+              "stop": 1768125480590
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768125480517,
+          "uuid": "6e5f8069-b308-4161-9241-761b5ca1cfcf",
+          "stop": 1768125480598
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768125480488,
+      "uuid": "66e0e404-7ee4-41ee-81a7-9a95ad6a4358",
+      "stop": 1768125480598
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768125480601,
+      "name": "POST \"/pet\"",
+      "uuid": "83132f27-f0cb-429f-87c3-d11e859a152e",
+      "stop": 1768125480935
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 401\nReceived: 404",
+        "trace": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 401\nReceived: 404\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768119370881_api_gen/test-tc_1768119370881_ffbrgioko.spec.ts:96:31"
+      },
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768125480939,
+      "name": "Expect \"toBe\"",
+      "uuid": "fb3a5c3b-76c1-42cd-99a6-b90f1ef736fb",
+      "stop": 1768125480942
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "6a886a4d-c818-4a2d-881f-fd34392e1b39-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768125481080,
+      "name": "trace",
+      "stop": 1768125481080
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768125480945,
+          "uuid": "336442e2-68ea-4dfc-baa4-2b9c6f569277",
+          "stop": 1768125480999
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768125480944,
+      "uuid": "c9f3f34d-2d66-41c3-8923-2237295ece94",
+      "stop": 1768125481015
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-tc_1768119370881_ffbrgioko.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-tc_1768119370881_ffbrgioko.spec.ts > testapi" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-50516-worker-0" },
+    { "name": "suite", "value": "test-tc_1768119370881_ffbrgioko.spec.ts" },
+    { "name": "subSuite", "value": "testapi" }
+  ],
+  "links": [],
+  "start": 1768125480487,
+  "testCaseId": "378f7b0f31ca568d1373447fbe71dac8",
+  "fullName": "test-tc_1768119370881_ffbrgioko.spec.ts:71:3",
+  "titlePath": ["test-tc_1768119370881_ffbrgioko.spec.ts", "testapi"],
+  "stop": 1768125480975
+}

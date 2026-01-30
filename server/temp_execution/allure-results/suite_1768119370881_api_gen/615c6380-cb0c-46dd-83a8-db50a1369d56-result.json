@@ -1,0 +1,137 @@
+{
+  "uuid": "615c6380-cb0c-46dd-83a8-db50a1369d56",
+  "name": "POST /pet - Add a new pet to the store (200 OK)",
+  "historyId": "46e427b632e4f66d76ea55f028ba1bac:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+    "trace": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768119370881_api_gen/test-tc_1768119370881_ffbrgioko.spec.ts:38:31"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create request context",
+              "start": 1768125477483,
+              "uuid": "d04f4a67-671a-4c1b-8207-76da93c219e5",
+              "stop": 1768125477543
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768125477473,
+          "uuid": "644a5c2b-82eb-44ca-bf61-f79720700003",
+          "stop": 1768125477554
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768125477455,
+      "uuid": "444b0679-3c89-41dd-a1d6-851775c68207",
+      "stop": 1768125477554
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768125477557,
+      "name": "POST \"/pet\"",
+      "uuid": "d3e19088-59dc-422f-bca1-43078530cd55",
+      "stop": 1768125477951
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404",
+        "trace": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 200\nReceived: 404\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768119370881_api_gen/test-tc_1768119370881_ffbrgioko.spec.ts:38:31"
+      },
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768125477953,
+      "name": "Expect \"toBe\"",
+      "uuid": "d654ab45-8244-4e5e-889a-e4bc04bae5e5",
+      "stop": 1768125477955
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "efb89c2d-fa3e-40b7-8dcb-43c13448d309-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768125478010,
+      "name": "trace",
+      "stop": 1768125478010
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768125477957,
+          "uuid": "986f1d30-75f0-4f8f-a0a8-233124dc1ae6",
+          "stop": 1768125477979
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768125477956,
+      "uuid": "7dc184b8-75d9-4fef-9825-8e6e272d2668",
+      "stop": 1768125477986
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-tc_1768119370881_ffbrgioko.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-tc_1768119370881_ffbrgioko.spec.ts > testapi" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-50516-worker-0" },
+    { "name": "suite", "value": "test-tc_1768119370881_ffbrgioko.spec.ts" },
+    { "name": "subSuite", "value": "testapi" }
+  ],
+  "links": [],
+  "start": 1768125477456,
+  "testCaseId": "46e427b632e4f66d76ea55f028ba1bac",
+  "fullName": "test-tc_1768119370881_ffbrgioko.spec.ts:15:3",
+  "titlePath": ["test-tc_1768119370881_ffbrgioko.spec.ts", "testapi"],
+  "stop": 1768125477965
+}

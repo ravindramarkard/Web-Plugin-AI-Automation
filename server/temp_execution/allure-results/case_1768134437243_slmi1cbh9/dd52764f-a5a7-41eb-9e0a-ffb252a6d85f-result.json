@@ -1,0 +1,248 @@
+{
+  "uuid": "dd52764f-a5a7-41eb-9e0a-ffb252a6d85f",
+  "name": "Register with dynamic data",
+  "historyId": "751ae5c1370ec9c629eac4da7192cb5b:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "broken",
+  "statusDetails": { "message": "Test timeout of 30000ms exceeded.", "trace": "Test timeout of 30000ms exceeded." },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768134476841,
+              "uuid": "6f5395f9-e852-462f-a0f0-ba11fabb7a3b",
+              "stop": 1768134478200
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768134476838,
+          "uuid": "6c8e697f-ad88-4105-858a-f2243dc935da",
+          "stop": 1768134478200
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768134478231,
+              "uuid": "4e6654ab-9ce8-46ab-88e9-9cf53ef3adeb",
+              "stop": 1768134478268
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768134478208,
+          "uuid": "4891b7e5-0e67-4ef3-a207-5aaea0127d19",
+          "stop": 1768134478279
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768134478322,
+              "uuid": "f9cb8313-14c3-4578-9107-8d4fc8f2a77d",
+              "stop": 1768134479844
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768134478280,
+          "uuid": "3dc46b08-e690-4df1-a22f-ec6fb777cd17",
+          "stop": 1768134479844
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768134476824,
+      "uuid": "0e179f83-9c2e-4fea-a957-d9e88727e813",
+      "stop": 1768134479844
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768134479857,
+      "name": "Navigate to \"/register\"",
+      "uuid": "8c9c620f-a158-4260-b25e-76c1b7788273",
+      "stop": 1768134480152
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: page.fill: Test timeout of 30000ms exceeded.\nCall log:\n  - waiting for locator('[name=\"name\"], #name, input[name*=\"name\"], input[placeholder*=\"name\"]')\n",
+        "trace": "Error: page.fill: Test timeout of 30000ms exceeded.\nCall log:\n  - waiting for locator('[name=\"name\"], #name, input[name*=\"name\"], input[placeholder*=\"name\"]')\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768134437243_slmi1cbh9.spec.ts:21:14"
+      },
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768134480160,
+      "name": "Fill \"User 1768134479845\" locator('[name=\"name\"], #name, input[name*=\"name\"], input[placeholder*=\"name\"]')",
+      "uuid": "b8c6379f-1f46-40c6-8bd4-4d208a4812ca",
+      "stop": 1768134508492
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "0f6da187-95b2-4966-9742-340f840e8483-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768134511044,
+      "name": "screenshot",
+      "stop": 1768134511044
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "538dec40-1190-474e-bc20-ec010da976d9-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768134511047,
+      "name": "video",
+      "stop": 1768134511047
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "981498bd-4745-43db-ab8a-f7f9336e54cb-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768134511049,
+      "name": "error-context",
+      "stop": 1768134511049
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "94fe9439-9334-4be0-9236-f9aa74c52e56-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768134511051,
+      "name": "trace",
+      "stop": 1768134511051
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768134508351,
+          "uuid": "e38e7a72-7cf9-4c14-a8e2-fe64c009295b",
+          "stop": 1768134508352
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768134508431,
+              "uuid": "6b8c58b3-b81a-4e75-879d-124be5a5f625",
+              "stop": 1768134510407
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768134508352,
+          "uuid": "cc614e98-5359-481a-ad52-e4eeb9569cea",
+          "stop": 1768134510415
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768134508236,
+      "uuid": "c1445d2b-5d3d-496e-bd18-4daee76f72b3",
+      "stop": 1768134510428
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768134437243_slmi1cbh9.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768134437243_slmi1cbh9.spec.ts" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-20067-worker-0" },
+    { "name": "suite", "value": "test-case_1768134437243_slmi1cbh9.spec.ts" }
+  ],
+  "links": [],
+  "start": 1768134476821,
+  "testCaseId": "751ae5c1370ec9c629eac4da7192cb5b",
+  "fullName": "test-case_1768134437243_slmi1cbh9.spec.ts:4:1",
+  "titlePath": ["test-case_1768134437243_slmi1cbh9.spec.ts"],
+  "stop": 1768134509007
+}

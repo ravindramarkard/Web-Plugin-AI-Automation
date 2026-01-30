@@ -13,19 +13,29 @@
     "prettier": "prettier . --write"
   },
   "dependencies": {
-    "express": "^4.21.1",
-    "cors": "^2.8.5",
+    "@faker-js/faker": "^10.2.0",
+    "@langchain/core": "0.3.79",
+    "@langchain/openai": "0.6.16",
+    "@playwright/test": "^1.57.0",
+    "@types/js-yaml": "^4.0.9",
+    "allure-js-commons": "^3.4.4",
+    "allure-playwright": "^3.4.4",
     "better-sqlite3": "^11.7.0",
-    "dotenv": "^16.4.7"
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "js-yaml": "^4.1.1",
+    "playwright": "^1.57.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0",
-    "@types/cors": "^2.8.17",
     "@types/better-sqlite3": "^7.6.12",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
     "@types/node": "^22.5.5",
-    "tsx": "^4.19.2",
-    "typescript": "^5.5.4",
+    "allure-commandline": "^2.36.0",
     "eslint": "8.57.0",
-    "prettier": "^3.3.3"
+    "prettier": "^3.3.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.5.4"
   }
 }

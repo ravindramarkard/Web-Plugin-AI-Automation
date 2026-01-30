@@ -4,7 +4,15 @@
  */
 
 import { loadAllProvidersFromEnv, loadDefaultModelsFromEnv, loadGeneralSettingsFromEnv } from './envConfig';
-import { llmProviderStore, agentModelStore, generalSettingsStore, AgentNameEnum } from '@extension/storage';
+import {
+  llmProviderStore,
+  agentModelStore,
+  generalSettingsStore,
+  AgentNameEnum,
+  type ProviderConfig,
+  type ModelConfig,
+} from '@extension/storage';
+import { apiGet } from './apiConfig';
 
 /**
  * Initialize providers from environment variables
@@ -116,8 +124,74 @@ export async function initializeGeneralSettingsFromEnv(): Promise<void> {
 /**
  * Initialize all configurations from environment variables
  */
+/**
+ * Initialize settings from server (SQL database)
+ * This ensures persistence across sessions/devices
+ */
+export async function initializeSettingsFromServer(): Promise<void> {
+  try {
+    console.log('[InitConfig] Fetching settings from server...');
+    const settings = await apiGet<Record<string, any>>('/api/settings', false); // No cache to get latest
+
+    if (!settings) return;
+
+    // 1. Load Global LLM Providers
+    if (settings['llm_providers']?.providers) {
+      const providers = settings['llm_providers'].providers as Record<string, ProviderConfig>;
+      for (const [providerId, config] of Object.entries(providers)) {
+        await llmProviderStore.setProvider(providerId, config);
+      }
+      console.log(`[InitConfig] Loaded ${Object.keys(providers).length} providers from server`);
+    }
+
+    // 2. Load Global Agent Models
+    if (settings['agent_models']?.agents) {
+      const agents = settings['agent_models'].agents as Record<AgentNameEnum, ModelConfig>;
+      for (const [agentName, config] of Object.entries(agents)) {
+        if (Object.values(AgentNameEnum).includes(agentName as AgentNameEnum)) {
+          await agentModelStore.setAgentModel(agentName as AgentNameEnum, config);
+        }
+      }
+      console.log(`[InitConfig] Loaded models for ${Object.keys(agents).length} agents from server`);
+    }
+
+    // 3. Load Project-specific settings
+    for (const [key, value] of Object.entries(settings)) {
+      if (key.startsWith('project:') && key.endsWith(':agent_models')) {
+        // Format: project:{projectId}:agent_models
+        const match = key.match(/^project:(.+):agent_models$/);
+        if (match && value?.agents) {
+          const projectId = match[1];
+          const agents = value.agents as Record<AgentNameEnum, ModelConfig>;
+          for (const [agentName, config] of Object.entries(agents)) {
+            if (Object.values(AgentNameEnum).includes(agentName as AgentNameEnum)) {
+              await agentModelStore.setAgentModel(agentName as AgentNameEnum, config, projectId);
+            }
+          }
+          console.log(`[InitConfig] Loaded models for project ${projectId} from server`);
+        }
+      } else if (key.startsWith('project:') && key.endsWith(':llm_providers')) {
+        // Format: project:{projectId}:llm_providers
+        const match = key.match(/^project:(.+):llm_providers$/);
+        if (match && value?.providers) {
+          const projectId = match[1];
+          const providers = value.providers as Record<string, ProviderConfig>;
+          for (const [providerId, config] of Object.entries(providers)) {
+            await llmProviderStore.setProvider(providerId, config, projectId);
+          }
+          console.log(`[InitConfig] Loaded providers for project ${projectId} from server`);
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('[InitConfig] Failed to load settings from server (server might be offline):', error);
+  }
+}
+
 export async function initializeAllFromEnv(): Promise<void> {
   await initializeProvidersFromEnv();
   await initializeDefaultModelsFromEnv();
   await initializeGeneralSettingsFromEnv();
+  // Load from server last to override env defaults with user saved settings
+  await initializeSettingsFromServer();
 }

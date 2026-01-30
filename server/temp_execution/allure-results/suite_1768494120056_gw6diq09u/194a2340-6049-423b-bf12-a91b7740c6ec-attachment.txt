@@ -1,0 +1,60 @@
+Error navigating to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:
+    1) <a href="services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()
+    2) <a href="services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)
+
+Call log:
+  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:122:33
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:118:16 {
+  Symbol(step): {
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts',
+      line: 122,
+      column: 33
+    },
+    category: 'pw:api',
+    title: "Wait for selector getByRole('link', { name: 'Transfer Funds' })",
+    apiName: 'locator.waitFor',
+    params: {
+      selector: 'internal:role=link[name="Transfer Funds"i]',
+      strict: true,
+      omitReturnValue: true,
+      state: 'visible',
+      timeout: 15000
+    },
+    group: undefined,
+    stepId: 'pw:api@42',
+    boxedStack: undefined,
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'pw:api@42',
+      _title: "Wait for selector getByRole('link', { name: 'Transfer Funds' })",
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768944365014,
+    error: {
+      message: "Error: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n" +
+        `    1) <a href="services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n` +
+        `    2) <a href="services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n` +
+        '\n' +
+        'Call log:\n' +
+        "\x1B[2m  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\x1B[22m\n",
+      stack: "Error: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n" +
+        `    1) <a href="services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n` +
+        `    2) <a href="services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n` +
+        '\n' +
+        'Call log:\n' +
+        "\x1B[2m  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\x1B[22m\n" +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:122:33\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:118:16',
+      cause: undefined
+    }
+  }
+}

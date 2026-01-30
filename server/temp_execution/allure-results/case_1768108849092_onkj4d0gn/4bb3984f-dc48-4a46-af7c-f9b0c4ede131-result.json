@@ -1,0 +1,507 @@
+{
+  "uuid": "4bb3984f-dc48-4a46-af7c-f9b0c4ede131",
+  "name": "should navigate to forgot login page and verify form is present",
+  "historyId": "196fff0d2b03ad093576c5322ac68ea0:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 5000ms\n  - waiting for getByRole('button', { name: 'Lookup' })\n",
+    "trace": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 5000ms\n  - waiting for getByRole('button', { name: 'Lookup' })\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:107:36\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:78:7"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768108905568,
+              "uuid": "d4fb8348-6b8f-41f1-a69a-15a48bd073e7",
+              "stop": 1768108906383
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768108905565,
+          "uuid": "a194ae2e-44b9-4979-afd9-b0f69031f6b5",
+          "stop": 1768108906383
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768108906387,
+              "uuid": "bccf0490-ce99-4674-bac5-e30932b07589",
+              "stop": 1768108906400
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768108906385,
+          "uuid": "e82adc30-a3e9-4795-8c13-dea37bc36c8e",
+          "stop": 1768108906402
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768108906403,
+              "uuid": "208cb936-4b18-48f8-aea9-1b8293799e48",
+              "stop": 1768108906912
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768108906403,
+          "uuid": "124bdd71-7cd3-4f70-bd83-11d997558621",
+          "stop": 1768108906912
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768108905560,
+      "uuid": "1c9c4b92-37e1-483c-bf21-0e9acaf908c6",
+      "stop": 1768108906912
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108906970,
+          "name": "Navigate to \"/\"",
+          "uuid": "6437b176-69dd-40a1-be49-4ac77e2b6c4d",
+          "stop": 1768108909304
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108909306,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "a8a15713-f9e9-4d20-8cea-624e587037d0",
+          "stop": 1768108909797
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768108906967,
+      "name": "Navigate to ParaBank homepage",
+      "uuid": "9b51baa4-9c74-4d00-8e26-0d832e7fc505",
+      "stop": 1768108909797
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108909803,
+          "name": "Wait for selector getByText('Forgot login info?', { exact: true })",
+          "uuid": "f941386a-75ed-4e69-b129-8946f9aa8106",
+          "stop": 1768108909824
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108909835,
+          "name": "Expect \"toBeVisible\" getByText('Forgot login info?', { exact: true })",
+          "uuid": "536704dc-c481-4f68-8ea6-e04d9ebd8dd8",
+          "stop": 1768108909840
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108909841,
+          "name": "Expect \"toBeEnabled\" getByText('Forgot login info?', { exact: true })",
+          "uuid": "0613882c-1f7b-4d79-adc6-e24c12f929a1",
+          "stop": 1768108909844
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768108909845,
+              "name": "Click getByText('Forgot login info?', { exact: true })",
+              "uuid": "eb257582-0335-425e-86de-21de1cd31db2",
+              "stop": 1768108910213
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108909844,
+          "name": "Clicking on Forgot login info? link",
+          "uuid": "e06754a5-3a7d-483c-8f6d-102212684a5f",
+          "stop": 1768108910213
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768108909798,
+      "name": "Click on Forgot login info? link",
+      "uuid": "c739ebaf-d40f-4dd7-9b38-4684a3e28d35",
+      "stop": 1768108910213
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 5000ms\n  - waiting for getByRole('button', { name: 'Lookup' })\n",
+        "trace": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 5000ms\n  - waiting for getByRole('button', { name: 'Lookup' })\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:107:36\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:78:7"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910214,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "e130a64e-c097-4e32-afe4-2da03fc63b98",
+          "stop": 1768108910707
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910707,
+          "name": "Expect \"toHaveURL\"",
+          "uuid": "8a663dd7-4851-4aec-8407-be7338ef53fb",
+          "stop": 1768108910720
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910722,
+          "name": "Expect \"toBeVisible\" locator('form[action=\"lookup.htm\"]')",
+          "uuid": "be378c1f-4da5-4328-bade-d21f85fdd9d6",
+          "stop": 1768108910729
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910730,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"firstName\"]')",
+          "uuid": "a567a834-8d13-42fa-ac5c-96c56c70d6af",
+          "stop": 1768108910733
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910734,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"lastName\"]')",
+          "uuid": "4d622433-94f3-4d3d-a24b-54ff50c61ddf",
+          "stop": 1768108910737
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910738,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"address\\\\.street\"]')",
+          "uuid": "11057d51-aec6-41d6-b465-77bd90ac2d4a",
+          "stop": 1768108910741
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910742,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"address\\\\.city\"]')",
+          "uuid": "44687b02-4288-44bb-a642-a21d9e1d8227",
+          "stop": 1768108910747
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910747,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"address\\\\.state\"]')",
+          "uuid": "bd02d8d6-696e-4819-8384-c72bd7c84f33",
+          "stop": 1768108910750
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910751,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"address\\\\.zipCode\"]')",
+          "uuid": "fb0fc915-eae8-487d-867a-6ae5cc332704",
+          "stop": 1768108910754
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910754,
+          "name": "Expect \"toBeVisible\" locator('input[name=\"ssn\"]')",
+          "uuid": "b7afcf15-2ab6-46d9-989f-7e4fef2126ad",
+          "stop": 1768108910757
+        },
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 5000ms\n  - waiting for getByRole('button', { name: 'Lookup' })\n",
+            "trace": "Error: expect(locator).toBeVisible() failed\n\nLocator: getByRole('button', { name: 'Lookup' })\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 5000ms\n  - waiting for getByRole('button', { name: 'Lookup' })\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:107:36\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:78:7"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768108910757,
+          "name": "Expect \"toBeVisible\" getByRole('button', { name: 'Lookup' })",
+          "uuid": "0eda6284-7459-444d-97e0-18ab67154358",
+          "stop": 1768108915761
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768108910214,
+      "name": "Verify navigation to customer lookup page",
+      "uuid": "91b00d7f-0e16-4465-a2b8-673eed666547",
+      "stop": 1768108915761
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "Error details",
+          "source": "e550d4af-baee-428a-b0b8-2839a9b718ef-attachment.json",
+          "type": "application/json"
+        }
+      ],
+      "parameters": [],
+      "start": 1768108917638,
+      "name": "Error details",
+      "stop": 1768108917638
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "bf36084e-1208-495e-9dd0-d52aa69b811e-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768108917638,
+      "name": "screenshot",
+      "stop": 1768108917638
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "8b0e7cb2-fb20-4ac8-9aae-a52b0c264a29-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768108917639,
+      "name": "video",
+      "stop": 1768108917639
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "4cafa884-1d09-4123-a27b-db789bab77bc-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768108917640,
+      "name": "error-context",
+      "stop": 1768108917640
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "b71c0b2a-46ba-4018-9bd9-96fc2dfdd377-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768108917640,
+      "name": "trace",
+      "stop": 1768108917640
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768108915822,
+          "uuid": "279ace86-5e3f-483e-9302-b63490bf79a4",
+          "stop": 1768108915822
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768108915873,
+              "uuid": "1fb5384c-8476-485a-8187-afd09f19723c",
+              "stop": 1768108915954
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768108915822,
+          "uuid": "8e771602-4928-4a85-a974-42397f487ee7",
+          "stop": 1768108915956
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768108915763,
+      "uuid": "71b37cfd-db78-445d-80b4-ced60cec9348",
+      "stop": 1768108915959
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "21f93ab0-c40d-4889-bc01-4fe2f5e62bca-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "54bebe0a-4dfe-4df1-9397-9b9fdd97e9f4-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768108849092_onkj4d0gn.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768108849092_onkj4d0gn.spec.ts > Forgot Login Info Test" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-47293-worker-0" },
+    { "name": "suite", "value": "test-case_1768108849092_onkj4d0gn.spec.ts" },
+    { "name": "subSuite", "value": "Forgot Login Info Test" }
+  ],
+  "links": [],
+  "start": 1768108905559,
+  "testCaseId": "196fff0d2b03ad093576c5322ac68ea0",
+  "fullName": "test-case_1768108849092_onkj4d0gn.spec.ts:5:3",
+  "titlePath": ["test-case_1768108849092_onkj4d0gn.spec.ts", "Forgot Login Info Test"],
+  "description": "Test that verifies the forgot login functionality by navigating to the customer lookup form",
+  "stop": 1768108915131
+}

@@ -1,0 +1,479 @@
+{
+  "uuid": "1852cb9d-c6a0-4928-a546-cd0fa683d54d",
+  "name": "Login and navigate to Bill Pay",
+  "historyId": "1561ed39ee607b2e756c66eb1b46f114:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n",
+    "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:76:29)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:71:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:70:16"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Launch browser",
+                  "start": 1768937759168,
+                  "uuid": "2a0ca2b2-eaeb-4b96-8b11-303f0c074284",
+                  "stop": 1768937760575
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"browser\"",
+              "start": 1768937759161,
+              "uuid": "cf657f53-3c7a-4042-a80d-761ee7f8898f",
+              "stop": 1768937760576
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768937760579,
+              "uuid": "52c13593-88cf-478c-b0fd-6f545bd390db",
+              "stop": 1768937761638
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Navigate to \"/parabank/index.htm\"",
+              "start": 1768937761660,
+              "uuid": "d5d3a95c-64eb-4811-ba78-d003b698fe79",
+              "stop": 1768937763994
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Wait for load state \"networkidle\"",
+              "start": 1768937763997,
+              "uuid": "32eb5af7-964a-4d91-81d6-8d76873b0719",
+              "stop": 1768937764451
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "beforeEach hook",
+          "start": 1768937759140,
+          "uuid": "1848f7bd-f786-410b-be4f-295b72670087",
+          "stop": 1768937764451
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768937759138,
+      "uuid": "e3c07ae9-433b-4fce-8ea1-c2e14c702294",
+      "stop": 1768937764451
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764491,
+              "name": "Expect \"toHaveURL\"",
+              "uuid": "24856dbb-fc63-4a4f-9e0f-4b6b75ed9eeb",
+              "stop": 1768937764525
+            },
+            {
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [
+                {
+                  "name": "Homepage URL",
+                  "source": "806e39a8-1466-4800-9937-da40e26bd710-attachment.txt",
+                  "type": "text/plain"
+                }
+              ],
+              "parameters": [],
+              "start": 1768937781031,
+              "name": "Homepage URL",
+              "stop": 1768937781031
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768937764489,
+          "name": "Navigate to ParaBank homepage",
+          "uuid": "1a0ec0ea-a809-433e-a53d-987bb8a16f86",
+          "stop": 1768937764527
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768937764453,
+      "name": "Navigate to ParaBank homepage",
+      "uuid": "53863799-a1ad-4b4a-9c5b-da4aa7cfa9eb",
+      "stop": 1768937764527
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764539,
+              "name": "Wait for selector locator('input[name=\"username\"]')",
+              "uuid": "1cf1e9e7-e557-4209-9711-7d241ebbd54a",
+              "stop": 1768937764560
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764566,
+              "name": "Fill \"testuser1\" locator('input[name=\"username\"]')",
+              "uuid": "8e8c9234-fcfa-41e0-97ec-88783ee3a297",
+              "stop": 1768937764599
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764600,
+              "name": "Expect \"toHaveValue\" locator('input[name=\"username\"]')",
+              "uuid": "bfe0c2f8-b805-48ce-ba16-44471cab9736",
+              "stop": 1768937764609
+            },
+            {
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [
+                {
+                  "name": "Username Entered",
+                  "source": "5a5ad7d2-894f-4cee-83a0-9030ffdc5f80-attachment.txt",
+                  "type": "text/plain"
+                }
+              ],
+              "parameters": [],
+              "start": 1768937781032,
+              "name": "Username Entered",
+              "stop": 1768937781032
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768937764529,
+          "name": "Enter username in login form",
+          "uuid": "f5fa1c18-f002-467a-bacb-ea99423c6561",
+          "stop": 1768937764609
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768937764528,
+      "name": "Enter username",
+      "uuid": "68d4e9ea-ec6a-4017-a6ae-4de6e0a16717",
+      "stop": 1768937764610
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764619,
+              "name": "Wait for selector locator('input[name=\"password\"]')",
+              "uuid": "40c8734f-48f9-465f-a807-5af9e9967cae",
+              "stop": 1768937764636
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764636,
+              "name": "Fill \"password\" locator('input[name=\"password\"]')",
+              "uuid": "e0c3b917-db3d-428a-b343-cd0788487c2a",
+              "stop": 1768937764678
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764679,
+              "name": "Expect \"toHaveValue\" locator('input[name=\"password\"]')",
+              "uuid": "948bd729-4a10-425a-b3d4-cb90596c9cd3",
+              "stop": 1768937764688
+            },
+            {
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [
+                {
+                  "name": "Password Entered",
+                  "source": "ffe7b75a-eba6-40dc-a3d7-ec10efe25d89-attachment.txt",
+                  "type": "text/plain"
+                }
+              ],
+              "parameters": [],
+              "start": 1768937781033,
+              "name": "Password Entered",
+              "stop": 1768937781033
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768937764613,
+          "name": "Enter password in login form",
+          "uuid": "7af9018c-c621-4620-9340-56d132014c9c",
+          "stop": 1768937764688
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768937764611,
+      "name": "Enter password",
+      "uuid": "90321219-d8cd-41e7-ac92-37aa707ae0be",
+      "stop": 1768937764688
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n",
+        "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:76:29)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:71:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:70:16"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n",
+            "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:76:29)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:71:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:70:16"
+          },
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "failed",
+              "statusDetails": {
+                "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n",
+                "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('input[value=\"Login\"]') to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:76:29)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at callRuntimeMethod (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:21:27)\n    at Module.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:10)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:71:20\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768936795132_4lc022gjq.spec.ts:70:16"
+              },
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "start": 1768937764694,
+              "name": "Wait for selector locator('input[value=\"Login\"]')",
+              "uuid": "6a2e013a-17a0-47a4-95c3-fcc9637f5435",
+              "stop": 1768937779706
+            },
+            {
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [
+                {
+                  "name": "Login Error",
+                  "source": "b59f14f1-2622-4867-a82b-9e07e791e2eb-attachment.txt",
+                  "type": "text/plain"
+                }
+              ],
+              "parameters": [],
+              "start": 1768937781034,
+              "name": "Login Error",
+              "stop": 1768937781034
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768937764689,
+          "name": "Click the login button to authenticate",
+          "uuid": "cb666707-d397-4bfe-8054-ee5261fee12b",
+          "stop": 1768937779714
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768937764688,
+      "name": "Click login button",
+      "uuid": "2e518e02-5496-4e9a-a096-4fbab9fee852",
+      "stop": 1768937779714
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "092e8487-5286-4fd3-a932-787fef76a383-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768937781035,
+      "name": "screenshot",
+      "stop": 1768937781035
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "8746a005-7acb-4a61-8b0d-6e78769b2c6d-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768937781036,
+      "name": "error-context",
+      "stop": 1768937781036
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "b31755dc-ab31-4253-89df-240893c8d8dd-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768937781037,
+      "name": "trace",
+      "stop": 1768937781037
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768937780045,
+              "uuid": "e8fc2f27-5fde-4fb9-abea-84852ce621ab",
+              "stop": 1768937780081
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "afterEach hook",
+          "start": 1768937779788,
+          "uuid": "051d4e84-eb30-471c-a14e-315b1b186ef2",
+          "stop": 1768937780081
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768937779715,
+      "uuid": "3ff33d57-65f3-4e51-a856-4015adb86ba6",
+      "stop": 1768937780119
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "f2338fd5-c949-43bc-b131-4523b4a23c4f-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "5f9804c6-a1ca-482a-a984-39175d8afe97-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768936795132_4lc022gjq.spec.ts" },
+    {
+      "name": "titlePath",
+      "value": " >  > test-case_1768936795132_4lc022gjq.spec.ts > ParaBank Login and Bill Pay Navigation"
+    },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-39035-worker-0" },
+    { "name": "suite", "value": "test-case_1768936795132_4lc022gjq.spec.ts" },
+    { "name": "subSuite", "value": "ParaBank Login and Bill Pay Navigation" }
+  ],
+  "links": [],
+  "start": 1768937759137,
+  "testCaseId": "1561ed39ee607b2e756c66eb1b46f114",
+  "fullName": "test-case_1768936795132_4lc022gjq.spec.ts:19:3",
+  "titlePath": ["test-case_1768936795132_4lc022gjq.spec.ts", "ParaBank Login and Bill Pay Navigation"],
+  "stop": 1768937778645
+}

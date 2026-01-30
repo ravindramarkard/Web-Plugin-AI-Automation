@@ -1,0 +1,193 @@
+{
+  "uuid": "545a1f4b-59bf-4cad-97df-7a343268d533",
+  "name": "POST /pet - Add a new pet to the store - Invalid input",
+  "historyId": "9d80493e6f0132e988baced10a17566a:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 405\nReceived: 200",
+    "trace": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 405\nReceived: 200\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768122120982_api_gen/test-tc_1768122120982_lj28q9owu.spec.ts:44:31"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create request context",
+              "start": 1768130567919,
+              "uuid": "b43e1d5b-2d48-4041-8e38-77277ed33ea0",
+              "stop": 1768130567931
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768130567917,
+          "uuid": "7d5c08eb-e746-416c-9d79-054e805631e1",
+          "stop": 1768130567932
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768130567932,
+          "uuid": "1ee24268-4caf-47e7-8904-01e22a301c0e",
+          "stop": 1768130567933
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768130567908,
+      "uuid": "3eb467c5-9491-4c1b-97c8-0effc56efdb6",
+      "stop": 1768130567933
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768130567934,
+      "name": "POST \"/v2/pet\"",
+      "uuid": "7f6c8038-df48-43d4-b91f-29910a69cdb2",
+      "stop": 1768130568135
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 405\nReceived: 200",
+        "trace": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 405\nReceived: 200\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768122120982_api_gen/test-tc_1768122120982_lj28q9owu.spec.ts:44:31"
+      },
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768130568138,
+      "name": "Expect \"toBe\"",
+      "uuid": "a08996a6-6da2-4f39-8727-fd1147d6dbee",
+      "stop": 1768130568141
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "Request: POST https://petstore.swagger.io/v2/pet",
+          "source": "0ea0f627-5f13-49c1-94d7-16bcfe4445c9-attachment.json",
+          "type": "application/json"
+        }
+      ],
+      "parameters": [],
+      "start": 1768130568183,
+      "name": "Request: POST https://petstore.swagger.io/v2/pet",
+      "stop": 1768130568183
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "Response: 200 POST https://petstore.swagger.io/v2/pet",
+          "source": "b51548fa-0885-4002-a14b-979926f1f241-attachment.json",
+          "type": "application/json"
+        }
+      ],
+      "parameters": [],
+      "start": 1768130568184,
+      "name": "Response: 200 POST https://petstore.swagger.io/v2/pet",
+      "stop": 1768130568184
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "0ecca75a-ca8c-40ff-be8b-4b10fd1e6614-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768130568184,
+      "name": "trace",
+      "stop": 1768130568184
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768130568144,
+          "uuid": "d2aa59de-6565-4b11-bb3e-72131a1bf67a",
+          "stop": 1768130568144
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768130568145,
+          "uuid": "50b5618a-bc91-452a-9513-86f1523e7c5a",
+          "stop": 1768130568157
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768130568142,
+      "uuid": "76ba23b8-9eea-4b8c-90c8-4ff6a45966d1",
+      "stop": 1768130568162
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-tc_1768122120982_lj28q9owu.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-tc_1768122120982_lj28q9owu.spec.ts > rrttt" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-95200-worker-0" },
+    { "name": "suite", "value": "test-tc_1768122120982_lj28q9owu.spec.ts" },
+    { "name": "subSuite", "value": "rrttt" }
+  ],
+  "links": [],
+  "start": 1768130567919,
+  "testCaseId": "9d80493e6f0132e988baced10a17566a",
+  "fullName": "test-tc_1768122120982_lj28q9owu.spec.ts:32:3",
+  "titlePath": ["test-tc_1768122120982_lj28q9owu.spec.ts", "rrttt"],
+  "stop": 1768130568157
+}

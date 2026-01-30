@@ -1,0 +1,10 @@
+{
+  "total": 1,
+  "items": [
+    {
+      "uid": "41e02e114b0a732ba56fecc0125dc81a",
+      "name": "test-tc_1768126061000_axsxiz2y7.spec.ts",
+      "statistic": { "failed": 3, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 3 }
+    }
+  ]
+}

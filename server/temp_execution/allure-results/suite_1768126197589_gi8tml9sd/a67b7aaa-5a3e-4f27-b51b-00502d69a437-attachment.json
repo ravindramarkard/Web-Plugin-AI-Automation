@@ -1,0 +1,11 @@
+{
+  "headers": {
+    "Content-Type": "application/json",
+    "api_key": "your-api-key-here"
+  },
+  "data": {
+    "petId": null,
+    "quantity": -1,
+    "status": "invalid_status"
+  }
+}

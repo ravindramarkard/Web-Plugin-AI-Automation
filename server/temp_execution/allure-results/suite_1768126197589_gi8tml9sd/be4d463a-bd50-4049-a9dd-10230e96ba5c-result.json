@@ -1,0 +1,165 @@
+{
+  "uuid": "be4d463a-bd50-4049-a9dd-10230e96ba5c",
+  "name": "Place order with invalid data should return 400",
+  "historyId": "5d06329db6e6741b76f7b9be3ee3b258:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → POST http://localhost:5050/store/order\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - Content-Type: application/json\n    - api_key: your-api-key-here\n    - content-length: 54\n",
+    "trace": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → POST http://localhost:5050/store/order\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - Content-Type: application/json\n    - api_key: your-api-key-here\n    - content-length: 54\n\n    at apiRequestContext.apply: connect ECONNREFUSED ::1:5050\n    at Proxy.<anonymous> (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/custom-test.ts:75:51)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768126197589_gi8tml9sd/test-tc_1768126061000_axsxiz2y7.spec.ts:94:22"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create request context",
+              "start": 1768494329387,
+              "uuid": "a52cb3a0-432c-475c-ac91-310c285fd057",
+              "stop": 1768494329403
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768494329385,
+          "uuid": "6607a798-7379-44f5-b71f-ff4398d7f356",
+          "stop": 1768494329405
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768494329405,
+          "uuid": "da433d97-5c72-4096-a322-2841ffc41754",
+          "stop": 1768494329405
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768494329379,
+      "uuid": "b8f8367a-d540-436e-8546-51286f6b847e",
+      "stop": 1768494329405
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → POST http://localhost:5050/store/order\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - Content-Type: application/json\n    - api_key: your-api-key-here\n    - content-length: 54\n",
+        "trace": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → POST http://localhost:5050/store/order\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - Content-Type: application/json\n    - api_key: your-api-key-here\n    - content-length: 54\n\n    at apiRequestContext.apply: connect ECONNREFUSED ::1:5050\n    at Proxy.<anonymous> (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/custom-test.ts:75:51)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768126197589_gi8tml9sd/test-tc_1768126061000_axsxiz2y7.spec.ts:94:22"
+      },
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768494329407,
+      "name": "POST \"/store/order\"",
+      "uuid": "4077b68f-ff96-4b93-af9d-d1a5892fe2fe",
+      "stop": 1768494329720
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "Request: POST http://localhost:5050/store/order",
+          "source": "a67b7aaa-5a3e-4f27-b51b-00502d69a437-attachment.json",
+          "type": "application/json"
+        }
+      ],
+      "parameters": [],
+      "start": 1768494329748,
+      "name": "Request: POST http://localhost:5050/store/order",
+      "stop": 1768494329748
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "ee6f4f54-117b-460b-8069-db5fef08241f-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768494329748,
+      "name": "trace",
+      "stop": 1768494329748
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768494329721,
+          "uuid": "98bb5011-15d3-43e4-9c54-c9106f575fb9",
+          "stop": 1768494329721
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"request\"",
+          "start": 1768494329721,
+          "uuid": "f3e23a4f-2bcf-47ea-b6e8-306507c68088",
+          "stop": 1768494329733
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768494329720,
+      "uuid": "44e460b8-5e67-4d25-80fe-7b7b5a7e8703",
+      "stop": 1768494329736
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-tc_1768126061000_axsxiz2y7.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-tc_1768126061000_axsxiz2y7.spec.ts > inventory-e2e" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-97565-worker-0" },
+    { "name": "suite", "value": "test-tc_1768126061000_axsxiz2y7.spec.ts" },
+    { "name": "subSuite", "value": "inventory-e2e" }
+  ],
+  "links": [],
+  "start": 1768494329378,
+  "testCaseId": "5d06329db6e6741b76f7b9be3ee3b258",
+  "fullName": "test-tc_1768126061000_axsxiz2y7.spec.ts:87:3",
+  "titlePath": ["test-tc_1768126061000_axsxiz2y7.spec.ts", "inventory-e2e"],
+  "stop": 1768494329726
+}

@@ -317,7 +317,7 @@ export default function PromptsTab({ projectId, onExecutePrompt }: PromptsTabPro
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 placeholder="Search prompts..."
-                className="glass-input w-64 rounded-xl py-2 pl-10 pr-4 text-sm text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500/50"
+                className="glass-input w-64 rounded-xl py-2 pl-10 pr-4 text-sm text-gray-900 outline-none placeholder:text-gray-500 focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:placeholder:text-gray-400"
               />
             </div>
             {/* View Toggle */}
@@ -552,7 +552,7 @@ function GeneratedCodeModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel flex max-h-[90vh] w-full max-w-4xl flex-col overflow-hidden rounded-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
@@ -563,7 +563,7 @@ function GeneratedCodeModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiXCircle size={20} />
           </button>
         </div>
@@ -580,7 +580,7 @@ function GeneratedCodeModal({
                 type="text"
                 value={testCaseName}
                 onChange={e => setTestCaseName(e.target.value)}
-                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                 placeholder="Enter test case name"
               />
             </div>
@@ -590,7 +590,7 @@ function GeneratedCodeModal({
                 <select
                   value={selectedTestSuiteId}
                   onChange={e => onTestSuiteChange(e.target.value)}
-                  className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 outline-none dark:text-white">
                   <option value="" className="dark:bg-slate-800">
                     Select a test suite
                   </option>
@@ -666,7 +666,7 @@ function GeneratedCodeModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-xl bg-gray-200/50 px-6 py-2.5 font-medium text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 transition-all backdrop-blur-sm">
+            className="rounded-xl bg-gray-200/50 px-6 py-2.5 font-medium text-gray-700 backdrop-blur-sm transition-all hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20">
             Close
           </button>
           <button
@@ -741,7 +741,7 @@ function PromptListItem({ prompt, onEdit, onDelete, onDuplicate, onExecute }: Pr
         <button
           type="button"
           onClick={onDelete}
-          className="rounded-lg p-2 text-red-500 hover:bg-red-50/50 dark:text-red-400 dark:hover:bg-red-900/20 transition-colors"
+          className="rounded-lg p-2 text-red-500 transition-colors hover:bg-red-50/50 dark:text-red-400 dark:hover:bg-red-900/20"
           title="Delete">
           <FiTrash2 size={18} />
         </button>
@@ -762,7 +762,7 @@ function PromptGridItem({ prompt, onEdit, onDelete, onDuplicate, onExecute }: Pr
   return (
     <div className="glass-card group relative flex flex-col rounded-xl p-5 transition-all hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-white/5">
       <div className="mb-3 flex items-start justify-between">
-        <h3 className="flex-1 font-semibold text-gray-900 dark:text-white line-clamp-1">{prompt.title}</h3>
+        <h3 className="line-clamp-1 flex-1 font-semibold text-gray-900 dark:text-white">{prompt.title}</h3>
         <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
           <button
             type="button"
@@ -787,7 +787,7 @@ function PromptGridItem({ prompt, onEdit, onDelete, onDuplicate, onExecute }: Pr
           </button>
         </div>
       </div>
-      <p className="mb-4 flex-1 text-sm text-gray-600 dark:text-gray-400 line-clamp-3">
+      <p className="mb-4 line-clamp-3 flex-1 text-sm text-gray-600 dark:text-gray-400">
         {prompt.description || prompt.baseUrl || 'No description'}
       </p>
       <div className="space-y-2 border-t border-gray-100 pt-3 text-xs dark:border-white/5">
@@ -833,7 +833,7 @@ interface CreatePromptModalProps {
 
 function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPrompt }: CreatePromptModalProps) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl shadow-xl">
         <div className="mb-4 flex items-center justify-between border-b border-white/10 px-6 py-4">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -842,7 +842,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiXCircle size={20} />
           </button>
         </div>
@@ -855,7 +855,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               required
               value={formData.title}
               onChange={e => setFormData({ ...formData, title: e.target.value })}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="Enter prompt title"
             />
           </div>
@@ -867,7 +867,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               value={formData.description}
               onChange={e => setFormData({ ...formData, description: e.target.value })}
               rows={2}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="Enter prompt description"
             />
           </div>
@@ -880,7 +880,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               value={formData.promptContent}
               onChange={e => setFormData({ ...formData, promptContent: e.target.value })}
               rows={6}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm font-mono text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 font-mono text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="Enter your test prompt (e.g., 'Navigate to login, enter username/password, click login, validate dashboard')"
             />
           </div>
@@ -892,7 +892,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               <select
                 value={formData.testType}
                 onChange={e => setFormData({ ...formData, testType: e.target.value as Prompt['testType'] })}
-                className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 outline-none dark:text-white">
                 <option value="UI Test" className="dark:bg-slate-800">
                   UI Test
                 </option>
@@ -921,7 +921,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               type="text"
               value={formData.tags}
               onChange={e => setFormData({ ...formData, tags: e.target.value })}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="smoke, regression, critical"
             />
           </div>
@@ -935,7 +935,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               value={formData.additionalContext}
               onChange={e => setFormData({ ...formData, additionalContext: e.target.value })}
               rows={3}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="Any additional context for the test"
             />
           </div>
@@ -947,7 +947,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               type="url"
               value={formData.baseUrl}
               onChange={e => setFormData({ ...formData, baseUrl: e.target.value })}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="https://example.com"
             />
           </div>
@@ -961,7 +961,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
               value={formData.additionalInformation}
               onChange={e => setFormData({ ...formData, additionalInformation: e.target.value })}
               rows={3}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="Any additional information or requirements"
             />
           </div>
@@ -971,7 +971,7 @@ function CreatePromptModal({ formData, setFormData, onSubmit, onClose, editingPr
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl bg-gray-200/50 px-6 py-2.5 font-medium text-gray-700 hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20 transition-all backdrop-blur-sm">
+              className="rounded-xl bg-gray-200/50 px-6 py-2.5 font-medium text-gray-700 backdrop-blur-sm transition-all hover:bg-gray-200 dark:bg-white/10 dark:text-white dark:hover:bg-white/20">
               Cancel
             </button>
             <button

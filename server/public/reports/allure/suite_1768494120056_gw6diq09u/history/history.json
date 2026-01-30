@@ -1,0 +1,24 @@
+{
+  "cf97f7c1e976696a92ccd034f55c8138:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "91b1f9004505b4c1",
+        "status": "failed",
+        "statusDetails": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n",
+        "time": { "start": 1768944359313, "stop": 1768944364815, "duration": 5502 }
+      }
+    ]
+  },
+  "ec85a89dbd76cd737145e6e79a7f9c8a:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "b13ae484f85b2aab",
+        "status": "failed",
+        "statusDetails": "Error: expect(locator).toBeVisible() failed\n\nLocator: locator('h1:has-text(\"Bill Pay\")')\nExpected: visible\nError: strict mode violation: locator('h1:has-text(\"Bill Pay\")') resolved to 2 elements:\n    1) <h1 class=\"title\">Bill Payment Service</h1> aka getByRole('heading', { name: 'Bill Payment Service' })\n    2) <h1 class=\"title\">Bill Payment Complete</h1> aka getByText('Bill Payment Complete')\n\nCall log:\n  - Expect \"toBeVisible\" with timeout 10000ms\n  - waiting for locator('h1:has-text(\"Bill Pay\")')\n",
+        "time": { "start": 1768944338421, "stop": 1768944349914, "duration": 11493 }
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+[
+  {
+    "uid": "afbc21a19d09995d",
+    "name": "test",
+    "time": { "start": 1768113880207, "stop": 1768113887261, "duration": 7054 },
+    "status": "passed",
+    "severity": "normal"
+  }
+]

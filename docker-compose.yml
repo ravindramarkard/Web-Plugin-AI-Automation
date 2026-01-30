@@ -1,0 +1,24 @@
+services:
+  app:
+    build: .
+    container_name: aitestgen-app
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      # Persist SQLite database
+      - ./server/data:/app/server/data
+      # Persist Test Reports
+      - ./server/public/reports:/app/server/public/reports
+    environment:
+      - NODE_ENV=production
+      - PORT=3001
+      - DATABASE_PATH=/app/server/data/database.sqlite
+      # Add your OpenAI API Key here or in a .env file
+      # - OPENAI_API_KEY=your_key_here
+    networks:
+      - aitestgen-network
+
+networks:
+  aitestgen-network:
+    driver: bridge

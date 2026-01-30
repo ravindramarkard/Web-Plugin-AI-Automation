@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiX, FiCheckCircle, FiPlay, FiSettings, FiExternalLink } from 'react-icons/fi';
 import { environmentStorage, type Environment } from '../lib/environmentStorage';
-import { TestSuite } from '../lib/testSuiteStorage';
+import type { TestSuite } from '../lib/testSuiteStorage';
 
 export interface RunSuiteOptions {
   environmentId?: string;
@@ -10,6 +10,7 @@ export interface RunSuiteOptions {
   parallel?: boolean;
   tags?: string;
   jiraLogging?: boolean;
+  singleSession?: boolean;
 }
 
 interface RunTestSuiteModalProps {
@@ -31,6 +32,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
   const [headless, setHeadless] = useState(true);
   const [runInParallel, setRunInParallel] = useState(false); // Toggle switch
   const [jiraLogging, setJiraLogging] = useState(false);
+  const [singleSession, setSingleSession] = useState(false);
 
   // Derived state for Jira warning
   const selectedEnv = environments.find(e => e.id === environmentId);
@@ -78,14 +80,15 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
       environmentId: environmentId || undefined,
       browser,
       headless,
-      parallel: runInParallel,
+      parallel: singleSession ? false : runInParallel,
       tags: tags || undefined,
       jiraLogging,
+      singleSession,
     });
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel w-full max-w-lg rounded-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
@@ -100,7 +103,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
           </div>
           <button
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiX size={20} />
           </button>
         </div>
@@ -117,7 +120,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                 <select
                   value={environmentId}
                   onChange={e => setEnvironmentId(e.target.value)}
-                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white outline-none">
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 outline-none dark:text-white">
                   <option value="" className="dark:bg-slate-800">
                     Suite's configured environment (Default)
                   </option>
@@ -141,7 +144,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                 <select
                   value={browser}
                   onChange={e => setBrowser(e.target.value)}
-                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white outline-none">
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 outline-none dark:text-white">
                   <option value="chromium" className="dark:bg-slate-800">
                     Chromium
                   </option>
@@ -166,7 +169,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                 <select
                   value={executionMode}
                   onChange={e => setExecutionMode(e.target.value as 'sequential' | 'parallel')}
-                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white outline-none">
+                  className="glass-input w-full appearance-none rounded-xl px-4 py-2.5 text-sm text-gray-900 outline-none dark:text-white">
                   <option value="sequential" className="dark:bg-slate-800">
                     Sequential Execution
                   </option>
@@ -193,7 +196,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                 value={tags}
                 onChange={e => setTags(e.target.value)}
                 placeholder="e.g. @smoke"
-                className="glass-input w-full rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                className="glass-input w-full rounded-xl px-4 py-2.5 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               />
               <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 Will run all tests in the suite (no tag filter).
@@ -211,7 +214,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                     onChange={e => setHeadless(e.target.checked)}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white dark:after:bg-slate-200 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:after:bg-slate-200"></div>
                 </label>
               </div>
 
@@ -221,11 +224,34 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                 <label className="relative inline-flex cursor-pointer items-center">
                   <input
                     type="checkbox"
-                    checked={runInParallel}
+                    checked={runInParallel && !singleSession}
                     onChange={e => handleToggleParallel(e.target.checked)}
+                    disabled={singleSession}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white dark:after:bg-slate-200 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:after:bg-slate-200"></div>
+                </label>
+              </div>
+
+              {/* Single Session Login */}
+              <div className="glass-card flex items-center justify-between rounded-xl p-3 transition-colors hover:bg-white/40 dark:hover:bg-white/10">
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                    One-time Login (reuse session)
+                  </span>
+                  <span className="mt-1 max-w-md text-xs text-gray-500 dark:text-gray-400">
+                    Perform login once using environment credentials, reuse the authenticated session for all tests in
+                    this suite run.
+                  </span>
+                </div>
+                <label className="relative inline-flex cursor-pointer items-center">
+                  <input
+                    type="checkbox"
+                    checked={singleSession}
+                    onChange={e => setSingleSession(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:after:bg-slate-200"></div>
                 </label>
               </div>
             </div>
@@ -249,7 +275,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
                     disabled={!isJiraConfigured}
                     className="peer sr-only"
                   />
-                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white dark:after:bg-slate-200 after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700"></div>
+                  <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:size-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none dark:border-gray-600 dark:bg-gray-700 dark:after:bg-slate-200"></div>
                 </label>
               </div>
 
@@ -265,7 +291,7 @@ export default function RunTestSuiteModal({ suite, projectId, onClose, onRun }: 
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 transition-colors hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10">
               Cancel
             </button>
             <button

@@ -41,7 +41,7 @@ function Toggle({
         <span
           className={`${
             checked ? 'translate-x-6' : 'translate-x-1'
-          } inline-block h-4 w-4 transform rounded-full bg-white dark:bg-slate-200 transition-transform`}
+          } inline-block size-4 rounded-full bg-white transition-transform dark:bg-slate-200`}
         />
       </button>
     </div>
@@ -313,7 +313,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
     <div className="h-full overflow-y-auto p-6">
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400">
             <FiSettings size={20} />
           </div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Environments</h2>
@@ -444,7 +444,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
 
       {/* Create/Edit Environment Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="glass-panel flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl">
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-gray-200/50 p-6 dark:border-white/10">
@@ -457,7 +457,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                   setShowCreateModal(false);
                   resetForm();
                 }}
-                className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+                className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
                 <FiX size={20} />
               </button>
             </div>
@@ -488,7 +488,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                       required
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                      className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                       placeholder="e.g., Development, Staging, Production"
                     />
                   </div>
@@ -503,7 +503,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                       required
                       value={formData.key}
                       onChange={e => setFormData({ ...formData, key: e.target.value })}
-                      className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                      className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                       placeholder="e.g., dev, staging, prod"
                     />
                     <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -519,7 +519,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                     value={formData.description}
                     onChange={e => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                    className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                     placeholder="Describe this environment"
                   />
                 </div>
@@ -541,7 +541,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                         required
                         value={formData.baseUrl}
                         onChange={e => setFormData({ ...formData, baseUrl: e.target.value })}
-                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder="http://localhost:5050"
                       />
                     </div>
@@ -553,7 +553,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                         type="url"
                         value={formData.apiUrl}
                         onChange={e => setFormData({ ...formData, apiUrl: e.target.value })}
-                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder="https://api.example.com"
                       />
                     </div>
@@ -567,7 +567,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                         type="text"
                         value={formData.username}
                         onChange={e => setFormData({ ...formData, username: e.target.value })}
-                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder="testuser"
                       />
                     </div>
@@ -581,7 +581,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                         type="password"
                         value={formData.password}
                         onChange={e => setFormData({ ...formData, password: e.target.value })}
-                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder="password"
                       />
                     </div>
@@ -596,7 +596,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                         min="1000"
                         value={formData.timeout}
                         onChange={e => setFormData({ ...formData, timeout: parseInt(e.target.value) || 30000 })}
-                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                         placeholder="30000"
                       />
                     </div>
@@ -609,7 +609,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                         onChange={e =>
                           setFormData({ ...formData, browser: e.target.value as 'chromium' | 'firefox' | 'webkit' })
                         }
-                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
+                        className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
                         <option value="chromium" className="dark:bg-slate-800">
                           Chromium
                         </option>
@@ -624,7 +624,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                   </div>
 
                   {/* Headless Mode Toggle */}
-                  <div className="mt-4 glass-card rounded-lg p-3">
+                  <div className="glass-card mt-4 rounded-lg p-3">
                     <Toggle
                       label="Headless Mode"
                       checked={formData.headless}
@@ -635,7 +635,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
 
                 {/* Custom Variables Section */}
                 <div className="mb-6">
-                  <div className="flex items-center justify-between mb-4">
+                  <div className="mb-4 flex items-center justify-between">
                     <h3 className="text-sm font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                       Custom Variables
                     </h3>
@@ -649,7 +649,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
 
                   <div className="glass-card rounded-lg p-4">
                     {variableList.length === 0 ? (
-                      <div className="text-center py-4 text-sm text-gray-400 dark:text-gray-500">
+                      <div className="py-4 text-center text-sm text-gray-400 dark:text-gray-500">
                         No custom variables defined. Add variables to use them in your tests.
                       </div>
                     ) : (
@@ -666,7 +666,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                   newList[index].key = e.target.value;
                                   setVariableList(newList);
                                 }}
-                                className="glass-input w-full rounded px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-1 focus:ring-blue-500"
+                                className="glass-input w-full rounded px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-1 focus:ring-blue-500 dark:text-white"
                               />
                             </div>
                             <div className="flex-1">
@@ -679,7 +679,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                   newList[index] = { ...newList[index], value: e.target.value };
                                   setVariableList(newList);
                                 }}
-                                className="glass-input w-full rounded px-3 py-2 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-1 focus:ring-blue-500"
+                                className="glass-input w-full rounded px-3 py-2 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-1 focus:ring-blue-500 dark:text-white"
                               />
                             </div>
                             <button
@@ -721,7 +721,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                             type="url"
                             value={formData.jiraUrl}
                             onChange={e => setFormData({ ...formData, jiraUrl: e.target.value })}
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                             placeholder="https://company.atlassian.net"
                           />
                         </div>
@@ -733,7 +733,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                             type="text"
                             value={formData.jiraUsername}
                             onChange={e => setFormData({ ...formData, jiraUsername: e.target.value })}
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                             placeholder="username@company.com"
                           />
                         </div>
@@ -745,7 +745,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                             type="password"
                             value={formData.jiraPassword}
                             onChange={e => setFormData({ ...formData, jiraPassword: e.target.value })}
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                             placeholder="API token or password"
                           />
                         </div>
@@ -757,7 +757,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                             type="text"
                             value={formData.jiraProjectKey}
                             onChange={e => setFormData({ ...formData, jiraProjectKey: e.target.value })}
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                             placeholder="PROJ"
                           />
                         </div>
@@ -787,7 +787,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                           <select
                             value={formData.llmProvider}
                             onChange={e => setFormData({ ...formData, llmProvider: e.target.value })}
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
                             <option value="OpenAI" className="dark:bg-slate-800">
                               OpenAI
                             </option>
@@ -814,7 +814,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                               type="text"
                               value={formData.llmModel}
                               onChange={e => setFormData({ ...formData, llmModel: e.target.value })}
-                              className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                              className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                               placeholder="gpt-4, claude-3, etc."
                             />
                           </div>
@@ -826,7 +826,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                               type="password"
                               value={formData.llmApiKey}
                               onChange={e => setFormData({ ...formData, llmApiKey: e.target.value })}
-                              className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                              className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                               placeholder="Your API key"
                             />
                           </div>
@@ -839,7 +839,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                             type="url"
                             value={formData.llmBaseUrl}
                             onChange={e => setFormData({ ...formData, llmBaseUrl: e.target.value })}
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                             placeholder="https://api.openai.com/v1"
                           />
                         </div>
@@ -881,7 +881,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                 authType: e.target.value as 'Bearer Token' | 'API Key' | 'Basic Auth' | 'OAuth2',
                               })
                             }
-                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
+                            className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
                             <option value="Bearer Token" className="dark:bg-slate-800">
                               Bearer Token
                             </option>
@@ -906,7 +906,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                               type="password"
                               value={formData.authToken}
                               onChange={e => setFormData({ ...formData, authToken: e.target.value })}
-                              className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                              className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                               placeholder="Enter token or use ${API_TOKEN}"
                             />
                           </div>
@@ -923,7 +923,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                   type="text"
                                   value={formData.authKey}
                                   onChange={e => setFormData({ ...formData, authKey: e.target.value })}
-                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                   placeholder="e.g. X-API-Key"
                                 />
                               </div>
@@ -935,7 +935,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                   type="password"
                                   value={formData.authValue}
                                   onChange={e => setFormData({ ...formData, authValue: e.target.value })}
-                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                   placeholder="Enter key value"
                                 />
                               </div>
@@ -949,7 +949,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                 onChange={e =>
                                   setFormData({ ...formData, authLocation: e.target.value as 'header' | 'query' })
                                 }
-                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white outline-none focus:ring-2 focus:ring-blue-500">
+                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none focus:ring-2 focus:ring-blue-500 dark:text-white">
                                 <option value="header" className="dark:bg-slate-800">
                                   Header
                                 </option>
@@ -971,7 +971,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                 type="text"
                                 value={formData.authUsername}
                                 onChange={e => setFormData({ ...formData, authUsername: e.target.value })}
-                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                 placeholder="Username"
                               />
                             </div>
@@ -983,7 +983,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                 type="password"
                                 value={formData.authPassword}
                                 onChange={e => setFormData({ ...formData, authPassword: e.target.value })}
-                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                 placeholder="Password"
                               />
                             </div>
@@ -1001,7 +1001,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                   type="text"
                                   value={formData.oauthClientId}
                                   onChange={e => setFormData({ ...formData, oauthClientId: e.target.value })}
-                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                   placeholder="Client ID"
                                 />
                               </div>
@@ -1013,7 +1013,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                   type="password"
                                   value={formData.oauthClientSecret}
                                   onChange={e => setFormData({ ...formData, oauthClientSecret: e.target.value })}
-                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                  className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                   placeholder="Client Secret"
                                 />
                               </div>
@@ -1026,7 +1026,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                 type="url"
                                 value={formData.oauthTokenUrl}
                                 onChange={e => setFormData({ ...formData, oauthTokenUrl: e.target.value })}
-                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                 placeholder="https://auth.example.com/oauth/token"
                               />
                             </div>
@@ -1038,7 +1038,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
                                 type="text"
                                 value={formData.oauthScope}
                                 onChange={e => setFormData({ ...formData, oauthScope: e.target.value })}
-                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 dark:text-white placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-blue-500"
+                                className="glass-input w-full rounded-lg px-3 py-2 text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-blue-500 dark:text-white"
                                 placeholder="read write"
                               />
                             </div>
@@ -1065,7 +1065,7 @@ export default function EnvironmentSettings({ projectId }: EnvironmentSettingsPr
               <button
                 type="button"
                 onClick={editingEnvironment ? handleUpdate : handleCreate}
-                className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 shadow-lg shadow-blue-500/20">
+                className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:bg-blue-700">
                 <FiFileText size={16} />
                 {editingEnvironment ? 'Update Environment' : 'Create Environment'}
               </button>

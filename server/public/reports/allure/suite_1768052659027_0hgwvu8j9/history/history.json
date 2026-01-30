@@ -1,0 +1,13 @@
+{
+  "49b17ba176adcc4e006fb5d1d9b95bbf:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "e197d4382e66e2f4",
+        "status": "failed",
+        "statusDetails": "Error: expect(page).toHaveURL(expected) failed\n\nExpected: \"https://parabank.parasoft.com/\"\nReceived: \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=1F01470F0BBEE778F9ABB1A65712E069\"\nTimeout:  5000ms\n\nCall log:\n  - Expect \"toHaveURL\" with timeout 5000ms\n    9 × unexpected value \"https://parabank.parasoft.com/parabank/index.htm;jsessionid=1F01470F0BBEE778F9ABB1A65712E069\"\n",
+        "time": { "start": 1768062879747, "stop": 1768062888768, "duration": 9021 }
+      }
+    ]
+  }
+}

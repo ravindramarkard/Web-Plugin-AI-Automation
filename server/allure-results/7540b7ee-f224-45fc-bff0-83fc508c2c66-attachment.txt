@@ -1,0 +1,52 @@
+Test failed with error: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator('xpath=(//a | //button)[36]') to be visible
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:25:27
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:21:18 {
+  name: 'TimeoutError',
+  Symbol(step): {
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts',
+      line: 25,
+      column: 27
+    },
+    category: 'pw:api',
+    title: "Wait for selector locator('xpath=(//a | //button)[36]')",
+    apiName: 'locator.waitFor',
+    params: {
+      selector: '(//a | //button)[36]',
+      strict: true,
+      omitReturnValue: true,
+      state: 'visible',
+      timeout: 15000
+    },
+    group: undefined,
+    stepId: 'pw:api@46',
+    boxedStack: undefined,
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'pw:api@46',
+      _title: "Wait for selector locator('xpath=(//a | //button)[36]')",
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768052753224,
+    error: {
+      message: 'TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\n' +
+        'Call log:\n' +
+        "\x1B[2m  - waiting for locator('xpath=(//a | //button)[36]') to be visible\x1B[22m\n",
+      stack: 'TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\n' +
+        'Call log:\n' +
+        "\x1B[2m  - waiting for locator('xpath=(//a | //button)[36]') to be visible\x1B[22m\n" +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:25:27\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:21:18',
+      cause: undefined
+    }
+  }
+}

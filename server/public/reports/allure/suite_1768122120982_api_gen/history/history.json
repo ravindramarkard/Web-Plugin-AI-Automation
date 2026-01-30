@@ -1,0 +1,23 @@
+{
+  "9d80493e6f0132e988baced10a17566a:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "ed989568267aea7b",
+        "status": "failed",
+        "statusDetails": "Error: expect(received).toBe(expected) // Object.is equality\n\nExpected: 405\nReceived: 200",
+        "time": { "start": 1768130567919, "stop": 1768130568157, "duration": 238 }
+      }
+    ]
+  },
+  "8bd95a22fd64b975b00ce3770bbdfce8:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 0, "broken": 0, "skipped": 0, "passed": 1, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "de661f64ab733bff",
+        "status": "passed",
+        "time": { "start": 1768130566659, "stop": 1768130567812, "duration": 1153 }
+      }
+    ]
+  }
+}

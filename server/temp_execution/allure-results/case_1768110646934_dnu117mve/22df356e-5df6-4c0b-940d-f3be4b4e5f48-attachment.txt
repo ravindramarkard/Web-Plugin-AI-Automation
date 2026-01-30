@@ -1,0 +1,8 @@
+Navigating to: https://parabank.parasoft.com
+Page loaded successfully
+Looking for Register link...
+Found Register link using role selector
+Register link href: register.htm
+Clicking Register link...
+Navigation completed
+Current URL: https://parabank.parasoft.com/parabank/register.htm

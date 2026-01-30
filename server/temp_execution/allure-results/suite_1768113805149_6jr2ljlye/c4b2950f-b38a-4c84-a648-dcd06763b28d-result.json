@@ -1,0 +1,253 @@
+{
+  "uuid": "c4b2950f-b38a-4c84-a648-dcd06763b28d",
+  "name": "test",
+  "historyId": "f90d4bb9480e96778d751c574086c87f:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "passed",
+  "statusDetails": {},
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768113880217,
+              "uuid": "7e387096-1e68-4a38-bc99-20134f52fbb2",
+              "stop": 1768113880689
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768113880214,
+          "uuid": "112dc0f2-6e65-4daa-bedd-8134b7a3fb63",
+          "stop": 1768113880690
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768113880705,
+              "uuid": "3d6972a9-a2c1-4ed0-9fcc-deccc4085f8d",
+              "stop": 1768113880716
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768113880691,
+          "uuid": "e988e928-1ded-4c70-b0c3-49de1933b177",
+          "stop": 1768113880730
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768113880732,
+              "uuid": "15d64ca9-fc1a-4443-98a9-17e114b23064",
+              "stop": 1768113881037
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768113880730,
+          "uuid": "8d78cc32-fc47-4aa8-9d9c-1ca5827688d9",
+          "stop": 1768113881037
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768113880208,
+      "uuid": "4a9200c9-1492-4a79-9ef0-17a3d0df7a7e",
+      "stop": 1768113881037
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768113881039,
+      "name": "Navigate to \"/parabank/index.htm\"",
+      "uuid": "fe3c6fdd-88c8-49fc-acd8-2e215fe48b76",
+      "stop": 1768113883404
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768113883413,
+      "name": "Click locator('#footerPanel').getByRole('link', { name: 'Products' })",
+      "uuid": "9bd61d4e-505c-4506-9835-44d2895166ba",
+      "stop": 1768113884387
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768113884388,
+      "name": "Navigate to \"/parabank/index.htm\"",
+      "uuid": "35053df6-1540-4d3c-a8a7-8d5c775a2df4",
+      "stop": 1768113885020
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768113885021,
+      "name": "Click getByRole('link', { name: 'Forum' })",
+      "uuid": "cb54ce4f-0041-43b0-8acb-6e9085439d47",
+      "stop": 1768113886371
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "b9f50ced-d9da-49af-bc8d-4ea014c772c1-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768113887914,
+      "name": "screenshot",
+      "stop": 1768113887914
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "136394a9-b7a5-45c9-9756-185ae6c00029-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768113887915,
+      "name": "video",
+      "stop": 1768113887915
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "0e342d47-882d-4cda-a4cd-183be28410cc-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768113887915,
+      "name": "trace",
+      "stop": 1768113887915
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768113887538,
+          "uuid": "1d3d8154-23c2-4152-97c4-0ff7f3a7c03f",
+          "stop": 1768113887538
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768113887676,
+              "uuid": "c8bf3737-8515-4da1-8bd9-5e020538428d",
+              "stop": 1768113887731
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768113887538,
+          "uuid": "1f2bbde2-16ac-4480-b1c9-06f73b9d9d00",
+          "stop": 1768113887745
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768113886371,
+      "uuid": "91e8eb7e-9611-4274-91ba-0eed1f7ca92d",
+      "stop": 1768113887748
+    }
+  ],
+  "attachments": [],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-tc_1768112965904_zu7iwg83w.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-tc_1768112965904_zu7iwg83w.spec.ts" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-85536-worker-0" },
+    { "name": "suite", "value": "test-tc_1768112965904_zu7iwg83w.spec.ts" }
+  ],
+  "links": [],
+  "start": 1768113880207,
+  "testCaseId": "f90d4bb9480e96778d751c574086c87f",
+  "fullName": "test-tc_1768112965904_zu7iwg83w.spec.ts:3:1",
+  "titlePath": ["test-tc_1768112965904_zu7iwg83w.spec.ts"],
+  "stop": 1768113887261
+}

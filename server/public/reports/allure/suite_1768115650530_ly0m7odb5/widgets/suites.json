@@ -1,0 +1,10 @@
+{
+  "total": 1,
+  "items": [
+    {
+      "uid": "43443f5e6e31c15ab0604eada5730cbd",
+      "name": "test-case_1768114299564_jl1wxitot.spec.ts",
+      "statistic": { "failed": 0, "broken": 0, "skipped": 0, "passed": 1, "unknown": 0, "total": 1 }
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "total": 2,
+  "items": [
+    {
+      "uid": "e046fcc446bae14ae54b19bd0c0f5fff",
+      "name": "test-case_1768062985119_a0aevlqu3.spec.ts",
+      "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 }
+    },
+    {
+      "uid": "a3da50d410167f47ddf3abe03ed1aef2",
+      "name": "test-case_1768039746587_mi13ui3rf.spec.ts",
+      "statistic": { "failed": 0, "broken": 0, "skipped": 0, "passed": 1, "unknown": 0, "total": 1 }
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+{
+  "uuid": "85645920-c327-41e9-bcae-2fc41c99650e",
+  "name": "should navigate to registration page via register link",
+  "historyId": "2b241c742d4b673920bc5bd6ba682ce4:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "passed",
+  "statusDetails": {},
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768063016748,
+              "uuid": "ea6b53ec-268f-4919-8c50-d4777bc46b9f",
+              "stop": 1768063017096
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768063016746,
+          "uuid": "9423e23d-9ef7-44e7-a5f1-c055be1caace",
+          "stop": 1768063017097
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768063017102,
+              "uuid": "0fc4ac3b-2cb4-4948-a0ce-2fe96d3ff33b",
+              "stop": 1768063017118
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768063017098,
+          "uuid": "fbcff474-bc60-4794-a043-e0027e1eee5f",
+          "stop": 1768063017123
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768063017126,
+              "uuid": "ac604d6a-82b7-4c9b-bfeb-93772d2ef90f",
+              "stop": 1768063017363
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768063017124,
+          "uuid": "26bb6ae0-f782-4d95-9015-42832510b131",
+          "stop": 1768063017363
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768063016735,
+      "uuid": "8cf9e90e-7b88-4dfa-a011-30198d26eadb",
+      "stop": 1768063017363
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063017389,
+          "name": "Navigate to \"/\"",
+          "uuid": "9232fd1f-ed08-4019-831e-92b4ee8c61c1",
+          "stop": 1768063019939
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063019941,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "f1779a88-8e93-41e5-8cc0-6682f1fd8033",
+          "stop": 1768063020432
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063017388,
+      "name": "Navigate to Parabank home page",
+      "uuid": "e47371d3-e592-4e66-b9cd-14f5e043cebb",
+      "stop": 1768063020432
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020483,
+          "name": "Click getByRole('link', { name: 'Register' })",
+          "uuid": "139a5c59-ef83-4341-8187-88947f2c03b0",
+          "stop": 1768063020848
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063020433,
+      "name": "Click on register link",
+      "uuid": "3de1dc6d-d142-4742-8588-63f21836bc8a",
+      "stop": 1768063020848
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768063020849,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "85cc08b0-03ff-4ac6-99a5-8f6fb88723d4",
+          "stop": 1768063021343
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063020848,
+      "name": "Verify navigation to registration page",
+      "uuid": "1069510a-a764-4aba-9e35-bd3b868ce743",
+      "stop": 1768063021365
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768063021367,
+      "name": "Expect \"toHaveURL\"",
+      "uuid": "9b7e7c87-7109-404c-90af-566b1ccf63c6",
+      "stop": 1768063021372
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "970ed634-f046-4c44-a7e7-ccf73f132c67-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768063021519,
+      "name": "screenshot",
+      "stop": 1768063021519
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "ce74fc7e-e3e6-4d05-8fb3-feece80934b3-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768063021520,
+      "name": "video",
+      "stop": 1768063021520
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "606e9134-6a01-42fe-8ca8-7340089645a9-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768063021521,
+      "name": "trace",
+      "stop": 1768063021521
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768063021407,
+          "uuid": "d27db106-cfe1-41c2-a43b-a3dff63ad6e8",
+          "stop": 1768063021407
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768063021446,
+              "uuid": "93b2c322-6ec5-4a6a-8cc8-a9568acb1d06",
+              "stop": 1768063021480
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768063021407,
+          "uuid": "644d6b8b-7dd8-4238-9552-d0d7fa9949f1",
+          "stop": 1768063021481
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768063021373,
+      "uuid": "cfa23e43-679f-465b-9e7f-f1c9df031aa2",
+      "stop": 1768063021483
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "245bff4e-2a76-438f-a043-18bd221040c5-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768039746587_mi13ui3rf.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768039746587_mi13ui3rf.spec.ts > Register Link Test" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-22007-worker-0" },
+    { "name": "suite", "value": "test-case_1768039746587_mi13ui3rf.spec.ts" },
+    { "name": "subSuite", "value": "Register Link Test" },
+    { "name": "feature", "value": "Navigation" },
+    { "name": "story", "value": "Register Link" }
+  ],
+  "links": [],
+  "start": 1768063016736,
+  "testCaseId": "2b241c742d4b673920bc5bd6ba682ce4",
+  "fullName": "test-case_1768039746587_mi13ui3rf.spec.ts:5:3",
+  "titlePath": ["test-case_1768039746587_mi13ui3rf.spec.ts", "Register Link Test"],
+  "description": "Test that clicking the register link navigates to the registration page",
+  "stop": 1768063021120
+}

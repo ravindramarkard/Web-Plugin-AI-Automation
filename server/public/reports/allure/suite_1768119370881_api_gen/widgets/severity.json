@@ -1,0 +1,23 @@
+[
+  {
+    "uid": "c4fcba871fad8cee",
+    "name": "POST /pet - Add a new pet to the store (200 OK)",
+    "time": { "start": 1768125477456, "stop": 1768125477965, "duration": 509 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "ffd7b4cc5783c793",
+    "name": "POST /pet - Add a new pet with invalid input (405 Method Not Allowed)",
+    "time": { "start": 1768125479100, "stop": 1768125479505, "duration": 405 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "7dd288b6338ce18c",
+    "name": "POST /pet - Add a new pet without authentication (401 Unauthorized)",
+    "time": { "start": 1768125480487, "stop": 1768125480975, "duration": 488 },
+    "status": "failed",
+    "severity": "normal"
+  }
+]

@@ -44,7 +44,7 @@ function MessageBlock({ message, isSameActor }: MessageBlockProps) {
     const fallbackActor = ACTOR_PROFILES.system;
     return (
       <div
-        className={`flex max-w-full gap-3 rounded-xl p-3 transition-colors glass-card ${
+        className={`glass-card flex max-w-full gap-3 rounded-xl p-3 transition-colors ${
           !isSameActor ? 'mt-4' : 'mt-1'
         }`}>
         {!isSameActor && (
@@ -71,7 +71,7 @@ function MessageBlock({ message, isSameActor }: MessageBlockProps) {
 
   return (
     <div
-      className={`flex max-w-full gap-3 rounded-xl p-3 transition-colors glass-card ${!isSameActor ? 'mt-4' : 'mt-1'}`}>
+      className={`glass-card flex max-w-full gap-3 rounded-xl p-3 transition-colors ${!isSameActor ? 'mt-4' : 'mt-1'}`}>
       {!isSameActor && (
         <div
           className="flex size-8 shrink-0 items-center justify-center rounded-full shadow-lg ring-2 ring-white/10"

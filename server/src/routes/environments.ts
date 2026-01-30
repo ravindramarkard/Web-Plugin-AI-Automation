@@ -6,7 +6,20 @@ const router = express.Router();
 // Get all environments
 router.get('/', (req, res) => {
   try {
-    const environments = db.prepare('SELECT * FROM environments ORDER BY createdAt DESC').all();
+    const { projectId } = req.query;
+    let query = 'SELECT * FROM environments';
+    const params: any[] = [];
+
+    if (projectId) {
+      query += ' WHERE projectId = ?';
+      params.push(projectId);
+    } else {
+      query += ' WHERE projectId IS NULL';
+    }
+
+    query += ' ORDER BY createdAt DESC';
+
+    const environments = db.prepare(query).all(...params);
     // Convert SQLite boolean integers to JavaScript booleans
     const parsed = environments.map((env: any) => ({
       ...env,
@@ -14,6 +27,7 @@ router.get('/', (req, res) => {
       jiraEnabled: Boolean(env.jiraEnabled),
       llmEnabled: Boolean(env.llmEnabled),
       authorizationEnabled: Boolean(env.authorizationEnabled),
+      variables: env.variables ? JSON.parse(env.variables) : {},
     }));
     res.json(parsed);
   } catch (error) {
@@ -36,6 +50,7 @@ router.get('/:id', (req, res) => {
       jiraEnabled: Boolean((env as any).jiraEnabled),
       llmEnabled: Boolean((env as any).llmEnabled),
       authorizationEnabled: Boolean((env as any).authorizationEnabled),
+      variables: (env as any).variables ? JSON.parse((env as any).variables) : {},
     };
     res.json(parsed);
   } catch (error) {
@@ -58,6 +73,7 @@ router.get('/key/:key', (req, res) => {
       jiraEnabled: Boolean((env as any).jiraEnabled),
       llmEnabled: Boolean((env as any).llmEnabled),
       authorizationEnabled: Boolean((env as any).authorizationEnabled),
+      variables: (env as any).variables ? JSON.parse((env as any).variables) : {},
     };
     res.json(parsed);
   } catch (error) {
@@ -70,6 +86,7 @@ router.get('/key/:key', (req, res) => {
 router.post('/', (req, res) => {
   try {
     const {
+      projectId,
       name,
       key,
       description,
@@ -94,6 +111,7 @@ router.post('/', (req, res) => {
       authType,
       authToken,
       status = 'active',
+      variables = {},
     } = req.body;
 
     // Validate required fields
@@ -102,9 +120,17 @@ router.post('/', (req, res) => {
     }
 
     // Check if key already exists
-    const existing = db.prepare('SELECT id FROM environments WHERE key = ?').get(key);
+    let checkQuery = 'SELECT id FROM environments WHERE key = ? AND projectId IS NULL';
+    let checkParams: any[] = [key];
+
+    if (projectId) {
+      checkQuery = 'SELECT id FROM environments WHERE key = ? AND projectId = ?';
+      checkParams = [key, projectId];
+    }
+
+    const existing = db.prepare(checkQuery).get(...checkParams);
     if (existing) {
-      return res.status(400).json({ error: 'Environment with this key already exists' });
+      return res.status(400).json({ error: 'Environment with this key already exists in this project' });
     }
 
     const id = `env_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
@@ -112,13 +138,17 @@ router.post('/', (req, res) => {
 
     db.prepare(
       `INSERT INTO environments (
-        id, name, key, description, baseUrl, apiUrl, username, password, timeout,
-        browser, headless, jiraEnabled, jiraUrl, jiraUsername, jiraPassword, jiraProjectKey,
-        llmEnabled, llmProvider, llmModel, llmApiKey, llmBaseUrl,
-        authorizationEnabled, authType, authToken, status, createdAt, updatedAt
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          id, projectId, name, key, description, baseUrl, apiUrl, username, password, timeout,
+          browser, headless, jiraEnabled, jiraUrl, jiraUsername, jiraPassword, jiraProjectKey,
+          llmEnabled, llmProvider, llmModel, llmApiKey, llmBaseUrl,
+          authorizationEnabled, authType, authToken, 
+          authKey, authValue, authLocation, authUsername, authPassword,
+          oauthClientId, oauthClientSecret, oauthTokenUrl, oauthScope,
+          status, createdAt, updatedAt, variables
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).run(
       id,
+      projectId || null,
       name,
       key,
       description,
@@ -142,9 +172,19 @@ router.post('/', (req, res) => {
       authorizationEnabled ? 1 : 0,
       authType || null,
       authToken || null,
+      authKey || null,
+      authValue || null,
+      authLocation || null,
+      authUsername || null,
+      authPassword || null,
+      oauthClientId || null,
+      oauthClientSecret || null,
+      oauthTokenUrl || null,
+      oauthScope || null,
       status,
       now,
       now,
+      JSON.stringify(variables),
     );
 
     const created = db.prepare('SELECT * FROM environments WHERE id = ?').get(id);
@@ -154,6 +194,7 @@ router.post('/', (req, res) => {
       jiraEnabled: Boolean((created as any).jiraEnabled),
       llmEnabled: Boolean((created as any).llmEnabled),
       authorizationEnabled: Boolean((created as any).authorizationEnabled),
+      variables: (created as any).variables ? JSON.parse((created as any).variables) : {},
     };
     res.status(201).json(parsed);
   } catch (error: any) {
@@ -192,8 +233,20 @@ router.put('/:id', (req, res) => {
       authorizationEnabled,
       authType,
       authToken,
+      authKey,
+      authValue,
+      authLocation,
+      authUsername,
+      authPassword,
+      oauthClientId,
+      oauthClientSecret,
+      oauthTokenUrl,
+      oauthScope,
       status,
+      variables,
     } = req.body;
+
+    console.log(`[Environment] Updating environment ${req.params.id} with variables:`, variables);
 
     // Check if environment exists
     const existing = db.prepare('SELECT * FROM environments WHERE id = ?').get(req.params.id);
@@ -306,9 +359,49 @@ router.put('/:id', (req, res) => {
       updates.push('authToken = ?');
       values.push(authToken || null);
     }
+    if (authKey !== undefined) {
+      updates.push('authKey = ?');
+      values.push(authKey || null);
+    }
+    if (authValue !== undefined) {
+      updates.push('authValue = ?');
+      values.push(authValue || null);
+    }
+    if (authLocation !== undefined) {
+      updates.push('authLocation = ?');
+      values.push(authLocation || null);
+    }
+    if (authUsername !== undefined) {
+      updates.push('authUsername = ?');
+      values.push(authUsername || null);
+    }
+    if (authPassword !== undefined) {
+      updates.push('authPassword = ?');
+      values.push(authPassword || null);
+    }
+    if (oauthClientId !== undefined) {
+      updates.push('oauthClientId = ?');
+      values.push(oauthClientId || null);
+    }
+    if (oauthClientSecret !== undefined) {
+      updates.push('oauthClientSecret = ?');
+      values.push(oauthClientSecret || null);
+    }
+    if (oauthTokenUrl !== undefined) {
+      updates.push('oauthTokenUrl = ?');
+      values.push(oauthTokenUrl || null);
+    }
+    if (oauthScope !== undefined) {
+      updates.push('oauthScope = ?');
+      values.push(oauthScope || null);
+    }
     if (status !== undefined) {
       updates.push('status = ?');
       values.push(status);
+    }
+    if (variables !== undefined) {
+      updates.push('variables = ?');
+      values.push(JSON.stringify(variables));
     }
 
     updates.push('updatedAt = ?');
@@ -329,6 +422,7 @@ router.put('/:id', (req, res) => {
       jiraEnabled: Boolean((updated as any).jiraEnabled),
       llmEnabled: Boolean((updated as any).llmEnabled),
       authorizationEnabled: Boolean((updated as any).authorizationEnabled),
+      variables: (updated as any).variables ? JSON.parse((updated as any).variables) : {},
     };
     res.json(parsed);
   } catch (error: any) {

@@ -1,0 +1,89 @@
+Test failed with error: ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByRole('button', { name: 'Lookup' })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for getByRole('button', { name: 'Lookup' })
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:107:36
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:78:7 {
+  matcherResult: {
+    message: '\x1B[2mexpect(\x1B[22m\x1B[31mlocator\x1B[39m\x1B[2m).\x1B[22mtoBeVisible\x1B[2m(\x1B[22m\x1B[2m)\x1B[22m failed\n' +
+      '\n' +
+      "Locator: getByRole('button', { name: 'Lookup' })\n" +
+      'Expected: visible\n' +
+      'Timeout: 5000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      '\x1B[2m  - Expect "toBeVisible" with timeout 5000ms\x1B[22m\n' +
+      "\x1B[2m  - waiting for getByRole('button', { name: 'Lookup' })\x1B[22m\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      '  - Expect "toBeVisible" with timeout 5000ms',
+      "  - waiting for getByRole('button', { name: 'Lookup' })"
+    ],
+    timeout: 5000
+  },
+  Symbol(step): {
+    category: 'expect',
+    apiName: 'expect.toBeVisible',
+    title: `Expect "toBeVisible" getByRole('button', { name: 'Lookup' })`,
+    shortTitle: 'Expect "toBeVisible"',
+    params: undefined,
+    infectParentStepsWithError: undefined,
+    stepId: 'expect@62',
+    group: undefined,
+    boxedStack: undefined,
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts',
+      line: 107,
+      column: 36
+    },
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'expect@62',
+      _title: `Expect "toBeVisible" getByRole('button', { name: 'Lookup' })`,
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768108915761,
+    error: {
+      message: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mlocator\x1B[39m\x1B[2m).\x1B[22mtoBeVisible\x1B[2m(\x1B[22m\x1B[2m)\x1B[22m failed\n' +
+        '\n' +
+        "Locator: getByRole('button', { name: 'Lookup' })\n" +
+        'Expected: visible\n' +
+        'Timeout: 5000ms\n' +
+        'Error: element(s) not found\n' +
+        '\n' +
+        'Call log:\n' +
+        '\x1B[2m  - Expect "toBeVisible" with timeout 5000ms\x1B[22m\n' +
+        "\x1B[2m  - waiting for getByRole('button', { name: 'Lookup' })\x1B[22m\n",
+      stack: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mlocator\x1B[39m\x1B[2m).\x1B[22mtoBeVisible\x1B[2m(\x1B[22m\x1B[2m)\x1B[22m failed\n' +
+        '\n' +
+        "Locator: getByRole('button', { name: 'Lookup' })\n" +
+        'Expected: visible\n' +
+        'Timeout: 5000ms\n' +
+        'Error: element(s) not found\n' +
+        '\n' +
+        'Call log:\n' +
+        '\x1B[2m  - Expect "toBeVisible" with timeout 5000ms\x1B[22m\n' +
+        "\x1B[2m  - waiting for getByRole('button', { name: 'Lookup' })\x1B[22m\n" +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:107:36\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768108849092_onkj4d0gn.spec.ts:78:7',
+      cause: undefined
+    }
+  }
+}

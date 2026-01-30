@@ -1,0 +1,52 @@
+Navigation failed: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator('h1:has-text("ParaBank")') to be visible
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:25:22
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:16:5 {
+  name: 'TimeoutError',
+  Symbol(step): {
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts',
+      line: 25,
+      column: 22
+    },
+    category: 'pw:api',
+    title: `Wait for selector locator('h1:has-text("ParaBank")')`,
+    apiName: 'locator.waitFor',
+    params: {
+      selector: 'h1:has-text("ParaBank")',
+      strict: true,
+      omitReturnValue: true,
+      state: 'visible',
+      timeout: 15000
+    },
+    group: undefined,
+    stepId: 'pw:api@41',
+    boxedStack: undefined,
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'pw:api@41',
+      _title: `Wait for selector locator('h1:has-text("ParaBank")')`,
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768841181762,
+    error: {
+      message: 'TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\n' +
+        'Call log:\n' +
+        `\x1B[2m  - waiting for locator('h1:has-text("ParaBank")') to be visible\x1B[22m\n`,
+      stack: 'TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\n' +
+        'Call log:\n' +
+        `\x1B[2m  - waiting for locator('h1:has-text("ParaBank")') to be visible\x1B[22m\n` +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:25:22\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:16:5',
+      cause: undefined
+    }
+  }
+}

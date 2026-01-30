@@ -1,0 +1,311 @@
+{
+  "uuid": "9c86acf7-b4f5-4fe8-8e8b-604239ae98ba",
+  "name": "click to Transfer Funds",
+  "historyId": "cf97f7c1e976696a92ccd034f55c8138:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n",
+    "trace": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:135:17)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:26:31\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:134:9\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:118:5"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Launch browser",
+                  "start": 1768944359491,
+                  "uuid": "ed3f2246-0ea3-425e-8277-38eca964e7bb",
+                  "stop": 1768944360787
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"browser\"",
+              "start": 1768944359398,
+              "uuid": "69fb8a02-8e20-4fde-ac33-642c9755995b",
+              "stop": 1768944360787
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Create context",
+                  "start": 1768944360789,
+                  "uuid": "c4d15299-b1ae-4aa4-a795-f1b9e70c394d",
+                  "stop": 1768944360852
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"context\"",
+              "start": 1768944360788,
+              "uuid": "697ccf01-a1fa-4804-a576-86b73c8cb07a",
+              "stop": 1768944360907
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [
+                {
+                  "status": "passed",
+                  "statusDetails": {},
+                  "stage": "finished",
+                  "steps": [],
+                  "attachments": [],
+                  "parameters": [],
+                  "name": "Create page",
+                  "start": 1768944361004,
+                  "uuid": "b868cdea-1386-44fd-b56d-9cd035008c6c",
+                  "stop": 1768944362244
+                }
+              ],
+              "attachments": [],
+              "parameters": [],
+              "name": "Fixture \"page\"",
+              "start": 1768944360908,
+              "uuid": "795536d9-5bb5-4d66-9f01-60291abab771",
+              "stop": 1768944362245
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Navigate to \"/parabank/index.htm?ConnType=JDBC\"",
+              "start": 1768944362247,
+              "uuid": "7a5c1bb0-7140-4af6-a29f-a37b48b4c7a0",
+              "stop": 1768944364300
+            },
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Wait for load state \"networkidle\"",
+              "start": 1768944364306,
+              "uuid": "532270e2-39d6-40e1-867a-9065db33e2e2",
+              "stop": 1768944364800
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "beforeEach hook",
+          "start": 1768944359312,
+          "uuid": "059bc14f-4ba4-448a-88c8-0215f3c4bcd6",
+          "stop": 1768944364801
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768944359311,
+      "uuid": "7f3d8244-f9b7-4ae8-8e5c-5ca441d568c1",
+      "stop": 1768944364801
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n",
+        "trace": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:135:17)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:26:31\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:134:9\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:118:5"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n",
+            "trace": "Error: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:122:33\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:118:16"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944364833,
+          "name": "Wait for selector getByRole('link', { name: 'Transfer Funds' })",
+          "uuid": "6e1e1081-1b90-4aa3-9710-582b21ddb7fd",
+          "stop": 1768944365014
+        },
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n",
+            "trace": "Error: Failed to navigate to Transfer Funds page: locator.waitFor: Error: strict mode violation: getByRole('link', { name: 'Transfer Funds' }) resolved to 2 elements:\n    1) <a href=\"services/ParaBank;jsessionid=F2AF186240624385E66A3F099A393D71?wsdl\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).first()\n    2) <a href=\"services/bank;jsessionid=F2AF186240624385E66A3F099A393D71?_wadl&_type=xml\">Transfer Funds</a> aka getByRole('link', { name: 'Transfer Funds' }).nth(1)\n\nCall log:\n  - waiting for getByRole('link', { name: 'Transfer Funds' }) to be visible\n\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:135:17)\n    at body (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:113:48)\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:56)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at call (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:13:23)\n    at Generator._invoke (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at Generator.next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at asyncGeneratorStep (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at _next (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1\n    at AllurePlaywrightTestRuntime.apply (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:2:1)\n    at AllurePlaywrightTestRuntime.step (/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-playwright@3.4.4_@playwright+test@1.57.0/node_modules/allure-playwright/src/runtime.ts:12:13)\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/node_modules/.pnpm/allure-js-commons@3.4.4_allure-playwright@3.4.4_@playwright+test@1.57.0_/node_modules/allure-js-commons/src/facade.ts:26:31\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:134:9\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/suite-suite_1768494120056_gw6diq09u/test-case_1768940056039_m2g1gd9k4.spec.ts:118:5"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768944365149,
+          "name": "Navigation to Transfer Funds failed",
+          "uuid": "196e8f80-5d95-436e-b4bd-4086a54d6435",
+          "stop": 1768944365165
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768944364807,
+      "name": "Navigate to Transfer Funds page",
+      "uuid": "5ef71752-32df-4351-a9da-3163a235edf6",
+      "stop": 1768944365262
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "d96e7b11-2e4c-45cb-94c9-ed03ad5b1eee-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768944367713,
+      "name": "screenshot",
+      "stop": 1768944367713
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "b3751448-0f46-43fd-aaa7-3e23ce967ea1-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768944367717,
+      "name": "video",
+      "stop": 1768944367717
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "ca3472a6-c20c-46b0-8afe-f753766ab164-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768944367718,
+      "name": "error-context",
+      "stop": 1768944367718
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "a3825a0c-4733-43cc-a97b-23b5c1081fed-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768944367719,
+      "name": "trace",
+      "stop": 1768944367719
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768944365522,
+          "uuid": "0b780cfe-077f-4ae3-ab00-450b9a5486c2",
+          "stop": 1768944365524
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768944365929,
+              "uuid": "3b260db9-3956-4cf5-afae-46c3537a9b15",
+              "stop": 1768944366273
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768944365524,
+          "uuid": "bb8cf1a0-01ff-433d-a76b-8ac875d74b24",
+          "stop": 1768944366284
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768944365293,
+      "uuid": "02efce17-7216-4891-ba0b-0909c8d39627",
+      "stop": 1768944366307
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "4e513dc0-c84e-42ed-9717-3dce176457cb-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "194a2340-6049-423b-bf12-a91b7740c6ec-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768940056039_m2g1gd9k4.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768940056039_m2g1gd9k4.spec.ts > Login and Bill Pay Navigation" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-75918-worker-0" },
+    { "name": "suite", "value": "test-case_1768940056039_m2g1gd9k4.spec.ts" },
+    { "name": "subSuite", "value": "Login and Bill Pay Navigation" }
+  ],
+  "links": [],
+  "start": 1768944359313,
+  "testCaseId": "cf97f7c1e976696a92ccd034f55c8138",
+  "fullName": "test-case_1768940056039_m2g1gd9k4.spec.ts:114:1",
+  "titlePath": ["test-case_1768940056039_m2g1gd9k4.spec.ts", "Login and Bill Pay Navigation"],
+  "stop": 1768944364815
+}

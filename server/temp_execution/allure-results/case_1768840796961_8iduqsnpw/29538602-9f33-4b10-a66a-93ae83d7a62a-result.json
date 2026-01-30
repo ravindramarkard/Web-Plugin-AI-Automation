@@ -1,0 +1,286 @@
+{
+  "uuid": "29538602-9f33-4b10-a66a-93ae83d7a62a",
+  "name": "should click the registration link",
+  "historyId": "8bd61e87ec3f6b3151f6ae549272bd8c:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('h1:has-text(\"ParaBank\")') to be visible\n",
+    "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('h1:has-text(\"ParaBank\")') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:25:22\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:16:5"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768841161599,
+              "uuid": "18a22bf0-3050-47b1-9cfa-0d33facf2492",
+              "stop": 1768841162882
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768841161596,
+          "uuid": "2fe67b31-0f1a-4dca-b27e-3d45c671f0a6",
+          "stop": 1768841162882
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768841162888,
+              "uuid": "83c48525-35c0-4c56-ab05-98800d81f6ba",
+              "stop": 1768841162905
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768841162885,
+          "uuid": "7b36c949-7171-42f6-8232-bee7a1bb6076",
+          "stop": 1768841162907
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768841162908,
+              "uuid": "535285c2-97c5-40f7-a09f-e24cec0f9c52",
+              "stop": 1768841163697
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768841162907,
+          "uuid": "22059ba4-1eb4-4cf9-8bcd-feaad05987fa",
+          "stop": 1768841163699
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768841161588,
+      "uuid": "527b8aa8-4f52-4356-874c-d5b482e46d96",
+      "stop": 1768841163699
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('h1:has-text(\"ParaBank\")') to be visible\n",
+        "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('h1:has-text(\"ParaBank\")') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:25:22\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:16:5"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768841163706,
+          "name": "Navigate to \"/parabank/index.htm\"",
+          "uuid": "8e28b758-76b4-4ca4-9313-4dd987438d5c",
+          "stop": 1768841166732
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768841166736,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "e14c66af-944d-43c3-bd79-3d9fa08f8f93",
+          "stop": 1768841166739
+        },
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('h1:has-text(\"ParaBank\")') to be visible\n",
+            "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('h1:has-text(\"ParaBank\")') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:25:22\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768840796961_8iduqsnpw.spec.ts:16:5"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768841166746,
+          "name": "Wait for selector locator('h1:has-text(\"ParaBank\")')",
+          "uuid": "0b1041cc-0740-490c-9226-d744206e646a",
+          "stop": 1768841181762
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768841163702,
+      "name": "Navigate to Parabank homepage",
+      "uuid": "9be496ce-30cc-46d5-ad05-df33a81aae2d",
+      "stop": 1768841181764
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "2f0fffdf-97bd-473b-a5c3-abf6cf32ae50-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768841183057,
+      "name": "screenshot",
+      "stop": 1768841183057
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "031b50cc-3416-4464-967e-45f2331c0f9c-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768841183069,
+      "name": "video",
+      "stop": 1768841183069
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "3fc1e290-9ddb-499c-b3a7-68a37a9c94f2-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768841183071,
+      "name": "error-context",
+      "stop": 1768841183071
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "1f468d32-d714-4a4f-abf1-4d32b9dce916-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768841183073,
+      "name": "trace",
+      "stop": 1768841183074
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768841181826,
+          "uuid": "612bd740-7ccd-41fc-b4db-a171df161b1c",
+          "stop": 1768841181827
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768841182170,
+              "uuid": "809921d6-6c2a-41c7-94ac-0b3ebae2f4dd",
+              "stop": 1768841182398
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768841181827,
+          "uuid": "2dd0505d-e22c-4907-a5c3-32abd1806278",
+          "stop": 1768841182404
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768841181765,
+      "uuid": "20077bc0-55df-47cf-a959-2b23df517f66",
+      "stop": 1768841182417
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "daa60f81-40ed-4d36-a9f2-b03ca5c471c4-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "231ba68c-4b9d-487c-868d-e9d4cfc6a795-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768840796961_8iduqsnpw.spec.ts" },
+    {
+      "name": "titlePath",
+      "value": " >  > test-case_1768840796961_8iduqsnpw.spec.ts > Parabank Registration Link Test"
+    },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-68560-worker-0" },
+    { "name": "suite", "value": "test-case_1768840796961_8iduqsnpw.spec.ts" },
+    { "name": "subSuite", "value": "Parabank Registration Link Test" }
+  ],
+  "links": [],
+  "start": 1768841161587,
+  "testCaseId": "8bd61e87ec3f6b3151f6ae549272bd8c",
+  "fullName": "test-case_1768840796961_8iduqsnpw.spec.ts:6:3",
+  "titlePath": ["test-case_1768840796961_8iduqsnpw.spec.ts", "Parabank Registration Link Test"],
+  "stop": 1768841181105
+}

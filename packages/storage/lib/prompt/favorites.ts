@@ -2,21 +2,14 @@ import { StorageEnum } from '../base/enums';
 import { createStorage } from '../base/base';
 import type { BaseStorage } from '../base/types';
 
-// Template data
 const defaultFavoritePrompts = [
   {
-    title: '📚 Explore AI Papers',
-    content:
-      '- Go to https://huggingface.co/papers and click through each of the first 3 papers.\n- For each paper:\n  - Record the title, URL and upvotes\n  - Summarise the abstract section\n- Finally, compile together a summary of all 3 papers, ranked by upvotes',
+    title: 'Smoke test current page',
+    content: 'Open the current page and verify key UI elements render correctly.',
   },
   {
-    title: '🐦 Follow us on X/Twitter!',
-    content: 'Follow us at https://x.com/nanobrowser_ai to stay updated on the latest news and features!',
-  },
-  {
-    title: '🌟 Star us on GitHub!',
-    content:
-      "Open the AITestGen repository at https://github.com/nanobrowser/nanobrowser and check if you've already starred it. If not, please support us by giving us a star!",
+    title: 'Check basic auth flow',
+    content: 'Log in with test credentials and confirm access to the dashboard.',
   },
 ];
 

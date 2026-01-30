@@ -1,0 +1,35 @@
+{
+  "815b8a7ec0a299d1b9cc3f0a5650e13b:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "f7db650ecf128105",
+        "status": "failed",
+        "statusDetails": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → GET http://localhost:5050/store/order/999999\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - api_key: your-api-key-here\n",
+        "time": { "start": 1768494330334, "stop": 1768494330693, "duration": 359 }
+      }
+    ]
+  },
+  "5d06329db6e6741b76f7b9be3ee3b258:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "3138e37085e363f5",
+        "status": "failed",
+        "statusDetails": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → POST http://localhost:5050/store/order\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - Content-Type: application/json\n    - api_key: your-api-key-here\n    - content-length: 54\n",
+        "time": { "start": 1768494329378, "stop": 1768494329726, "duration": 348 }
+      }
+    ]
+  },
+  "9013d813bfb7f87e8d1b2f682bc87bd8:d41d8cd98f00b204e9800998ecf8427e": {
+    "statistic": { "failed": 1, "broken": 0, "skipped": 0, "passed": 0, "unknown": 0, "total": 1 },
+    "items": [
+      {
+        "uid": "67a26e5b68c2dd89",
+        "status": "failed",
+        "statusDetails": "Error: apiRequestContext.apply: connect ECONNREFUSED ::1:5050\nCall log:\n  - → POST http://localhost:5050/store/order\n    - user-agent: Playwright/1.57.0 (arm64; macOS 26.2) node/24.7\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n    - Content-Type: application/json\n    - api_key: your-api-key-here\n    - content-length: 99\n",
+        "time": { "start": 1768494328446, "stop": 1768494328798, "duration": 352 }
+      }
+    ]
+  }
+}

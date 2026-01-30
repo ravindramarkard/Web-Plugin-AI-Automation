@@ -205,7 +205,7 @@ export default function ExtensionSettings() {
 
   const getExtensionIdInstructions = () => {
     return (
-      <div className="mt-4 rounded-lg glass-panel p-4">
+      <div className="glass-panel mt-4 rounded-lg p-4">
         <div className="mb-2 flex items-center justify-between">
           <h3 className="font-semibold text-gray-900 dark:text-white">How to find your Extension ID:</h3>
           <Button onClick={openExtensionsPage} className="glass-button text-sm">
@@ -234,12 +234,12 @@ export default function ExtensionSettings() {
             the reload icon (🔄) next to it, then copy the new ID
           </li>
         </ol>
-        <div className="mt-3 rounded bg-yellow-50/50 p-2 text-xs dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200">
+        <div className="mt-3 rounded bg-yellow-50/50 p-2 text-xs text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200">
           <strong>Tip:</strong> After building the extension with <code>pnpm build</code>, load it as unpacked from the{' '}
           <code>dist/</code> directory. The extension ID will be shown on the extensions page. Click "Auto-Detect" to
           try automatic detection.
         </div>
-        <div className="mt-3 rounded bg-green-50/50 p-3 text-xs dark:bg-green-900/30 text-green-800 dark:text-green-200">
+        <div className="mt-3 rounded bg-green-50/50 p-3 text-xs text-green-800 dark:bg-green-900/30 dark:text-green-200">
           <strong>💡 Quick Method:</strong>
           <ol className="mt-1 list-inside list-decimal space-y-1">
             <li>Click "Open Extensions Page" button above</li>
@@ -258,7 +258,7 @@ export default function ExtensionSettings() {
   };
 
   return (
-    <div className="glass-card p-6 space-y-6">
+    <div className="glass-card space-y-6 p-6">
       <div>
         <h2 className="mb-4 text-xl font-semibold text-gray-900 dark:text-white">Chrome Extension Connection</h2>
         <p className="mb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -305,7 +305,7 @@ export default function ExtensionSettings() {
 
         {getExtensionIdInstructions()}
 
-        <div className="mt-4 rounded-lg glass-panel p-4">
+        <div className="glass-panel mt-4 rounded-lg p-4">
           <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Benefits of Extension Connection:</h3>
           <ul className="list-inside list-disc space-y-1 text-sm text-gray-700 dark:text-gray-300">
             <li>Full automation on external websites (not limited to localhost)</li>
@@ -316,7 +316,7 @@ export default function ExtensionSettings() {
           </ul>
         </div>
 
-        <div className="mt-4 rounded-lg glass-panel bg-yellow-500/5 border border-yellow-500/20 p-4 dark:bg-yellow-500/10 dark:border-yellow-500/20">
+        <div className="glass-panel mt-4 rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-4 dark:border-yellow-500/20 dark:bg-yellow-500/10">
           <h3 className="mb-2 font-semibold text-yellow-800 dark:text-yellow-200">⚠️ Important: Separate Settings</h3>
           <p className="mb-2 text-sm text-yellow-800 dark:text-yellow-200">
             The web app and Chrome extension have <strong>separate settings</strong>. API keys and model configurations
@@ -343,12 +343,12 @@ export default function ExtensionSettings() {
                   window.open('chrome://extensions', '_blank');
                 }
               }}
-              className="glass-button bg-yellow-600/80 text-white hover:bg-yellow-700/90 border-none">
+              className="glass-button border-none bg-yellow-600/80 text-white hover:bg-yellow-700/90">
               Open Extension Options
             </Button>
             <Button
               onClick={() => window.open('chrome://extensions', '_blank')}
-              className="glass-button text-yellow-800 bg-yellow-500/20 hover:bg-yellow-500/30 dark:text-yellow-200 dark:bg-yellow-500/20 dark:hover:bg-yellow-500/30">
+              className="glass-button bg-yellow-500/20 text-yellow-800 hover:bg-yellow-500/30 dark:bg-yellow-500/20 dark:text-yellow-200 dark:hover:bg-yellow-500/30">
               Open Extensions Page
             </Button>
           </div>
@@ -359,7 +359,7 @@ export default function ExtensionSettings() {
         </div>
 
         {!isAvailable && (
-          <div className="mt-4 rounded-lg glass-panel bg-orange-500/5 border border-orange-500/20 p-4 dark:bg-orange-500/10 dark:border-orange-500/20">
+          <div className="glass-panel mt-4 rounded-lg border border-orange-500/20 bg-orange-500/5 p-4 dark:border-orange-500/20 dark:bg-orange-500/10">
             <p className="text-sm text-orange-800 dark:text-orange-200">
               <strong>Note:</strong> Without the extension, the web app can only interact with pages on the same origin
               (localhost:3000). For full automation capabilities, please install and connect the Chrome extension.

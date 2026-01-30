@@ -1,0 +1,16 @@
+[
+  {
+    "uid": "17544ea8e05c99cb",
+    "name": "should navigate to forgot login page and verify the lookup form is displayed",
+    "time": { "start": 1768063016744, "stop": 1768063036171, "duration": 19427 },
+    "status": "failed",
+    "severity": "normal"
+  },
+  {
+    "uid": "bd2d924971310734",
+    "name": "should navigate to registration page via register link",
+    "time": { "start": 1768063016736, "stop": 1768063021120, "duration": 4384 },
+    "status": "passed",
+    "severity": "normal"
+  }
+]

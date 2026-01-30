@@ -42,7 +42,8 @@ import { testSuiteStorage, type TestSuite, type TestCase, type TestSuiteSchedule
 import SettingsPage from './SettingsPage';
 import EnvironmentSettings from '../components/EnvironmentSettings';
 import PromptsTab from '../components/PromptsTab';
-import RunTestSuiteModal, { RunSuiteOptions } from '../components/RunTestSuiteModal';
+import type { RunSuiteOptions } from '../components/RunTestSuiteModal';
+import RunTestSuiteModal from '../components/RunTestSuiteModal';
 import ChatView from '../components/ChatView';
 import GeneratingNotification from '../components/GeneratingNotification';
 import { webService } from '../lib/webService';
@@ -565,7 +566,7 @@ export default function ProjectDetailPage() {
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center bg-transparent">
-        <div className="text-center glass-panel p-8 rounded-2xl">
+        <div className="glass-panel rounded-2xl p-8 text-center">
           <div className="mx-auto mb-4 size-8 animate-spin rounded-full border-2 border-blue-500 border-t-transparent"></div>
           <p className="text-gray-600 dark:text-gray-400">Loading project...</p>
         </div>
@@ -588,7 +589,7 @@ export default function ProjectDetailPage() {
           <button
             type="button"
             onClick={() => navigate('/projects')}
-            className="rounded p-2 transition-colors text-gray-600 hover:bg-white/10 dark:text-gray-400 dark:hover:bg-white/10">
+            className="rounded p-2 text-gray-600 transition-colors hover:bg-white/10 dark:text-gray-400 dark:hover:bg-white/10">
             <FiArrowLeft size={20} />
           </button>
           <div className="flex items-center gap-3">
@@ -660,7 +661,7 @@ export default function ProjectDetailPage() {
 
             {/* Resizer Handle */}
             <div
-              className="w-1 cursor-col-resize hover:bg-blue-500 active:bg-blue-600 transition-colors bg-gray-200 hover:bg-blue-400 dark:bg-slate-700 dark:hover:bg-blue-600"
+              className="w-1 cursor-col-resize bg-gray-200 transition-colors hover:bg-blue-400 hover:bg-blue-500 active:bg-blue-600 dark:bg-slate-700 dark:hover:bg-blue-600"
               onMouseDown={handleResizeMouseDown}
             />
 
@@ -874,7 +875,7 @@ function ViewCodeModal({ testCase, onClose }: ViewCodeModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel w-full max-w-4xl rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
@@ -899,13 +900,13 @@ function ViewCodeModal({ testCase, onClose }: ViewCodeModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+              className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
               <FiX size={20} />
             </button>
           </div>
         </div>
 
-        <div className="relative glass-input overflow-hidden rounded-xl">
+        <div className="glass-input relative overflow-hidden rounded-xl">
           {/* Line Numbers */}
           {testCase.playwrightCode && (
             <div
@@ -926,7 +927,7 @@ function ViewCodeModal({ testCase, onClose }: ViewCodeModalProps) {
             value={testCase.playwrightCode || 'No Playwright code available'}
             onScroll={handleCodeScroll}
             rows={20}
-            className="w-full bg-transparent px-3 py-2 font-mono text-sm text-gray-800 dark:text-gray-200 focus:outline-none"
+            className="w-full bg-transparent px-3 py-2 font-mono text-sm text-gray-800 focus:outline-none dark:text-gray-200"
             style={{
               resize: 'vertical',
               paddingLeft: testCase.playwrightCode ? '48px' : '12px',
@@ -947,7 +948,7 @@ function ViewPromptModal({ testCase, onClose }: ViewPromptModalProps) {
   const promptText = testCase.plannerDescription || testCase.prompt || 'No automation prompt available';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel w-full max-w-3xl rounded-2xl p-6">
         <div className="mb-4 flex items-center justify-between">
           <div>
@@ -957,7 +958,7 @@ function ViewPromptModal({ testCase, onClose }: ViewPromptModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiX size={20} />
           </button>
         </div>
@@ -968,7 +969,7 @@ function ViewPromptModal({ testCase, onClose }: ViewPromptModalProps) {
             readOnly
             value={promptText}
             rows={12}
-            className="glass-input w-full rounded-xl p-4 text-sm font-mono text-gray-800 dark:text-gray-200 outline-none"
+            className="glass-input w-full rounded-xl p-4 font-mono text-sm text-gray-800 outline-none dark:text-gray-200"
           />
         </div>
 
@@ -985,7 +986,7 @@ function ViewPromptModal({ testCase, onClose }: ViewPromptModalProps) {
           <button
             type="button"
             onClick={onClose}
-            className="glass-button rounded-xl bg-white/10 px-6 py-2.5 font-medium text-gray-700 hover:bg-white/20 dark:text-white transition-all">
+            className="glass-button rounded-xl bg-white/10 px-6 py-2.5 font-medium text-gray-700 transition-all hover:bg-white/20 dark:text-white">
             Close
           </button>
         </div>
@@ -1041,11 +1042,11 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel w-full max-w-2xl rounded-2xl p-6">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+            <div className="flex size-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
               <FiClock size={20} />
             </div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">Edit Schedule</h2>
@@ -1053,7 +1054,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiX size={20} />
           </button>
         </div>
@@ -1067,7 +1068,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
               required
               value={cronExpression}
               onChange={e => setCronExpression(e.target.value)}
-              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+              className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
               placeholder="0 9 * * 1-5"
             />
             <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -1077,7 +1078,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
               {cronExamples.map((example, idx) => (
                 <div
                   key={idx}
-                  className="glass-card flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-200/50 dark:text-gray-400 dark:hover:bg-white/10 transition-colors"
+                  className="glass-card flex cursor-pointer items-center gap-2 rounded-lg px-3 py-1.5 text-xs text-gray-600 transition-colors hover:bg-gray-200/50 dark:text-gray-400 dark:hover:bg-white/10"
                   onClick={() => setCronExpression(example.expression)}>
                   <code className="font-mono font-semibold text-blue-600 dark:text-blue-400">{example.expression}</code>
                   <span>{example.description}</span>
@@ -1094,7 +1095,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
                 required
                 value={environment}
                 onChange={e => setEnvironment(e.target.value)}
-                className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 outline-none dark:text-white">
                 <option value="" className="dark:bg-slate-800">
                   Select environment
                 </option>
@@ -1118,7 +1119,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
                   type="checkbox"
                   checked={enabled}
                   onChange={e => setEnabled(e.target.checked)}
-                  className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
+                  className="size-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
                 />
                 <div>
                   <span className="block text-sm font-medium text-gray-900 dark:text-white">Enable Schedule</span>
@@ -1134,7 +1135,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
                   type="checkbox"
                   checked={headless}
                   onChange={e => setHeadless(e.target.checked)}
-                  className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
+                  className="size-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
                 />
                 <div>
                   <span className="block text-sm font-medium text-gray-900 dark:text-white">Headless Mode</span>
@@ -1154,7 +1155,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
                 max="10"
                 value={workers}
                 onChange={e => setWorkers(parseInt(e.target.value))}
-                className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700 accent-blue-500"
+                className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-500 dark:bg-gray-700"
               />
               <div className="glass-input flex h-10 w-16 items-center justify-center rounded-lg font-mono font-medium">
                 {workers}
@@ -1174,7 +1175,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
                       await onDelete();
                     }
                   }}
-                  className="glass-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 hover:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20 transition-colors">
+                  className="glass-button flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium text-red-600 transition-colors hover:bg-red-500/10 dark:text-red-400 dark:hover:bg-red-500/20">
                   <FiTrash2 size={16} />
                   Delete Schedule
                 </button>
@@ -1184,7 +1185,7 @@ function SchedulerModal({ suite, onClose, onSave, onDelete }: SchedulerModalProp
               <button
                 type="button"
                 onClick={onClose}
-                className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+                className="rounded-xl px-6 py-2.5 font-medium text-gray-600 transition-colors hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10">
                 Cancel
               </button>
               <button
@@ -1606,7 +1607,7 @@ function TestSuiteTab({
           </div>
         </div>
       ) : view === 'all-tests' ? (
-        <div className="glass-panel mx-6 my-6 flex flex-1 flex-col overflow-hidden rounded-xl border border-white/10 shadow-xl">
+        <div className="glass-panel m-6 flex flex-1 flex-col overflow-hidden rounded-xl border border-white/10 shadow-xl">
           {/* Header with filters and actions */}
           <div className="glass-panel border-b border-white/10 px-6 py-4">
             <div className="mb-4 flex items-center justify-between">
@@ -1620,21 +1621,21 @@ function TestSuiteTab({
                 <button
                   type="button"
                   onClick={onCreateCase}
-                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
+                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/30">
                   <FiPlus size={18} />
                   Add Test Case
                 </button>
                 <button
                   type="button"
                   onClick={handleRefresh}
-                  className="glass-button flex items-center gap-2 rounded-lg bg-gray-500/10 px-4 py-2 font-medium text-gray-700 hover:bg-gray-500/20 dark:text-gray-200 dark:hover:bg-gray-500/30 transition-all">
+                  className="glass-button flex items-center gap-2 rounded-lg bg-gray-500/10 px-4 py-2 font-medium text-gray-700 transition-all hover:bg-gray-500/20 dark:text-gray-200 dark:hover:bg-gray-500/30">
                   <FiRefreshCw size={16} />
                   REFRESH
                 </button>
                 <button
                   type="button"
                   onClick={() => setShowTestGenModal(true)}
-                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transition-all">
+                  className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:shadow-blue-500/30">
                   <FiCode size={16} />
                   TEST GEN
                 </button>
@@ -1644,7 +1645,7 @@ function TestSuiteTab({
                   disabled={selectedTestCases.size === 0}
                   className={`glass-button flex items-center gap-2 rounded-lg px-4 py-2 font-medium text-white shadow-lg transition-all ${
                     selectedTestCases.size === 0
-                      ? 'bg-red-600/50 cursor-not-allowed opacity-50 shadow-none'
+                      ? 'cursor-not-allowed bg-red-600/50 opacity-50 shadow-none'
                       : 'bg-red-600 shadow-red-500/20 hover:shadow-red-500/30'
                   }`}>
                   <FiTrash2 size={16} />
@@ -1736,11 +1737,11 @@ function TestSuiteTab({
                         </td>
                         <td className="px-4 py-3">
                           {testCase.playwrightCode ? (
-                            <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-400">
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700 dark:bg-green-900/50 dark:text-green-400">
                               Available
                             </span>
                           ) : (
-                            <span className="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-gray-100 text-gray-700 dark:bg-gray-900/50 dark:text-gray-400">
+                            <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-1 text-xs font-medium text-gray-700 dark:bg-gray-900/50 dark:text-gray-400">
                               -
                             </span>
                           )}
@@ -1764,7 +1765,7 @@ function TestSuiteTab({
                               <button
                                 type="button"
                                 onClick={() => onEditCase(testCase)}
-                                className="rounded p-1.5 transition-colors text-blue-600 hover:bg-black/5 dark:text-blue-400 dark:hover:bg-white/10"
+                                className="rounded p-1.5 text-blue-600 transition-colors hover:bg-black/5 dark:text-blue-400 dark:hover:bg-white/10"
                                 title="Edit test case">
                                 <FiEdit2 size={16} />
                               </button>
@@ -1772,14 +1773,14 @@ function TestSuiteTab({
                             <button
                               type="button"
                               onClick={() => onRunCase(testCase)}
-                              className="rounded p-1.5 transition-colors text-green-600 hover:bg-black/5 dark:text-green-400 dark:hover:bg-white/10"
+                              className="rounded p-1.5 text-green-600 transition-colors hover:bg-black/5 dark:text-green-400 dark:hover:bg-white/10"
                               title="Run test">
                               <FiPlay size={16} />
                             </button>
                             <button
                               type="button"
                               onClick={() => onRunCase(testCase, true)}
-                              className="rounded p-1.5 transition-colors text-orange-600 hover:bg-black/5 dark:text-orange-400 dark:hover:bg-white/10"
+                              className="rounded p-1.5 text-orange-600 transition-colors hover:bg-black/5 dark:text-orange-400 dark:hover:bg-white/10"
                               title="Debug mode">
                               <BiBug size={16} />
                             </button>
@@ -1791,7 +1792,7 @@ function TestSuiteTab({
                                     onViewPlaywrightCode(testCase);
                                   }
                                 }}
-                                className="rounded p-1.5 transition-colors text-purple-600 hover:bg-black/5 dark:text-purple-400 dark:hover:bg-white/10"
+                                className="rounded p-1.5 text-purple-600 transition-colors hover:bg-black/5 dark:text-purple-400 dark:hover:bg-white/10"
                                 title="View Playwright code">
                                 <FiCode size={16} />
                               </button>
@@ -1836,8 +1837,8 @@ function TestSuiteTab({
                   key={suite.id}
                   className={`glass-card group relative rounded-xl transition-all ${
                     selectedTestSuite === suite.id
-                      ? 'bg-blue-500/10 border-blue-500/30 shadow-md'
-                      : 'hover:bg-white/5 dark:hover:bg-white/5 hover:border-white/20'
+                      ? 'border-blue-500/30 bg-blue-500/10 shadow-md'
+                      : 'hover:border-white/20 hover:bg-white/5 dark:hover:bg-white/5'
                   }`}>
                   <button
                     type="button"
@@ -1924,7 +1925,7 @@ function TestSuiteTab({
                     <button
                       type="button"
                       onClick={onCreateCase}
-                      className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white transition-colors hover:bg-blue-700 shadow-lg shadow-blue-500/20">
+                      className="glass-button flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white shadow-lg shadow-blue-500/20 transition-colors hover:bg-blue-700">
                       <FiPlus size={18} />
                       Add Test Case
                     </button>
@@ -1939,7 +1940,7 @@ function TestSuiteTab({
                       <button
                         type="button"
                         onClick={onCreateCase}
-                        className="mt-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">
+                        className="mt-2 text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
                         Create your first test case
                       </button>
                     </div>
@@ -1994,7 +1995,7 @@ function TestSuiteTab({
                                   <button
                                     type="button"
                                     onClick={() => onViewPlaywrightCode?.(testCase)}
-                                    className="glass-button inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium text-green-700 dark:text-green-400 hover:bg-green-100 dark:hover:bg-green-900/30 transition-colors">
+                                    className="glass-button inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium text-green-700 transition-colors hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30">
                                     Available
                                     <FiEye size={12} />
                                   </button>
@@ -2009,7 +2010,7 @@ function TestSuiteTab({
                                   <button
                                     type="button"
                                     onClick={() => onViewPrompt?.(testCase)}
-                                    className="glass-button inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors">
+                                    className="glass-button inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-700 transition-colors hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900/30">
                                     View Steps
                                     <FiEye size={12} />
                                   </button>
@@ -2038,7 +2039,7 @@ function TestSuiteTab({
                                     <button
                                       type="button"
                                       onClick={() => onEditCase(testCase)}
-                                      className="rounded p-1.5 transition-colors text-blue-600 hover:bg-gray-100 dark:text-blue-400 dark:hover:bg-slate-700"
+                                      className="rounded p-1.5 text-blue-600 transition-colors hover:bg-gray-100 dark:text-blue-400 dark:hover:bg-slate-700"
                                       title="Edit test case">
                                       <FiEdit2 size={16} />
                                     </button>
@@ -2046,7 +2047,7 @@ function TestSuiteTab({
                                   <button
                                     type="button"
                                     onClick={() => onRunCase(testCase)}
-                                    className="rounded p-1.5 transition-colors text-green-600 hover:bg-gray-100 dark:text-green-400 dark:hover:bg-slate-700"
+                                    className="rounded p-1.5 text-green-600 transition-colors hover:bg-gray-100 dark:text-green-400 dark:hover:bg-slate-700"
                                     title="Run test">
                                     <FiPlay size={16} />
                                   </button>
@@ -2058,7 +2059,7 @@ function TestSuiteTab({
                                           onViewPlaywrightCode(testCase);
                                         }
                                       }}
-                                      className="rounded p-1.5 transition-colors text-purple-600 hover:bg-gray-100 dark:text-purple-400 dark:hover:bg-slate-700"
+                                      className="rounded p-1.5 text-purple-600 transition-colors hover:bg-gray-100 dark:text-purple-400 dark:hover:bg-slate-700"
                                       title="View Playwright code">
                                       <FiCode size={16} />
                                     </button>
@@ -2081,7 +2082,7 @@ function TestSuiteTab({
                     <button
                       type="button"
                       onClick={onCreateSuite}
-                      className="mt-4 rounded-lg px-4 py-2 font-medium bg-blue-600 text-white hover:bg-blue-700">
+                      className="mt-4 rounded-lg bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700">
                       Create Test Suite
                     </button>
                   )}
@@ -2098,7 +2099,7 @@ function TestSuiteTab({
 
       {/* Test Gen Modal */}
       {showTestGenModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="glass-panel w-full max-w-md rounded-xl p-6 shadow-2xl">
             <h3 className="mb-4 text-xl font-bold text-gray-900 dark:text-white">Generate Test Case</h3>
 
@@ -2128,7 +2129,7 @@ function TestSuiteTab({
               <button
                 type="button"
                 onClick={() => setShowTestGenModal(false)}
-                className="rounded-xl px-4 py-2 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+                className="rounded-xl px-4 py-2 font-medium text-gray-600 transition-colors hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10">
                 Cancel
               </button>
               <button
@@ -2421,10 +2422,10 @@ function ReportTab({ projectId, testSuites, onRunSuite }: ReportTabProps) {
                       key={suite.id}
                       onClick={() => setActiveSubTab(suite.id)}
                       className="glass-card cursor-pointer rounded-lg p-4 transition-all hover:scale-[1.02]">
-                      <div className="flex items-center justify-between mb-2">
+                      <div className="mb-2 flex items-center justify-between">
                         <h4 className="font-semibold text-gray-900 dark:text-white">{suite.name}</h4>
                         <span
-                          className={`text-xs font-bold px-2 py-1 rounded ${
+                          className={`rounded px-2 py-1 text-xs font-bold ${
                             passRate === 100
                               ? 'bg-green-100 text-green-700'
                               : passRate >= 80
@@ -2434,18 +2435,18 @@ function ReportTab({ projectId, testSuites, onRunSuite }: ReportTabProps) {
                           {passRate}% Pass
                         </span>
                       </div>
-                      <div className="text-sm space-y-1">
+                      <div className="space-y-1 text-sm">
                         <div className="flex justify-between">
                           <span className="text-gray-600 dark:text-gray-400">Passed:</span>
-                          <span className="text-green-600 font-medium">{passed}</span>
+                          <span className="font-medium text-green-600">{passed}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600 dark:text-gray-400">Failed:</span>
-                          <span className="text-red-600 font-medium">{failed}</span>
+                          <span className="font-medium text-red-600">{failed}</span>
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600 dark:text-gray-400">Pending:</span>
-                          <span className="text-gray-500 font-medium">{pending}</span>
+                          <span className="font-medium text-gray-500">{pending}</span>
                         </div>
                       </div>
                     </div>
@@ -2567,7 +2568,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
           <button
             type="button"
             onClick={() => setActiveReport(null)}
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600">
+            className="flex items-center gap-2 rounded-lg bg-gray-200 px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-300 dark:bg-slate-700 dark:text-gray-300 dark:hover:bg-slate-600">
             <FiArrowLeft size={16} />
             Back to Summary
           </button>
@@ -2583,7 +2584,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
     <div className="space-y-6">
       {/* Suite Header & KPIs */}
       <div>
-        <div className="flex items-start justify-between mb-4">
+        <div className="mb-4 flex items-start justify-between">
           <div>
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{suite.name}</h3>
             {suite.description && <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">{suite.description}</p>}
@@ -2593,21 +2594,21 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
               id={`run-suite-${suite.id}`}
               type="button"
               onClick={onRunSuite}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors bg-blue-600 text-white hover:bg-blue-700">
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700">
               <FiPlay size={16} />
               Run Suite
             </button>
             <button
               type="button"
               onClick={() => setActiveReport('playwright')}
-              className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700">
+              className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-gray-300 dark:hover:bg-slate-700">
               <FiFileText size={16} />
               Playwright Report
             </button>
             <button
               type="button"
               onClick={() => setActiveReport('allure')}
-              className="flex items-center gap-2 rounded-lg border px-3 py-2 text-sm font-medium transition-colors border-gray-300 bg-white text-orange-600 hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-orange-400 dark:hover:bg-slate-700">
+              className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-orange-600 transition-colors hover:bg-gray-50 dark:border-slate-600 dark:bg-slate-800 dark:text-orange-400 dark:hover:bg-slate-700">
               <FiBarChart2 size={16} />
               Allure Report
             </button>
@@ -2619,17 +2620,17 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
             <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Total</div>
             <div className="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{stats.total}</div>
           </div>
-          <div className="glass-card rounded-xl p-4 bg-green-500/10 border-green-200/30 dark:border-green-700/30">
+          <div className="glass-card rounded-xl border-green-200/30 bg-green-500/10 p-4 dark:border-green-700/30">
             <div className="text-sm font-medium text-green-600 dark:text-green-400">Passed</div>
             <div className="mt-1 text-2xl font-bold text-green-600 dark:text-green-400">{stats.passed}</div>
             <div className="mt-1 text-xs text-green-600 dark:text-green-400">{passedPercentage}%</div>
           </div>
-          <div className="glass-card rounded-xl p-4 bg-red-500/10 border-red-200/30 dark:border-red-700/30">
+          <div className="glass-card rounded-xl border-red-200/30 bg-red-500/10 p-4 dark:border-red-700/30">
             <div className="text-sm font-medium text-red-600 dark:text-red-400">Failed</div>
             <div className="mt-1 text-2xl font-bold text-red-600 dark:text-red-400">{stats.failed}</div>
             <div className="mt-1 text-xs text-red-600 dark:text-red-400">{failedPercentage}%</div>
           </div>
-          <div className="glass-card rounded-xl p-4 bg-gray-500/10 border-gray-200/30 dark:border-gray-700/30">
+          <div className="glass-card rounded-xl border-gray-200/30 bg-gray-500/10 p-4 dark:border-gray-700/30">
             <div className="text-sm font-medium text-gray-600 dark:text-gray-400">Pending</div>
             <div className="mt-1 text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.pending}</div>
             <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">{pendingPercentage}%</div>
@@ -2663,7 +2664,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
                     const isExpanded = expandedCases.has(testCase.id);
                     return (
                       <React.Fragment key={testCase.id}>
-                        <tr className="bg-transparent hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                        <tr className="bg-transparent transition-colors hover:bg-black/5 dark:hover:bg-white/5">
                           <td className="px-6 py-4 font-medium text-gray-900 dark:text-white">
                             <div className="flex flex-col gap-1">
                               <div className="flex items-center gap-2">
@@ -2688,7 +2689,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 max-w-xs truncate" title={testCase.description}>
+                          <td className="max-w-xs truncate px-6 py-4" title={testCase.description}>
                             {testCase.description || '-'}
                           </td>
                           <td className="px-6 py-4">
@@ -2696,7 +2697,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
                               <button
                                 type="button"
                                 onClick={() => toggleCase(testCase.id)}
-                                className="glass-button flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 transition-colors hover:bg-blue-500/10">
+                                className="glass-button flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-500/10 dark:text-blue-400">
                                 {isExpanded ? 'Hide' : 'View'}
                               </button>
                             ) : (
@@ -2708,7 +2709,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
                               <button
                                 type="button"
                                 onClick={() => setViewingSteps(testCase.prompt)}
-                                className="glass-button flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-600 dark:text-blue-400 transition-colors hover:bg-blue-500/10">
+                                className="glass-button flex items-center gap-1 rounded px-2 py-1 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-500/10 dark:text-blue-400">
                                 View Steps <FiEye size={12} />
                               </button>
                             ) : (
@@ -2718,7 +2719,7 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
                           <td className="px-6 py-4">{testCase.baseUrl || '-'}</td>
                           <td className="px-6 py-4">
                             {testCase.testType ? (
-                              <span className="rounded px-2 py-0.5 text-xs bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300">
+                              <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600 dark:bg-white/10 dark:text-gray-300">
                                 {testCase.testType}
                               </span>
                             ) : (
@@ -2736,12 +2737,12 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
                                 <div className="flex gap-2">
                                   <button
                                     onClick={() => handleCopyCode(testCase.playwrightCode!)}
-                                    className="text-xs hover:underline text-blue-500">
+                                    className="text-xs text-blue-500 hover:underline">
                                     Copy
                                   </button>
                                   <button
                                     onClick={() => handleDownloadCode(testCase.playwrightCode!, testCase.name)}
-                                    className="text-xs hover:underline text-blue-500">
+                                    className="text-xs text-blue-500 hover:underline">
                                     Download
                                   </button>
                                 </div>
@@ -2763,14 +2764,14 @@ function SuiteReport({ suite, testCases, stats, onRunSuite }: SuiteReportProps) 
       </div>
 
       {viewingSteps && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="glass-panel w-full max-w-2xl rounded-2xl shadow-xl">
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Automation Steps</h3>
               <button
                 type="button"
                 onClick={() => setViewingSteps(null)}
-                className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+                className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
                 <FiX size={20} />
               </button>
             </div>
@@ -2934,12 +2935,12 @@ function CreateSuiteModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel w-full max-w-5xl rounded-2xl shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+            <div className="flex size-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
               <FiFolder size={20} />
             </div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -2949,7 +2950,7 @@ function CreateSuiteModal({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiXCircle size={24} />
           </button>
         </div>
@@ -2967,7 +2968,7 @@ function CreateSuiteModal({
                   required
                   value={formData.name}
                   onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                  className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                   placeholder="Enter test suite name"
                 />
               </div>
@@ -2977,7 +2978,7 @@ function CreateSuiteModal({
                   type="text"
                   value={formData.description}
                   onChange={e => setFormData({ ...formData, description: e.target.value })}
-                  className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                  className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                   placeholder="Enter test suite description"
                 />
               </div>
@@ -2987,7 +2988,7 @@ function CreateSuiteModal({
                   <select
                     value={formData.testType || 'UI Tests'}
                     onChange={e => setFormData({ ...formData, testType: e.target.value })}
-                    className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white outline-none">
+                    className="glass-input w-full appearance-none rounded-xl px-4 py-3 text-sm text-gray-900 outline-none dark:text-white">
                     <option value="UI Tests" className="dark:bg-slate-800">
                       UI Tests
                     </option>
@@ -3014,7 +3015,7 @@ function CreateSuiteModal({
                     Tests in Suite ({testsInSuite.length})
                   </h3>
                 </div>
-                <div className="max-h-64 overflow-y-auto p-4 custom-scrollbar">
+                <div className="custom-scrollbar max-h-64 overflow-y-auto p-4">
                   {testsInSuite.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-8 text-center">
                       <FiFile size={48} className="mb-2 text-gray-400 dark:text-gray-600" />
@@ -3037,7 +3038,7 @@ function CreateSuiteModal({
                             type="checkbox"
                             checked={selectedInSuiteTests.has(testCase.id)}
                             onChange={() => toggleInSuiteTest(testCase.id)}
-                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
+                            className="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
                           />
                           <span className="text-sm text-gray-700 dark:text-gray-300">{testCase.name}</span>
                         </label>
@@ -3055,7 +3056,7 @@ function CreateSuiteModal({
                   disabled={testsInSuite.length === 0}
                   className={`rounded-xl border p-2.5 transition-all ${
                     testsInSuite.length === 0
-                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      ? 'cursor-not-allowed border-gray-200 text-gray-400 opacity-50 dark:border-white/10'
                       : 'glass-button border-blue-500/30'
                   }`}
                   title="Move all from suite">
@@ -3068,7 +3069,7 @@ function CreateSuiteModal({
                   disabled={selectedInSuiteTests.size === 0}
                   className={`rounded-xl border p-2.5 transition-all ${
                     selectedInSuiteTests.size === 0
-                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      ? 'cursor-not-allowed border-gray-200 text-gray-400 opacity-50 dark:border-white/10'
                       : 'glass-button border-blue-500/30'
                   }`}
                   title="Move selected from suite">
@@ -3080,7 +3081,7 @@ function CreateSuiteModal({
                   disabled={selectedAvailableTests.size === 0}
                   className={`rounded-xl border p-2.5 transition-all ${
                     selectedAvailableTests.size === 0
-                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      ? 'cursor-not-allowed border-gray-200 text-gray-400 opacity-50 dark:border-white/10'
                       : 'glass-button border-blue-500/30'
                   }`}
                   title="Move selected to suite">
@@ -3092,7 +3093,7 @@ function CreateSuiteModal({
                   disabled={availableTestCases.length === 0}
                   className={`rounded-xl border p-2.5 transition-all ${
                     availableTestCases.length === 0
-                      ? 'cursor-not-allowed opacity-50 border-gray-200 dark:border-white/10 text-gray-400'
+                      ? 'cursor-not-allowed border-gray-200 text-gray-400 opacity-50 dark:border-white/10'
                       : 'glass-button border-blue-500/30'
                   }`}
                   title="Move all to suite">
@@ -3108,7 +3109,7 @@ function CreateSuiteModal({
                     Available Tests ({availableTestCases.length})
                   </h3>
                 </div>
-                <div className="max-h-64 overflow-y-auto p-4 custom-scrollbar">
+                <div className="custom-scrollbar max-h-64 overflow-y-auto p-4">
                   {availableTestCases.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-8 text-center">
                       <FiFile size={48} className="mb-2 text-gray-400 dark:text-gray-600" />
@@ -3128,7 +3129,7 @@ function CreateSuiteModal({
                             type="checkbox"
                             checked={selectedAvailableTests.has(testCase.id)}
                             onChange={() => toggleAvailableTest(testCase.id)}
-                            className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
+                            className="size-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-slate-700"
                           />
                           <span className="text-sm text-gray-700 dark:text-gray-300">{testCase.name}</span>
                         </label>
@@ -3153,7 +3154,7 @@ function CreateSuiteModal({
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 transition-colors hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10">
               Cancel
             </button>
             <button
@@ -3232,11 +3233,11 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
       <div className="glass-panel w-full max-w-4xl rounded-2xl shadow-2xl">
         <div className="flex items-center justify-between border-b border-white/10 px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
+            <div className="flex size-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-600 dark:bg-blue-400/10 dark:text-blue-400">
               <FiFileText size={20} />
             </div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -3246,7 +3247,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
           <button
             type="button"
             onClick={onClose}
-            className="rounded-full p-2 text-gray-500 hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10 transition-colors">
+            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-black/5 dark:text-gray-400 dark:hover:bg-white/10">
             <FiX size={20} />
           </button>
         </div>
@@ -3261,7 +3262,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
                 required
                 value={formData.name}
                 onChange={e => setFormData({ ...formData, name: e.target.value })}
-                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                 placeholder="Enter test case name"
               />
             </div>
@@ -3271,7 +3272,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
                 value={formData.description}
                 onChange={e => setFormData({ ...formData, description: e.target.value })}
                 rows={2}
-                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                 placeholder="Enter description"
               />
             </div>
@@ -3284,7 +3285,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
                 value={formData.prompt}
                 onChange={e => setFormData({ ...formData, prompt: e.target.value })}
                 rows={4}
-                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 outline-none"
+                className="glass-input w-full rounded-xl px-4 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 dark:text-white"
                 placeholder="Enter the automation prompt for this test case"
               />
               <p className="mt-2 text-xs text-gray-500 dark:text-gray-400">
@@ -3303,21 +3304,21 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
                         <button
                           type="button"
                           onClick={() => setIsEditingCode(true)}
-                          className="flex items-center gap-1 rounded-lg bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-600 hover:bg-blue-500/20 dark:bg-blue-400/10 dark:text-blue-400 dark:hover:bg-blue-400/20 transition-colors">
+                          className="flex items-center gap-1 rounded-lg bg-blue-500/10 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors hover:bg-blue-500/20 dark:bg-blue-400/10 dark:text-blue-400 dark:hover:bg-blue-400/20">
                           <FiEdit2 size={12} />
                           Edit
                         </button>
                         <button
                           type="button"
                           onClick={handleCopyCode}
-                          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 transition-colors">
+                          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20">
                           <FiCopy size={12} />
                           Copy
                         </button>
                         <button
                           type="button"
                           onClick={handleDownloadCode}
-                          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 transition-colors">
+                          className="flex items-center gap-1 rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20">
                           <FiDownload size={12} />
                           Download
                         </button>
@@ -3327,7 +3328,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
                         <button
                           type="button"
                           onClick={handleCancelEdit}
-                          className="rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20 transition-colors">
+                          className="rounded-lg bg-black/5 px-3 py-1.5 text-xs font-medium text-gray-700 transition-colors hover:bg-black/10 dark:bg-white/10 dark:text-gray-300 dark:hover:bg-white/20">
                           Cancel
                         </button>
                         <button
@@ -3362,7 +3363,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
                     onChange={e => setFormData({ ...formData, playwrightCode: e.target.value })}
                     onScroll={handleCodeScroll}
                     rows={15}
-                    className={`w-full bg-transparent px-3 py-3 font-mono text-sm ${
+                    className={`w-full bg-transparent p-3 font-mono text-sm ${
                       isEditingCode ? 'text-gray-900 dark:text-white' : 'text-gray-800 dark:text-gray-200'
                     } ${formData.playwrightCode ? 'pl-12' : ''} outline-none`}
                     placeholder="Playwright code will appear here after test execution"
@@ -3380,7 +3381,7 @@ function CreateCaseModal({ formData, setFormData, onSubmit, onClose, editingTest
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10 transition-colors">
+              className="rounded-xl px-6 py-2.5 font-medium text-gray-600 transition-colors hover:bg-black/5 dark:text-gray-300 dark:hover:bg-white/10">
               Cancel
             </button>
             <button

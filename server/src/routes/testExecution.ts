@@ -1,7 +1,58 @@
 import express from 'express';
 import db from '../db/index.js';
+import { TestExecutor } from '../services/TestExecutor.js';
 
-const router = express.Router();
+const router: express.Router = express.Router();
+const testExecutor = new TestExecutor();
+
+/**
+ * Execute a test case
+ */
+router.post('/run/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { debug } = req.body;
+
+    // Set status to running
+    db.prepare('UPDATE test_cases SET status = ?, lastRunAt = ? WHERE id = ?').run('running', Date.now(), id);
+
+    // Run execution (async, but we await for now to return result - in prod might want to use jobs)
+    // For this pair programming task, waiting is fine
+    const result = await testExecutor.runTestCase(id, undefined, debug);
+
+    // Update status based on result
+    const status = result.success ? 'pass' : 'fail';
+    const errorMessage = result.error || null;
+
+    db.prepare('UPDATE test_cases SET status = ?, errorMessage = ?, updatedAt = ? WHERE id = ?').run(
+      status,
+      errorMessage,
+      Date.now(),
+      id,
+    );
+
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (error: any) {
+    console.error('Error executing test case:', error);
+
+    // Mark as failed
+    try {
+      db.prepare('UPDATE test_cases SET status = ?, errorMessage = ?, updatedAt = ? WHERE id = ?').run(
+        'fail',
+        error.message,
+        Date.now(),
+        req.params.id,
+      );
+    } catch (e) {
+      // ignore
+    }
+
+    res.status(500).json({ error: 'Failed to execute test case' });
+  }
+});
 
 /**
  * Get test cases for execution
@@ -126,6 +177,33 @@ router.get('/test-suites/:id/export', (req, res) => {
   } catch (error) {
     console.error('Error exporting test suite:', error);
     res.status(500).json({ error: 'Failed to export test suite' });
+  }
+});
+
+/**
+ * Run test suite
+ */
+router.post('/run-suite/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { environmentId, browser, headless, parallel, tags, jiraLogging, singleSession } = req.body;
+    const result = await testExecutor.runTestSuite(id, {
+      environmentId,
+      browser,
+      headless,
+      parallel,
+      tags,
+      jiraLogging,
+      singleSession,
+    });
+
+    res.json({
+      success: true,
+      result,
+    });
+  } catch (error: any) {
+    console.error('Error executing test suite:', error);
+    res.status(500).json({ error: 'Failed to execute test suite' });
   }
 });
 

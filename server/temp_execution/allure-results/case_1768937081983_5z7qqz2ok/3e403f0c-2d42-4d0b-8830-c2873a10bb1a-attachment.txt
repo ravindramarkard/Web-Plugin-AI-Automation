@@ -1,0 +1,11 @@
+Navigating to https://parabank.parasoft.com/parabank/index.htm
+Successfully navigated to ParaBank homepage
+Attempting to locate username field
+Found username field with selector: input[name="username"]
+Username entered successfully
+Attempting to locate password field
+Found password field with selector: input[name="password"]
+Password entered successfully
+Attempting to locate login button
+Found login button with selector: input[type="submit"][value*="Log"]
+Login button clicked successfully

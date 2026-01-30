@@ -1,0 +1,7 @@
+Successfully navigated to Parabank URL
+Successfully clicked Contact Us link
+Successfully filled Name field
+Successfully filled Email field
+Successfully filled Phone field
+Successfully filled Message field
+Successfully clicked submit button

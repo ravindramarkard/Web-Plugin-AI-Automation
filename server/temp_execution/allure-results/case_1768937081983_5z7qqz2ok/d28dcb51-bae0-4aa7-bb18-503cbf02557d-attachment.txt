@@ -1,0 +1,87 @@
+Failed to click login button: ExpectError: expect(locator).toBeVisible() failed
+
+Locator: locator('text=Logout')
+Expected: visible
+Timeout: 10000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 10000ms
+  - waiting for locator('text=Logout')
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768937081983_5z7qqz2ok.spec.ts:161:53 {
+  matcherResult: {
+    message: '\x1B[2mexpect(\x1B[22m\x1B[31mlocator\x1B[39m\x1B[2m).\x1B[22mtoBeVisible\x1B[2m(\x1B[22m\x1B[2m)\x1B[22m failed\n' +
+      '\n' +
+      "Locator: locator('text=Logout')\n" +
+      'Expected: visible\n' +
+      'Timeout: 10000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      '\x1B[2m  - Expect "toBeVisible" with timeout 10000ms\x1B[22m\n' +
+      "\x1B[2m  - waiting for locator('text=Logout')\x1B[22m\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      '  - Expect "toBeVisible" with timeout 10000ms',
+      "  - waiting for locator('text=Logout')"
+    ],
+    timeout: 10000
+  },
+  Symbol(step): {
+    category: 'expect',
+    apiName: 'expect.toBeVisible',
+    title: `Expect "toBeVisible" locator('text=Logout')`,
+    shortTitle: 'Expect "toBeVisible"',
+    params: { expected: [Object] },
+    infectParentStepsWithError: undefined,
+    stepId: 'expect@58',
+    group: undefined,
+    boxedStack: undefined,
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768937081983_5z7qqz2ok.spec.ts',
+      line: 161,
+      column: 53
+    },
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'expect@58',
+      _title: `Expect "toBeVisible" locator('text=Logout')`,
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768937204743,
+    error: {
+      message: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mlocator\x1B[39m\x1B[2m).\x1B[22mtoBeVisible\x1B[2m(\x1B[22m\x1B[2m)\x1B[22m failed\n' +
+        '\n' +
+        "Locator: locator('text=Logout')\n" +
+        'Expected: visible\n' +
+        'Timeout: 10000ms\n' +
+        'Error: element(s) not found\n' +
+        '\n' +
+        'Call log:\n' +
+        '\x1B[2m  - Expect "toBeVisible" with timeout 10000ms\x1B[22m\n' +
+        "\x1B[2m  - waiting for locator('text=Logout')\x1B[22m\n",
+      stack: 'Error: \x1B[2mexpect(\x1B[22m\x1B[31mlocator\x1B[39m\x1B[2m).\x1B[22mtoBeVisible\x1B[2m(\x1B[22m\x1B[2m)\x1B[22m failed\n' +
+        '\n' +
+        "Locator: locator('text=Logout')\n" +
+        'Expected: visible\n' +
+        'Timeout: 10000ms\n' +
+        'Error: element(s) not found\n' +
+        '\n' +
+        'Call log:\n' +
+        '\x1B[2m  - Expect "toBeVisible" with timeout 10000ms\x1B[22m\n' +
+        "\x1B[2m  - waiting for locator('text=Logout')\x1B[22m\n" +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768937081983_5z7qqz2ok.spec.ts:161:53',
+      cause: undefined
+    }
+  }
+}

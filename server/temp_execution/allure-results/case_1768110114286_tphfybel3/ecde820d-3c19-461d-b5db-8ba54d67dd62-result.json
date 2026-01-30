@@ -1,0 +1,394 @@
+{
+  "uuid": "ecde820d-3c19-461d-b5db-8ba54d67dd62",
+  "name": "should navigate to forgot login page",
+  "historyId": "90ab44a75a1ba597094c20dfb2ac88c6:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "passed",
+  "statusDetails": {},
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768110171550,
+              "uuid": "6c9d2ea8-fd3d-4480-ad85-937dfe254c34",
+              "stop": 1768110172688
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768110171545,
+          "uuid": "f4864c01-720b-4cc7-b197-9b9585b8a8fc",
+          "stop": 1768110172689
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768110172705,
+              "uuid": "32b929b6-f928-4b24-a6ba-f6407fb3b5d3",
+              "stop": 1768110172732
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768110172693,
+          "uuid": "61928a5f-c5e8-4a2d-b0c5-4eafa30704d3",
+          "stop": 1768110172738
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768110172739,
+              "uuid": "04ebd0d0-ba89-4453-892d-735c35f2ece4",
+              "stop": 1768110173760
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768110172739,
+          "uuid": "fb2af10b-ddcf-4fc9-8f4a-1b2c8a754809",
+          "stop": 1768110173760
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768110171529,
+      "uuid": "f7f30307-ee4e-4d81-90b1-5f7aa7b8e2ac",
+      "stop": 1768110173760
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110173914,
+          "name": "Navigate to \"/\"",
+          "uuid": "697a1267-30d2-4f53-be77-d2d2a40728f3",
+          "stop": 1768110177018
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110177023,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "4cccf5a4-074b-4e66-bc2d-20c1a18af292",
+          "stop": 1768110177513
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110177514,
+          "name": "Expect \"toHaveURL\"",
+          "uuid": "ceded8a6-30fd-4dbc-a067-4b578f9a1975",
+          "stop": 1768110177544
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768110173912,
+      "name": "Navigate to Parabank homepage",
+      "uuid": "df035332-83ce-40fd-bd4a-89cbed854365",
+      "stop": 1768110177544
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110177551,
+          "name": "Wait for selector locator('a:has-text(\"Forgot login info?\")')",
+          "uuid": "f31c4c93-0693-4913-a34b-aa56fc625af4",
+          "stop": 1768110177563
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110177564,
+          "name": "Expect \"toBeVisible\" locator('a:has-text(\"Forgot login info?\")')",
+          "uuid": "2771ae49-b04f-4906-86df-d071f0da25be",
+          "stop": 1768110177572
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110177574,
+          "name": "Expect \"toBeEnabled\" locator('a:has-text(\"Forgot login info?\")')",
+          "uuid": "b3209727-577a-4f50-8870-6dbf34bf9875",
+          "stop": 1768110177581
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110177582,
+          "name": "Click locator('a:has-text(\"Forgot login info?\")')",
+          "uuid": "786ba48d-c398-4b51-98c0-62042b5537c8",
+          "stop": 1768110178036
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768110177545,
+      "name": "Click Forgot login info? link",
+      "uuid": "c6eb2077-8851-49f5-bab2-b39d86ac9b48",
+      "stop": 1768110178036
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110178037,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "8ed2b2bf-b4e3-430d-b32f-c27051363dd1",
+          "stop": 1768110178524
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110178525,
+          "name": "Wait for timeout",
+          "uuid": "b901327a-0bdc-40aa-bea7-476fccb28d3c",
+          "stop": 1768110179530
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110179532,
+          "name": "Expect \"toHaveURL\"",
+          "uuid": "379deae4-86a7-4e6c-8ebf-a66addaf0e29",
+          "stop": 1768110179572
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768110178036,
+      "name": "Verify navigation to Customer Lookup page",
+      "uuid": "743e4a82-6edb-4b0c-8f76-c8671fdf27f1",
+      "stop": 1768110179598
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768110179599,
+          "name": "Expect \"toContain\"",
+          "uuid": "fa0b8218-244a-4339-af10-16ec3ff758df",
+          "stop": 1768110179600
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768110179599,
+      "name": "Final verification",
+      "uuid": "f6e7f23f-f639-497b-bc39-36a2070fb345",
+      "stop": 1768110179600
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "screenshot", "source": "c2b24f25-e6f4-4880-8e18-bb38ac48a4fe-attachment.png", "type": "image/png" }
+      ],
+      "parameters": [],
+      "start": 1768110180163,
+      "name": "screenshot",
+      "stop": 1768110180163
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        { "name": "video", "source": "a3f32aed-b9e2-4405-a0d1-9b3925fd135e-attachment.webm", "type": "video/webm" }
+      ],
+      "parameters": [],
+      "start": 1768110180165,
+      "name": "video",
+      "stop": 1768110180165
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "trace",
+          "source": "ee1a3525-df8e-4d4e-adfb-a863c4b56e73-attachment.zip",
+          "type": "application/vnd.allure.playwright-trace"
+        }
+      ],
+      "parameters": [],
+      "start": 1768110180168,
+      "name": "trace",
+      "stop": 1768110180168
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768110179649,
+          "uuid": "79fbcc81-1c78-4525-9c65-cc3cbd573dd2",
+          "stop": 1768110179649
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768110179767,
+              "uuid": "00ce1b8e-ba46-4d5b-8bd6-ab9bcf64e223",
+              "stop": 1768110179949
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768110179649,
+          "uuid": "1d0a21bf-592a-4648-b3ef-80a34816fb84",
+          "stop": 1768110179954
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768110179600,
+      "uuid": "bbee4f6c-9d11-4905-91d5-44d77b3e35bf",
+      "stop": 1768110179961
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "128c4367-f96e-45f9-a9bc-4b9bebbc60e0-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "test-case_1768110114286_tphfybel3.spec.ts" },
+    { "name": "titlePath", "value": " >  > test-case_1768110114286_tphfybel3.spec.ts > Forgot Login Information Test" },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-55802-worker-0" },
+    { "name": "suite", "value": "test-case_1768110114286_tphfybel3.spec.ts" },
+    { "name": "subSuite", "value": "Forgot Login Information Test" },
+    { "name": "story", "value": "Forgot Login Information" },
+    { "name": "feature", "value": "Customer Lookup" }
+  ],
+  "links": [],
+  "start": 1768110171528,
+  "testCaseId": "90ab44a75a1ba597094c20dfb2ac88c6",
+  "fullName": "test-case_1768110114286_tphfybel3.spec.ts:5:3",
+  "titlePath": ["test-case_1768110114286_tphfybel3.spec.ts", "Forgot Login Information Test"],
+  "stop": 1768110178792
+}

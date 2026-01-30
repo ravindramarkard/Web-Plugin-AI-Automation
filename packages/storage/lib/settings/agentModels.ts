@@ -18,12 +18,12 @@ export interface AgentModelRecord {
 }
 
 export type AgentModelStorage = BaseStorage<AgentModelRecord> & {
-  setAgentModel: (agent: AgentNameEnum, config: ModelConfig) => Promise<void>;
-  getAgentModel: (agent: AgentNameEnum) => Promise<ModelConfig | undefined>;
-  resetAgentModel: (agent: AgentNameEnum) => Promise<void>;
-  hasAgentModel: (agent: AgentNameEnum) => Promise<boolean>;
-  getConfiguredAgents: () => Promise<AgentNameEnum[]>;
-  getAllAgentModels: () => Promise<Record<AgentNameEnum, ModelConfig>>;
+  setAgentModel: (agent: AgentNameEnum, config: ModelConfig, projectId?: string) => Promise<void>;
+  getAgentModel: (agent: AgentNameEnum, projectId?: string) => Promise<ModelConfig | undefined>;
+  resetAgentModel: (agent: AgentNameEnum, projectId?: string) => Promise<void>;
+  hasAgentModel: (agent: AgentNameEnum, projectId?: string) => Promise<boolean>;
+  getConfiguredAgents: (projectId?: string) => Promise<AgentNameEnum[]>;
+  getAllAgentModels: (projectId?: string) => Promise<Record<AgentNameEnum, ModelConfig>>;
   cleanupLegacyValidatorSettings: () => Promise<void>;
 };
 
@@ -35,6 +35,42 @@ const storage = createStorage<AgentModelRecord>(
     liveUpdate: true,
   },
 );
+
+// Helper to access project-specific storage
+const getProjectStorageKey = (projectId: string) => `project:${projectId}:agent_models`;
+
+const getStorageData = async (projectId?: string): Promise<AgentModelRecord> => {
+  if (!projectId) {
+    return (await storage.get()) || { agents: {} as Record<AgentNameEnum, ModelConfig> };
+  }
+
+  // Access chrome.storage.local directly for project settings
+  const chrome = (globalThis as any).chrome;
+  if (!chrome?.storage?.local) {
+    console.warn('[AgentModelStorage] Chrome storage not available for project settings');
+    return { agents: {} as Record<AgentNameEnum, ModelConfig> };
+  }
+
+  const key = getProjectStorageKey(projectId);
+  const result = await chrome.storage.local.get([key]);
+  return (result[key] as AgentModelRecord) || { agents: {} as Record<AgentNameEnum, ModelConfig> };
+};
+
+const setStorageData = async (data: AgentModelRecord, projectId?: string): Promise<void> => {
+  if (!projectId) {
+    await storage.set(data);
+    return;
+  }
+
+  const chrome = (globalThis as any).chrome;
+  if (!chrome?.storage?.local) {
+    console.warn('[AgentModelStorage] Chrome storage not available for project settings');
+    return;
+  }
+
+  const key = getProjectStorageKey(projectId);
+  await chrome.storage.local.set({ [key]: data });
+};
 
 function validateModelConfig(config: ModelConfig) {
   if (!config.provider || !config.modelName) {
@@ -49,7 +85,7 @@ function getModelParameters(agent: AgentNameEnum, provider: string): Record<stri
 
 export const agentModelStore: AgentModelStorage = {
   ...storage,
-  setAgentModel: async (agent: AgentNameEnum, config: ModelConfig) => {
+  setAgentModel: async (agent: AgentNameEnum, config: ModelConfig, projectId?: string) => {
     validateModelConfig(config);
     // Merge default parameters with provided parameters
     const defaultParams = getModelParameters(agent, config.provider);
@@ -60,15 +96,20 @@ export const agentModelStore: AgentModelStorage = {
         ...config.parameters,
       },
     };
-    await storage.set(current => ({
-      agents: {
-        ...current.agents,
-        [agent]: mergedConfig,
+
+    const current = await getStorageData(projectId);
+    await setStorageData(
+      {
+        agents: {
+          ...current.agents,
+          [agent]: mergedConfig,
+        },
       },
-    }));
+      projectId,
+    );
   },
-  getAgentModel: async (agent: AgentNameEnum) => {
-    const data = await storage.get();
+  getAgentModel: async (agent: AgentNameEnum, projectId?: string) => {
+    const data = await getStorageData(projectId);
     const config = data.agents[agent];
     if (!config) return undefined;
 
@@ -82,26 +123,25 @@ export const agentModelStore: AgentModelStorage = {
       },
     };
   },
-  resetAgentModel: async (agent: AgentNameEnum) => {
-    await storage.set(current => {
-      const newAgents = { ...current.agents };
-      delete newAgents[agent];
-      return { agents: newAgents };
-    });
+  resetAgentModel: async (agent: AgentNameEnum, projectId?: string) => {
+    const current = await getStorageData(projectId);
+    const newAgents = { ...current.agents };
+    delete newAgents[agent];
+    await setStorageData({ agents: newAgents }, projectId);
   },
-  hasAgentModel: async (agent: AgentNameEnum) => {
-    const data = await storage.get();
+  hasAgentModel: async (agent: AgentNameEnum, projectId?: string) => {
+    const data = await getStorageData(projectId);
     return agent in data.agents;
   },
-  getConfiguredAgents: async () => {
-    const data = await storage.get();
+  getConfiguredAgents: async (projectId?: string) => {
+    const data = await getStorageData(projectId);
     // Filter out any legacy validator entries for backward compatibility
     return Object.keys(data.agents).filter(
       agentKey => agentKey !== 'validator' && Object.values(AgentNameEnum).includes(agentKey as AgentNameEnum),
     ) as AgentNameEnum[];
   },
-  getAllAgentModels: async () => {
-    const data = await storage.get();
+  getAllAgentModels: async (projectId?: string) => {
+    const data = await getStorageData(projectId);
     // Filter out any legacy validator entries for backward compatibility
     const filteredAgents: Partial<Record<AgentNameEnum, ModelConfig>> = {};
     for (const [agentKey, config] of Object.entries(data.agents)) {
@@ -112,6 +152,9 @@ export const agentModelStore: AgentModelStorage = {
     return filteredAgents as Record<AgentNameEnum, ModelConfig>;
   },
   cleanupLegacyValidatorSettings: async () => {
+    // This is a global cleanup, maybe we should also cleanup project specific ones?
+    // For now keeping it as is (global only) or should we allow projectId?
+    // It's legacy so probably global is fine.
     await storage.set(current => {
       const newAgents = { ...current.agents };
       delete newAgents['validator' as keyof typeof newAgents];

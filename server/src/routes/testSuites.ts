@@ -1,7 +1,7 @@
 import express from 'express';
 import db from '../db/index.js';
 
-const router = express.Router();
+const router: express.Router = express.Router();
 
 // Get all test suites for a project
 router.get('/project/:projectId', (req, res) => {
@@ -29,7 +29,7 @@ router.get('/:id', (req, res) => {
     }
     // Parse schedule JSON
     const parsedSuite = {
-      ...suite,
+      ...(suite as any),
       schedule: (suite as any).schedule ? JSON.parse((suite as any).schedule) : undefined,
     };
     res.json(parsedSuite);
@@ -55,7 +55,7 @@ router.post('/', (req, res) => {
 
     const suite = db.prepare('SELECT * FROM test_suites WHERE id = ?').get(id);
     const parsedSuite = {
-      ...suite,
+      ...(suite as any),
       schedule: (suite as any).schedule ? JSON.parse((suite as any).schedule) : undefined,
     };
     res.status(201).json(parsedSuite);
@@ -68,7 +68,7 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
   try {
     const { name, description, testType, schedule } = req.body;
-    const existing = db.prepare('SELECT * FROM test_suites WHERE id = ?').get(req.params.id);
+    const existing: any = db.prepare('SELECT * FROM test_suites WHERE id = ?').get(req.params.id);
     if (!existing) {
       return res.status(404).json({ error: 'Test suite not found' });
     }
@@ -86,7 +86,7 @@ router.put('/:id', (req, res) => {
 
     const suite = db.prepare('SELECT * FROM test_suites WHERE id = ?').get(req.params.id);
     const parsedSuite = {
-      ...suite,
+      ...(suite as any),
       schedule: (suite as any).schedule ? JSON.parse((suite as any).schedule) : undefined,
     };
     res.json(parsedSuite);
@@ -98,10 +98,53 @@ router.put('/:id', (req, res) => {
 // Delete test suite
 router.delete('/:id', (req, res) => {
   try {
-    const result = db.prepare('DELETE FROM test_suites WHERE id = ?').run(req.params.id);
-    if (result.changes === 0) {
+    const suiteId = req.params.id;
+
+    // Get the suite first to find projectId
+    const suite = db.prepare('SELECT * FROM test_suites WHERE id = ?').get(suiteId);
+    if (!suite) {
       return res.status(404).json({ error: 'Test suite not found' });
     }
+    const projectId = (suite as any).projectId;
+
+    const deleteTransaction = db.transaction(() => {
+      // Check if there are test cases in this suite
+      const testCasesCount = db.prepare('SELECT COUNT(*) as count FROM test_cases WHERE testSuiteId = ?').get(suiteId);
+
+      const count = (testCasesCount as any).count;
+
+      // Always rescue test cases, even if deleting "Unassigned"
+      if (count > 0) {
+        // Find or create "Unassigned" suite for this project
+        // Note: we must ensure we don't pick the suite we are about to delete
+        let defaultSuite = db
+          .prepare('SELECT * FROM test_suites WHERE projectId = ? AND name = ? AND id != ?')
+          .get(projectId, 'Unassigned', suiteId);
+
+        if (!defaultSuite) {
+          const newId = `suite_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const now = Date.now();
+          // Create "Unassigned" suite
+          db.prepare(
+            'INSERT INTO test_suites (id, projectId, name, description, testType, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          ).run(newId, projectId, 'Unassigned', 'Holds test cases from deleted suites', 'UI Tests', now, now);
+
+          defaultSuite = { id: newId };
+        }
+
+        // Move test cases to the default suite
+        db.prepare('UPDATE test_cases SET testSuiteId = ? WHERE testSuiteId = ?').run(
+          (defaultSuite as any).id,
+          suiteId,
+        );
+      }
+
+      // Then delete the suite
+      const result = db.prepare('DELETE FROM test_suites WHERE id = ?').run(suiteId);
+      return result;
+    });
+
+    const result = deleteTransaction();
     res.json({ success: true });
   } catch (error) {
     res.status(500).json({ error: 'Failed to delete test suite' });

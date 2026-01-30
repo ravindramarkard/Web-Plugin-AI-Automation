@@ -1,0 +1,288 @@
+{
+  "uuid": "a090ee2b-5914-46ce-b3fd-ac5c2cd8e19a",
+  "name": "should successfully fill and submit contact form",
+  "historyId": "7a89da97cd28cbeffe1271f14c88f4dc:d41d8cd98f00b204e9800998ecf8427e",
+  "status": "failed",
+  "statusDetails": {
+    "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('xpath=(//a | //button)[36]') to be visible\n",
+    "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('xpath=(//a | //button)[36]') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:25:27\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:21:18"
+  },
+  "stage": "finished",
+  "steps": [
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Launch browser",
+              "start": 1768052734603,
+              "uuid": "70db659c-b94e-4382-8a1e-2c03d25732dd",
+              "stop": 1768052735261
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"browser\"",
+          "start": 1768052734601,
+          "uuid": "b144d24b-74b5-4851-81ee-5c0f60e3f102",
+          "stop": 1768052735261
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create context",
+              "start": 1768052735267,
+              "uuid": "732d56f2-adbe-4981-bd46-376d2a5487fc",
+              "stop": 1768052735289
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768052735265,
+          "uuid": "b8239778-2bd0-4b10-b7e0-fd1113d5300d",
+          "stop": 1768052735290
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Create page",
+              "start": 1768052735292,
+              "uuid": "becefc19-5596-448d-bf6c-51df3899c67b",
+              "stop": 1768052735785
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768052735290,
+          "uuid": "94f2e3f3-b3b9-48b4-97af-bafca9b6524f",
+          "stop": 1768052735785
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "Before Hooks",
+      "start": 1768052734595,
+      "uuid": "b5bda7b9-fe69-480b-aba8-32e41397ce96",
+      "stop": 1768052735785
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768052735821,
+          "name": "Navigate to \"/\"",
+          "uuid": "689af90d-4dbf-44da-955b-5eed91b55b31",
+          "stop": 1768052737693
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768052737695,
+          "name": "Wait for load state \"networkidle\"",
+          "uuid": "3546cc02-87d7-4a93-95e3-0894db5dfb3e",
+          "stop": 1768052738194
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768052738196,
+          "name": "Expect \"toHaveURL\"",
+          "uuid": "fd92715d-1278-4e93-85c4-753e36db2333",
+          "stop": 1768052738219
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768052735819,
+      "name": "Navigate to Parabank homepage",
+      "uuid": "d17592ce-fd81-4bbe-9bd9-db16890ee3a7",
+      "stop": 1768052738219
+    },
+    {
+      "status": "failed",
+      "statusDetails": {
+        "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('xpath=(//a | //button)[36]') to be visible\n",
+        "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('xpath=(//a | //button)[36]') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:25:27\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:21:18"
+      },
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "failed",
+          "statusDetails": {
+            "message": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('xpath=(//a | //button)[36]') to be visible\n",
+            "trace": "TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('xpath=(//a | //button)[36]') to be visible\n\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:25:27\n    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:21:18"
+          },
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "start": 1768052738221,
+          "name": "Wait for selector locator('xpath=(//a | //button)[36]')",
+          "uuid": "8f78b3be-39a4-4e86-83c3-a7a1d9c984aa",
+          "stop": 1768052753224
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "start": 1768052738219,
+      "name": "Click on Contact link",
+      "uuid": "dd8debfa-0eeb-49e6-b50f-fa8c957cf462",
+      "stop": 1768052753224
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "Error details",
+          "source": "e03b10f0-131e-4a33-b74b-bf636d2e57b6-attachment.txt",
+          "type": "text/plain"
+        }
+      ],
+      "parameters": [],
+      "start": 1768052753379,
+      "name": "Error details",
+      "stop": 1768052753379
+    },
+    {
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [],
+      "attachments": [
+        {
+          "name": "error-context",
+          "source": "9d1e113f-4f94-4cac-9f3f-7242703dc653-attachment.md",
+          "type": "text/markdown"
+        }
+      ],
+      "parameters": [],
+      "start": 1768052753380,
+      "name": "error-context",
+      "stop": 1768052753380
+    },
+    {
+      "status": "passed",
+      "statusDetails": {},
+      "stage": "finished",
+      "steps": [
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"page\"",
+          "start": 1768052753226,
+          "uuid": "953824c2-75db-45fa-98d7-1a5b41cec011",
+          "stop": 1768052753226
+        },
+        {
+          "status": "passed",
+          "statusDetails": {},
+          "stage": "finished",
+          "steps": [
+            {
+              "status": "passed",
+              "statusDetails": {},
+              "stage": "finished",
+              "steps": [],
+              "attachments": [],
+              "parameters": [],
+              "name": "Close context",
+              "start": 1768052753239,
+              "uuid": "b9a874eb-1678-4b07-a907-9aead6651910",
+              "stop": 1768052753276
+            }
+          ],
+          "attachments": [],
+          "parameters": [],
+          "name": "Fixture \"context\"",
+          "start": 1768052753226,
+          "uuid": "8c08610a-5b2c-4d62-99bc-5d72fb5eafde",
+          "stop": 1768052753276
+        }
+      ],
+      "attachments": [],
+      "parameters": [],
+      "name": "After Hooks",
+      "start": 1768052753225,
+      "uuid": "b97fc60f-af54-4d14-9f3a-803a753c4212",
+      "stop": 1768052753280
+    }
+  ],
+  "attachments": [
+    { "name": "stdout", "source": "330c4f8e-2883-46f8-a424-b33e5ad14c15-attachment.txt", "type": "text/plain" },
+    { "name": "stderr", "source": "7540b7ee-f224-45fc-bff0-83fc508c2c66-attachment.txt", "type": "text/plain" }
+  ],
+  "parameters": [],
+  "labels": [
+    { "name": "language", "value": "javascript" },
+    { "name": "framework", "value": "playwright" },
+    { "name": "package", "value": "temp_execution.test-case_1768050267865_5j180s0rg.spec.ts" },
+    {
+      "name": "titlePath",
+      "value": " >  > temp_execution/test-case_1768050267865_5j180s0rg.spec.ts > Contact Us Form"
+    },
+    { "name": "host", "value": "Ravindras-MacBook-Pro.local" },
+    { "name": "thread", "value": "pid-47017-worker-0" },
+    { "name": "suite", "value": "temp_execution/test-case_1768050267865_5j180s0rg.spec.ts" },
+    { "name": "subSuite", "value": "Contact Us Form" }
+  ],
+  "links": [],
+  "start": 1768052734595,
+  "testCaseId": "7a89da97cd28cbeffe1271f14c88f4dc",
+  "fullName": "temp_execution/test-case_1768050267865_5j180s0rg.spec.ts:5:3",
+  "titlePath": ["temp_execution", "test-case_1768050267865_5j180s0rg.spec.ts", "Contact Us Form"],
+  "description": "Test the contact us form functionality by filling in required fields and submitting",
+  "stop": 1768052752607
+}

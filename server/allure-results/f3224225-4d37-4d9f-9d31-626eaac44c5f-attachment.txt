@@ -1,0 +1,9 @@
+[2mexpect([22m[31mpage[39m[2m).[22mtoHaveURL[2m([22m[32mexpected[39m[2m)[22m failed
+
+Expected: [32m"https://parabank.parasoft.com/"[39m
+Received: [31m"https://parabank.parasoft.com/[7mparabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB[27m"[39m
+Timeout:  5000ms
+
+Call log:
+[2m  - Expect "toHaveURL" with timeout 5000ms[22m
+[2m    9 × unexpected value "https://parabank.parasoft.com/parabank/index.htm;jsessionid=96B4FB329327A7227CE573F9A79A49EB"[22m

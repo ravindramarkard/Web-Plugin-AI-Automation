@@ -1,0 +1,3 @@
+Navigating to https://parabank.parasoft.com
+Successfully navigated to Parabank homepage
+Clicking on Contact link (element at index 35)

@@ -1,0 +1,7 @@
+Test failed: locator.waitFor: Error: strict mode violation: locator('form, #registerForm, .register-form') resolved to 2 elements:
+    1) <form name="login" method="POST" action="login.htm">…</form> aka getByText('Username Password Log In')
+    2) <form method="post" id="customerForm" action="register.htm">…</form> aka locator('#customerForm')
+
+Call log:
+  - waiting for locator('form, #registerForm, .register-form') to be visible
+

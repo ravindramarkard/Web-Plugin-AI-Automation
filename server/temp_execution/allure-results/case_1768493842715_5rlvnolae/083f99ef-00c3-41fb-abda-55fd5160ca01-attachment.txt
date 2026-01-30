@@ -1,0 +1,52 @@
+Test failed with error: locator.waitFor: Timeout 15000ms exceeded.
+Call log:
+  - waiting for locator('a[href="login.htm"]') to be visible
+
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768493842715_5rlvnolae.spec.ts:20:23
+    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768493842715_5rlvnolae.spec.ts:18:16 {
+  name: 'TimeoutError',
+  Symbol(step): {
+    location: {
+      file: '/Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768493842715_5rlvnolae.spec.ts',
+      line: 20,
+      column: 23
+    },
+    category: 'pw:api',
+    title: `Wait for selector locator('a[href="login.htm"]')`,
+    apiName: 'locator.waitFor',
+    params: {
+      selector: 'a[href="login.htm"]',
+      strict: true,
+      omitReturnValue: true,
+      state: 'visible',
+      timeout: 15000
+    },
+    group: undefined,
+    stepId: 'pw:api@44',
+    boxedStack: undefined,
+    steps: [],
+    attachmentIndices: [],
+    info: TestStepInfoImpl {
+      annotations: [],
+      _testInfo: [TestInfoImpl],
+      _stepId: 'pw:api@44',
+      _title: `Wait for selector locator('a[href="login.htm"]')`,
+      _parentStep: [TestStepInfoImpl],
+      skip: [Function (anonymous)]
+    },
+    complete: [Function: complete],
+    endWallTime: 1768497057407,
+    error: {
+      message: 'TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\n' +
+        'Call log:\n' +
+        `\x1B[2m  - waiting for locator('a[href="login.htm"]') to be visible\x1B[22m\n`,
+      stack: 'TimeoutError: locator.waitFor: Timeout 15000ms exceeded.\n' +
+        'Call log:\n' +
+        `\x1B[2m  - waiting for locator('a[href="login.htm"]') to be visible\x1B[22m\n` +
+        '\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768493842715_5rlvnolae.spec.ts:20:23\n' +
+        '    at /Users/ravindramarkard/webpluginauto/Web-Plugin-AI-Automation/server/temp_execution/test-case_1768493842715_5rlvnolae.spec.ts:18:16',
+      cause: undefined
+    }
+  }
+}
